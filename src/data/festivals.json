@@ -1,0 +1,50 @@
+[
+  {
+    "id": "mazu-birthday",
+    "name": "媽祖聖誕",
+    "lunarDate": "農曆3月23日",
+    "date2026": "2026-05-09",
+    "temples": ["wanchun-gong", "lecheng-gong"],
+    "message": "今天是媽祖聖誕！萬春宮、樂成宮都會舉行祝壽祭典，歡迎前來參拜祈福 🙏"
+  },
+  {
+    "id": "anzai",
+    "name": "安太歲",
+    "lunarDate": "農曆正月期間",
+    "date2026": "2026-02-17",
+    "temples": ["wanchun-gong", "chenghuang-miao", "yuanbao-gong"],
+    "message": "安太歲登記開始囉！沖犯太歲的生肖今年適合到廟裡安太歲，點我看各廟登記方式"
+  },
+  {
+    "id": "zhongyuan",
+    "name": "中元普渡",
+    "lunarDate": "農曆7月15日",
+    "date2026": "2026-08-27",
+    "temples": ["wanchun-gong", "chenghuang-miao"],
+    "message": "中元普渡將至，萬春宮、城隍廟均有普渡法會，需要供品或法會資訊都可以問我"
+  },
+  {
+    "id": "guandi-birthday",
+    "name": "關聖帝君聖誕",
+    "lunarDate": "農曆6月24日",
+    "date2026": "2026-08-06",
+    "temples": ["nantian-gong"],
+    "message": "關聖帝君聖誕快到了，南天宮會有祝壽及補財庫活動，想發財運的人別錯過"
+  },
+  {
+    "id": "xiayuan",
+    "name": "下元節",
+    "lunarDate": "農曆10月15日",
+    "date2026": "2026-11-24",
+    "temples": ["wanchun-gong", "chenghuang-miao"],
+    "message": "下元節將至，水官大帝解厄消災，適合到廟裡祈求解厄平安"
+  },
+  {
+    "id": "dongzhi",
+    "name": "冬至謝平安",
+    "lunarDate": "農曆冬至",
+    "date2026": "2026-12-22",
+    "temples": ["wanchun-gong", "lecheng-gong"],
+    "message": "冬至到了，記得吃湯圓、到廟裡謝平安，感謝神明這一年的照顧"
+  }
+]

@@ -1,0 +1,80 @@
+[
+  {
+    "id": "wanchun-gong",
+    "name": "萬春宮",
+    "nameEn": "Wanchun Temple",
+    "deity": "天上聖母 媽祖",
+    "address": "臺中市中區成功路212號",
+    "lat": 24.1369,
+    "lng": 120.6839,
+    "founded": "約清康熙年間，超過300年歷史",
+    "highlights": "台中舊城區信仰中心，主祀媽祖，廟埕籤筒相傳極靈驗，是市區居民日常求籤、點香祈福的第一站。",
+    "nearestBus": ["成功路口", "臺中公園"],
+    "nearestRail": "臺鐵臺中站（步行約10分鐘）"
+  },
+  {
+    "id": "chenghuang-miao",
+    "name": "臺中市城隍廟",
+    "nameEn": "Taichung City God Temple",
+    "deity": "威靈公 城隍爺",
+    "address": "臺中市南區合作街94巷50號",
+    "lat": 24.1290,
+    "lng": 120.6740,
+    "founded": "日治時期創建",
+    "highlights": "主祀城隍爺，掌管陰陽賞罰，信眾常來求平安、化解是非官司。",
+    "nearestBus": ["合作街口"],
+    "nearestRail": "臺鐵臺中站轉乘公車約15分鐘"
+  },
+  {
+    "id": "yuanbao-gong",
+    "name": "臺中市元保宮",
+    "nameEn": "Yuanbao Temple",
+    "deity": "保生大帝",
+    "address": "臺中市北區梅川西路三段109號",
+    "lat": 24.1516,
+    "lng": 120.6816,
+    "founded": "清嘉慶年間",
+    "highlights": "主祀醫神保生大帝，早期北屯、北區居民求醫祈安的信仰中心。",
+    "nearestBus": ["梅川西路口"],
+    "nearestRail": "臺鐵臺中站轉乘公車約20分鐘"
+  },
+  {
+    "id": "baojue-si",
+    "name": "寶覺寺",
+    "nameEn": "Baojue Temple",
+    "deity": "釋迦牟尼佛",
+    "address": "臺中市北區健行路140號",
+    "lat": 24.1494,
+    "lng": 120.6801,
+    "founded": "日治時期昭和年間",
+    "highlights": "台中著名佛寺，寺內大肚彌勒佛像為地標，鄰近臺中公園。",
+    "nearestBus": ["健行路口"],
+    "nearestRail": "臺鐵臺中站轉乘公車約15分鐘"
+  },
+  {
+    "id": "nantian-gong",
+    "name": "台中南天宮",
+    "nameEn": "Nantian Temple",
+    "deity": "關聖帝君",
+    "address": "臺中市東區自由路三段309號",
+    "lat": 24.1372,
+    "lng": 120.6997,
+    "founded": "近代重建",
+    "highlights": "主祀關帝聖君，兼供五路財神，以補財庫、汽機車過火祈福聞名。",
+    "nearestBus": ["自由路三段"],
+    "nearestRail": "臺鐵臺中站轉乘公車約20分鐘"
+  },
+  {
+    "id": "lecheng-gong",
+    "name": "財團法人台中樂成宮",
+    "nameEn": "Lecheng Temple",
+    "deity": "天上聖母 媽祖",
+    "address": "臺中市東區旱溪街48號",
+    "lat": 24.1408,
+    "lng": 120.7025,
+    "founded": "清乾隆年間",
+    "highlights": "俗稱旱溪媽祖廟，每年「旱溪媽祖遶境十八庄」為台中重要宗教盛事。",
+    "nearestBus": ["旱溪街口"],
+    "nearestRail": "臺鐵臺中站轉乘公車約25分鐘"
+  }
+]

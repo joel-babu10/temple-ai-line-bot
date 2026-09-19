@@ -1,0 +1,17 @@
+{
+  "name": "line-temple-bot",
+  "version": "1.0.0",
+  "description": "AI-powered LINE OA + LIFF companion for smart temple visits — divination, AI interpretation, nearby temples, transit, and festival alerts.",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node --watch server.js"
+  },
+  "dependencies": {
+    "@line/bot-sdk": "^9.4.2",
+    "axios": "^1.7.7",
+    "dotenv": "^16.4.5",
+    "express": "^4.21.0",
+    "node-cron": "^3.0.3"
+  }
+}

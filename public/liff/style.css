@@ -1,0 +1,347 @@
+:root {
+  --ink: #1c1613;
+  --lacquer: #7a1f1f;
+  --lacquer-deep: #4e1414;
+  --gold: #c79a45;
+  --gold-soft: #e4c77a;
+  --paper: #efe6d8;
+  --paper-dim: #e3d7c2;
+  --jade: #3f5d4d;
+  --font-display: 'Noto Serif TC', serif;
+  --font-body: 'Noto Sans TC', sans-serif;
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  padding: 0;
+  background: var(--ink);
+  color: var(--paper);
+  font-family: var(--font-body);
+  -webkit-font-smoothing: antialiased;
+}
+
+body {
+  min-height: 100vh;
+  padding-bottom: 32px;
+}
+
+/* ---------- Header ---------- */
+
+.temple-header {
+  position: relative;
+  padding: 36px 20px 24px;
+  text-align: center;
+  background: radial-gradient(120% 100% at 50% -20%, var(--lacquer) 0%, var(--lacquer-deep) 60%, var(--ink) 100%);
+  overflow: hidden;
+}
+
+.temple-header h1 {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 1.9rem;
+  margin: 0 0 4px;
+  color: var(--gold-soft);
+  letter-spacing: 0.04em;
+}
+
+.temple-header .subtitle {
+  margin: 0;
+  font-size: 0.85rem;
+  color: var(--paper-dim);
+}
+
+.incense-wisp {
+  position: absolute;
+  top: -10px;
+  left: 50%;
+  width: 2px;
+  height: 60px;
+  background: linear-gradient(to top, transparent, rgba(231, 217, 190, 0.5));
+  transform: translateX(-50%);
+  animation: wisp 4s ease-in-out infinite;
+  filter: blur(1px);
+}
+
+@keyframes wisp {
+  0%, 100% { opacity: 0.2; transform: translateX(-50%) translateY(0) scaleY(1); }
+  50% { opacity: 0.6; transform: translateX(-50%) translateY(-6px) scaleY(1.15); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .incense-wisp { animation: none; }
+}
+
+/* ---------- Tabs ---------- */
+
+.tabbar {
+  display: flex;
+  border-bottom: 1px solid rgba(199, 154, 69, 0.35);
+  background: var(--ink);
+  position: sticky;
+  top: 0;
+  z-index: 5;
+}
+
+.tab-btn {
+  flex: 1;
+  padding: 12px 4px;
+  background: none;
+  border: none;
+  color: var(--paper-dim);
+  font-family: var(--font-body);
+  font-size: 0.82rem;
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+}
+
+.tab-btn.is-active {
+  color: var(--gold-soft);
+  border-bottom-color: var(--gold);
+}
+
+.tab-panel { display: none; padding: 20px 16px 8px; }
+.tab-panel.is-active { display: block; }
+
+/* ---------- Divination altar ---------- */
+
+.altar {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  padding: 20px 0 8px;
+}
+
+.ritual-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 220px;
+  padding: 14px 18px;
+  border-radius: 999px;
+  border: 1px solid var(--gold);
+  background: linear-gradient(180deg, rgba(199, 154, 69, 0.12), rgba(199, 154, 69, 0.02));
+  color: var(--gold-soft);
+  font-family: var(--font-body);
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: transform 0.15s ease, background 0.15s ease;
+}
+
+.ritual-btn:active:not(:disabled) { transform: scale(0.97); }
+
+.ritual-btn:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+
+.ritual-btn.full-width { width: 100%; }
+
+.ritual-icon { font-size: 1.1rem; }
+
+.ritual-result {
+  min-height: 1.2em;
+  color: var(--paper-dim);
+  font-size: 0.88rem;
+  margin: 0;
+}
+
+/* ---------- Fortune card ---------- */
+
+.fortune-card {
+  margin-top: 20px;
+  padding: 24px 20px;
+  background: var(--paper);
+  color: var(--ink);
+  border-radius: 4px;
+  position: relative;
+}
+
+.fortune-card::before,
+.fortune-card::after {
+  content: '';
+  position: absolute;
+  width: 14px;
+  height: 14px;
+  border: 2px solid var(--lacquer);
+}
+
+.fortune-card::before { top: 8px; left: 8px; border-right: none; border-bottom: none; }
+.fortune-card::after { bottom: 8px; right: 8px; border-left: none; border-top: none; }
+
+.fortune-card.is-hidden { display: none; }
+
+.fortune-grade {
+  font-family: var(--font-display);
+  font-weight: 700;
+  color: var(--lacquer);
+  margin: 0 0 10px;
+  font-size: 1.05rem;
+}
+
+.fortune-poem {
+  font-family: var(--font-display);
+  font-size: 1.15rem;
+  line-height: 2;
+  margin: 0 0 12px;
+  letter-spacing: 0.02em;
+}
+
+.fortune-theme {
+  font-size: 0.85rem;
+  color: var(--lacquer-deep);
+  margin: 0;
+}
+
+/* ---------- Interpretation chat ---------- */
+
+.interpret-box { margin-top: 18px; }
+.interpret-box.is-hidden { display: none; }
+
+.interpret-box label,
+.hint {
+  display: block;
+  font-size: 0.82rem;
+  color: var(--paper-dim);
+  margin-bottom: 8px;
+}
+
+.input-row {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.input-row input {
+  flex: 1;
+  padding: 10px 12px;
+  border-radius: 8px;
+  border: 1px solid rgba(199, 154, 69, 0.4);
+  background: rgba(239, 230, 216, 0.06);
+  color: var(--paper);
+  font-family: var(--font-body);
+  font-size: 0.9rem;
+}
+
+.input-row input::placeholder { color: rgba(239, 230, 216, 0.4); }
+
+.input-row button {
+  padding: 10px 16px;
+  border-radius: 8px;
+  border: 1px solid var(--gold);
+  background: var(--lacquer);
+  color: var(--gold-soft);
+  font-family: var(--font-body);
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.chat-log {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.chat-bubble {
+  padding: 10px 14px;
+  border-radius: 12px;
+  font-size: 0.88rem;
+  line-height: 1.6;
+  max-width: 88%;
+}
+
+.chat-bubble.user {
+  align-self: flex-end;
+  background: rgba(199, 154, 69, 0.18);
+  color: var(--paper);
+}
+
+.chat-bubble.ai {
+  align-self: flex-start;
+  background: var(--paper);
+  color: var(--ink);
+}
+
+/* ---------- Nearby temples ---------- */
+
+.temple-list {
+  margin-top: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.temple-card {
+  border: 1px solid rgba(199, 154, 69, 0.3);
+  border-left: 3px solid var(--gold);
+  padding: 14px 16px;
+  border-radius: 6px;
+  background: rgba(239, 230, 216, 0.04);
+}
+
+.temple-card h3 {
+  margin: 0 0 4px;
+  font-family: var(--font-display);
+  font-size: 1.05rem;
+  color: var(--gold-soft);
+}
+
+.temple-card p {
+  margin: 2px 0;
+  font-size: 0.85rem;
+  color: var(--paper-dim);
+}
+
+.temple-card .distance {
+  color: var(--jade);
+  font-weight: 500;
+}
+
+.temple-card button {
+  margin-top: 10px;
+  padding: 8px 12px;
+  border-radius: 6px;
+  border: 1px solid var(--gold);
+  background: transparent;
+  color: var(--gold-soft);
+  font-size: 0.82rem;
+  cursor: pointer;
+}
+
+.transit-info {
+  margin-top: 10px;
+  padding-top: 10px;
+  border-top: 1px dashed rgba(199, 154, 69, 0.3);
+  font-size: 0.83rem;
+  color: var(--paper);
+}
+
+.transit-info.is-hidden { display: none; }
+
+/* ---------- Festivals ---------- */
+
+.festival-list { display: flex; flex-direction: column; gap: 12px; }
+
+.festival-card {
+  border-left: 3px solid var(--lacquer);
+  background: rgba(122, 31, 31, 0.15);
+  padding: 12px 16px;
+  border-radius: 6px;
+}
+
+.festival-card h3 {
+  margin: 0 0 4px;
+  font-family: var(--font-display);
+  font-size: 1rem;
+  color: var(--gold-soft);
+}
+
+.festival-card p { margin: 2px 0; font-size: 0.85rem; color: var(--paper-dim); }
+
+.festival-card .days-away {
+  color: var(--jade);
+  font-weight: 500;
+}

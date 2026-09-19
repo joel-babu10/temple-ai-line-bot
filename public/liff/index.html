@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+<title>廟公 AI</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@500;700&family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+<header class="temple-header">
+  <div class="incense-wisp" aria-hidden="true"></div>
+  <h1>廟公 AI</h1>
+  <p class="subtitle">萬春宮 · 智慧宮廟小幫手</p>
+</header>
+
+<nav class="tabbar" aria-label="功能選單">
+  <button class="tab-btn is-active" data-tab="divination">求籤解籤</button>
+  <button class="tab-btn" data-tab="nearby">附近宮廟</button>
+  <button class="tab-btn" data-tab="festivals">節慶提醒</button>
+  <button class="tab-btn" data-tab="ask">問廟公</button>
+</nav>
+
+<main>
+
+  <!-- 求籤解籤 -->
+  <section id="tab-divination" class="tab-panel is-active">
+    <div class="altar" id="altarStage">
+      <button id="incenseBtn" class="ritual-btn">
+        <span class="ritual-icon">🕯️</span>
+        <span>點一炷香</span>
+      </button>
+      <button id="jiaoBtn" class="ritual-btn" disabled>
+        <span class="ritual-icon">🥮</span>
+        <span>擲筊請示</span>
+      </button>
+      <p id="jiaoResult" class="ritual-result"></p>
+      <button id="drawBtn" class="ritual-btn" disabled>
+        <span class="ritual-icon">🎋</span>
+        <span>抽籤</span>
+      </button>
+    </div>
+
+    <article id="fortuneCard" class="fortune-card is-hidden">
+      <p class="fortune-grade" id="fortuneGrade"></p>
+      <p class="fortune-poem" id="fortunePoem"></p>
+      <p class="fortune-theme" id="fortuneTheme"></p>
+    </article>
+
+    <div id="interpretBox" class="interpret-box is-hidden">
+      <label for="questionInput">想問媽祖什麼事？（工作／感情／健康／考試…）</label>
+      <div class="input-row">
+        <input id="questionInput" type="text" placeholder="例如：這個月換工作好嗎？" />
+        <button id="askInterpretBtn">請示</button>
+      </div>
+      <div id="interpretChat" class="chat-log"></div>
+    </div>
+  </section>
+
+  <!-- 附近宮廟 -->
+  <section id="tab-nearby" class="tab-panel">
+    <button id="locateBtn" class="ritual-btn full-width">
+      <span class="ritual-icon">📍</span>
+      <span>取得目前位置</span>
+    </button>
+    <div id="nearbyList" class="temple-list"></div>
+  </section>
+
+  <!-- 節慶提醒 -->
+  <section id="tab-festivals" class="tab-panel">
+    <div id="festivalList" class="festival-list">
+      <p class="hint">載入節慶資訊中…</p>
+    </div>
+  </section>
+
+  <!-- 問廟公 -->
+  <section id="tab-ask" class="tab-panel">
+    <p class="hint">直接問廟宇歷史、主祀神明、參拜禮儀，或任何你想知道的事。</p>
+    <div id="askChat" class="chat-log"></div>
+    <div class="input-row">
+      <input id="askInput" type="text" placeholder="例如：萬春宮主要拜什麼神明？" />
+      <button id="askBtn">發問</button>
+    </div>
+  </section>
+
+</main>
+
+<script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
+<script src="config.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
