@@ -6,6 +6,8 @@ const { askLLM } = require('../services/llm');
 const { addSubscriber, removeSubscriber } = require('../services/subscribers');
 const { checkZodiacClash } = require('../services/zodiac');
 const { buildAppContext } = require('../services/knowledge');
+const { nearbyTemples } = require('../services/places');
+const { getTransitDirections } = require('../services/transit');
 
 const LIFF_ID = process.env.LIFF_ID || 'YOUR_LIFF_ID';
 const LIFF_URL = `https://liff.line.me/${LIFF_ID}`;
@@ -38,9 +40,9 @@ async function handleEvent(event) {
       {
         type: 'text',
         text:
-          '歡迎光臨🙏 我是廟公 AI，可以幫你：\n' +
+          '歡迎光臨🙏 我是焰寶，可以幫你：\n' +
           '・求籤解籤（輸入「求籤」）\n' +
-          '・找附近宮廟＆公車/火車怎麼去（輸入「附近宮廟」）\n' +
+          '・找附近宮廟＆公車/火車怎麼去（輸入「附近宮廟」，或直接分享你的 LINE 位置給我）\n' +
           '・查今年犯太歲嗎（輸入「太歲 1998」，用你的出生年份）\n' +
           '・廟宇小知識、拜拜禁忌（直接問我就好）\n' +
           '節慶提醒我也會主動通知你，先加好友就對了！'
@@ -53,7 +55,42 @@ async function handleEvent(event) {
     return;
   }
 
-  if (event.type !== 'message' || event.message.type !== 'text') return;
+  if (event.type !== 'message') return;
+
+  // Native LINE location share (the map-card "Location" message type, distinct from the
+  // LIFF page's own geolocation flow) — previously silently ignored entirely.
+  if (event.message.type === 'location') {
+    const { latitude, longitude } = event.message;
+    try {
+      const results = await nearbyTemples(latitude, longitude, 3);
+      if (!results.length) {
+        return reply(event.replyToken, [{ type: 'text', text: '這附近暫時沒有找到宮廟資料耶，可以換個位置再試試看 🙏' }], event.source.userId);
+      }
+
+      const lines = results.map((t, i) => `${i + 1}. ${t.name}（約 ${t.distanceKm} 公里）${t.deity ? `\n   主祀：${t.deity}` : ''}`);
+      const nearest = results[0];
+      let transitLine = '';
+      if (nearest.id) {
+        try {
+          const transit = await getTransitDirections(latitude, longitude, nearest.id);
+          transitLine = `\n\n最近的「${nearest.name}」交通建議：\n${transit.summary}`;
+        } catch (e) {
+          // transit lookup is a bonus, not worth failing the whole reply over
+        }
+      }
+
+      return reply(
+        event.replyToken,
+        [{ type: 'text', text: `幫你找到附近的宮廟囉 ⛩️\n\n${lines.join('\n')}${transitLine}` }],
+        event.source.userId
+      );
+    } catch (err) {
+      console.error('[webhook] location lookup failed:', err.message);
+      return reply(event.replyToken, [{ type: 'text', text: '找附近宮廟時卡了一下，可以再試一次嗎 🙏' }], event.source.userId);
+    }
+  }
+
+  if (event.message.type !== 'text') return;
 
   const text = event.message.text.trim();
 
@@ -74,7 +111,7 @@ async function handleEvent(event) {
     return reply(event.replyToken, [
       {
         type: 'text',
-        text: '打開這個頁面分享你的位置，我幫你找附近的廟，還有公車/火車怎麼去 🚌'
+        text: '直接用 LINE 的「+」分享你的位置給我，或打開這個頁面分享位置，我幫你找附近的廟，還有公車/火車怎麼去 🚌'
       },
       {
         type: 'text',
