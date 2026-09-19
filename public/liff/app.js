@@ -825,3 +825,225 @@ if (askInput) {
     }
   });
 }
+
+// ---------- Smart Temple & Community Hub Extensions ----------
+
+// 1. Follow Temple Toggle Button
+const followTempleBtn = document.getElementById('followTempleBtn');
+if (followTempleBtn) {
+  followTempleBtn.addEventListener('click', () => {
+    followTempleBtn.classList.toggle('is-following');
+    const isFollowing = followTempleBtn.classList.contains('is-following');
+    followTempleBtn.querySelector('span').textContent = isFollowing
+      ? '✓ 已追蹤 (LINE 通知中)'
+      : '＋ 追蹤宮廟';
+    
+    playTempleChime(720, 0.4);
+    if (navigator.vibrate) navigator.vibrate(40);
+  });
+}
+
+// 2. Activity Category Filters
+document.querySelectorAll('#activityCategoryFilters .chip-btn').forEach((chip) => {
+  chip.addEventListener('click', () => {
+    document.querySelectorAll('#activityCategoryFilters .chip-btn').forEach((c) => c.classList.remove('is-active'));
+    chip.classList.add('is-active');
+
+    const cat = chip.dataset.cat;
+    document.querySelectorAll('#activityFeedList .activity-card').forEach((card) => {
+      if (cat === 'all' || card.dataset.category === cat) {
+        card.style.display = 'block';
+      } else {
+        card.style.display = 'none';
+      }
+    });
+
+    playTempleChime(520, 0.2);
+  });
+});
+
+// 3. Join Activity Handler
+document.addEventListener('click', (e) => {
+  if (e.target && e.target.classList.contains('btn-join-act')) {
+    const btn = e.target;
+    btn.classList.toggle('is-joined');
+    const isJoined = btn.classList.contains('is-joined');
+    btn.textContent = isJoined ? '✓ 已成功報名 (排入行事曆)' : '加入活動';
+
+    const card = btn.closest('.activity-card');
+    const title = card ? card.querySelector('.act-title').textContent : '共善活動';
+
+    if (isJoined) {
+      fireConfetti();
+      playTempleChime(660, 0.5);
+      if (navigator.vibrate) navigator.vibrate([40, 50, 40]);
+
+      // Add to profile tab
+      const myJoinedContainer = document.getElementById('myJoinedActivities');
+      if (myJoinedContainer) {
+        const item = document.createElement('div');
+        item.className = 'my-item-card';
+        item.innerHTML = `<span>${title}</span><span class="badge-status-green">已報名成功</span>`;
+        myJoinedContainer.prepend(item);
+      }
+    }
+  }
+});
+
+// 4. Target Pills Selector on Online Blessing
+document.querySelectorAll('#targetPills .target-pill').forEach((pill) => {
+  pill.addEventListener('click', () => {
+    document.querySelectorAll('#targetPills .target-pill').forEach((p) => p.classList.remove('is-active'));
+    pill.classList.add('is-active');
+    playTempleChime(480, 0.2);
+  });
+});
+
+// 5. Create Activity Modal Handler
+const createModal = document.getElementById('createActivityModal');
+const openCreateBtn = document.getElementById('openCreateActivityBtn');
+const closeCreateBtn = document.getElementById('closeCreateModalBtn');
+const createForm = document.getElementById('createActivityForm');
+
+if (openCreateBtn && createModal) {
+  openCreateBtn.addEventListener('click', () => {
+    createModal.classList.remove('is-hidden');
+    playTempleChime(600, 0.3);
+  });
+}
+
+if (closeCreateBtn && createModal) {
+  closeCreateBtn.addEventListener('click', () => {
+    createModal.classList.add('is-hidden');
+  });
+}
+
+if (createForm) {
+  createForm.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const title = document.getElementById('actTitleInput').value.trim();
+    const category = document.getElementById('actCategorySelect').value;
+    const date = document.getElementById('actDateInput').value;
+    const time = document.getElementById('actTimeInput').value;
+    const location = document.getElementById('actLocationInput').value.trim();
+    const capacity = document.getElementById('actCapacityInput').value;
+
+    if (!title || !date || !time || !location) return;
+
+    // Create new Activity Card
+    const feed = document.getElementById('activityFeedList');
+    if (feed) {
+      const card = document.createElement('article');
+      card.className = 'activity-card';
+      card.dataset.category = category;
+      card.innerHTML = `
+        <div class="act-card-header">
+          <span class="act-cat-badge">${category}</span>
+          <span class="act-organizer">您 (信徒) 發起</span>
+        </div>
+        <h3 class="act-title">${title}</h3>
+        <div class="act-meta-row">
+          <span>📅 ${date} ${time}</span>
+          <span>📍 ${location}</span>
+        </div>
+        <div class="act-participants-row">
+          <div class="avatar-stack">
+            <span class="avatar-dot a1"></span>
+          </div>
+          <span class="part-count">已報名 <strong>1 / ${capacity}</strong> 人</span>
+        </div>
+        <button class="btn-join-act is-joined">✓ 您已發起並參加</button>
+      `;
+      feed.prepend(card);
+    }
+
+    createForm.reset();
+    createModal.classList.add('is-hidden');
+    fireConfetti();
+    playTempleChime(784, 0.5);
+    if (navigator.vibrate) navigator.vibrate([40, 60, 40]);
+  });
+}
+
+// 6. Donation Campaign Modal Handler
+const donationModal = document.getElementById('donationModal');
+const openDonationBtn = document.getElementById('openDonationBtn');
+const closeDonationBtn = document.getElementById('closeDonationModalBtn');
+const donationForm = document.getElementById('donationForm');
+let currentDonationAmount = 100;
+
+if (openDonationBtn && donationModal) {
+  openDonationBtn.addEventListener('click', () => {
+    donationModal.classList.remove('is-hidden');
+    playTempleChime(660, 0.3);
+  });
+}
+
+if (closeDonationBtn && donationModal) {
+  closeDonationBtn.addEventListener('click', () => {
+    donationModal.classList.add('is-hidden');
+  });
+}
+
+document.querySelectorAll('#amountPills .amount-pill').forEach((pill) => {
+  pill.addEventListener('click', () => {
+    document.querySelectorAll('#amountPills .amount-pill').forEach((p) => p.classList.remove('is-active'));
+    pill.classList.add('is-active');
+    currentDonationAmount = Number(pill.dataset.val);
+
+    const impactBox = document.getElementById('impactPreviewBox');
+    if (impactBox) {
+      const meals = Math.floor(currentDonationAmount / 100);
+      impactBox.innerHTML = `<p>🎁 <strong>您的 $${currentDonationAmount} 護持代表：</strong> 為 ${meals || 1} 位偏鄉獨居長者提供熱騰騰的冬令平安餐點包。</p>`;
+    }
+    playTempleChime(480, 0.2);
+  });
+});
+
+if (donationForm) {
+  donationForm.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const donorName = document.getElementById('donorNameInput').value.trim();
+    if (!donorName) return;
+
+    // Add to My Profile Tab
+    const myDonations = document.getElementById('myDonations');
+    if (myDonations) {
+      const item = document.createElement('div');
+      item.className = 'my-item-card';
+      item.innerHTML = `<span>❤️ 萬春宮冬季送暖 ($${currentDonationAmount})</span><span class="badge-status-gold">已護持成功</span>`;
+      myDonations.prepend(item);
+    }
+
+    donationForm.reset();
+    donationModal.classList.add('is-hidden');
+    fireConfetti();
+    playTempleChime(880, 0.6);
+    if (navigator.vibrate) navigator.vibrate([40, 80, 40]);
+  });
+}
+
+// 7. Offerings Support Buttons (.offering-btn-act)
+document.addEventListener('click', (e) => {
+  if (e.target && e.target.classList.contains('offering-btn-act')) {
+    const btn = e.target;
+    const type = btn.dataset.offering;
+    const label = type === 'rice' ? '🍚 平安米供養 1 包 ($100)' : '🍱 平安福食供齋 1 份 ($80)';
+
+    btn.textContent = '✓ 已發心支持';
+    btn.style.background = 'rgba(15, 118, 110, 0.3)';
+    btn.style.color = '#6ee7b7';
+
+    const myDonations = document.getElementById('myDonations');
+    if (myDonations) {
+      const item = document.createElement('div');
+      item.className = 'my-item-card';
+      item.innerHTML = `<span>${label}</span><span class="badge-status-gold">功德迴向中</span>`;
+      myDonations.prepend(item);
+    }
+
+    fireConfetti();
+    playTempleChime(660, 0.4);
+    if (navigator.vibrate) navigator.vibrate(40);
+  }
+});
