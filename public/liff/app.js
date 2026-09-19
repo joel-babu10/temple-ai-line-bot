@@ -45,6 +45,7 @@ jiaoBtn.addEventListener('click', () => {
 
   if (outcome === outcomes[0]) {
     drawBtn.disabled = false;
+    fireConfetti();
   }
 });
 
@@ -58,7 +59,19 @@ drawBtn.addEventListener('click', async () => {
   document.getElementById('fortuneTheme').textContent = `主題：${currentFortune.theme}`;
   fortuneCard.classList.remove('is-hidden');
   interpretBox.classList.remove('is-hidden');
+  fireConfetti();
 });
+
+function fireConfetti() {
+  if (typeof confetti !== 'function') return;
+  confetti({
+    particleCount: 60,
+    spread: 65,
+    startVelocity: 35,
+    origin: { y: 0.6 },
+    colors: ['#c79a45', '#e4c77a', '#7a1f1f']
+  });
+}
 
 document.getElementById('askInterpretBtn').addEventListener('click', async () => {
   const input = document.getElementById('questionInput');
