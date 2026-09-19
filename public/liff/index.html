@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-  <title>FLAME AI / 焰智 AI · 萬春宮 智慧宮廟</title>
+  <title>FLAME AI / 焰智 AI · 智慧宮廟</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@500;700&family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet" />
@@ -15,6 +15,13 @@
   <header class="temple-header">
     <div class="flame-bg-glow" aria-hidden="true"></div>
     <div class="incense-wisp" aria-hidden="true"></div>
+    
+    <!-- Audio Chime Toggle Button -->
+    <button id="chimeToggleBtn" class="chime-toggle-btn" title="聲音音效開關" aria-label="切換磬音">
+      <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 5L6 9H2v6h4l5 4V5z"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/></svg>
+      <span>磬音: 開</span>
+    </button>
+
     <div class="header-brand">
       <div class="flame-emblem" aria-hidden="true">
         <svg class="flame-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
@@ -23,7 +30,7 @@
       </div>
       <div class="brand-titles">
         <h1>FLAME AI <span class="brand-separator">|</span> 焰智 AI</h1>
-        <p class="subtitle">萬春宮 · 智慧宮廟小幫手</p>
+        <p class="subtitle" id="subTitleText">AI 智慧宮廟小幫手 · 參拜求籤與解籤</p>
       </div>
     </div>
   </header>
@@ -58,7 +65,7 @@
       <div class="altar-stage-card">
         <div class="altar-deity-badge">
           <span class="deity-dot"></span>
-          <span>大殿主神 · 萬春宮天上聖母</span>
+          <span id="deityBadgeText">大殿主神 · 天上聖母 (媽祖)</span>
         </div>
         <p class="altar-guide">心誠則靈 · 請先稟明姓名、生辰、居住地址與祈求事項</p>
 
@@ -81,7 +88,7 @@
 
       <!-- Traditional Parchment Fortune Poem Slip -->
       <article id="fortuneCard" class="fortune-card is-hidden">
-        <div class="cinnabar-stamp" aria-hidden="true">萬春宮印</div>
+        <div class="cinnabar-stamp" aria-hidden="true">聖母靈印</div>
         <div class="fortune-card-header">
           <span class="card-tag">天上聖母靈籤</span>
         </div>
@@ -119,12 +126,28 @@
     <section id="tab-nearby" class="tab-panel">
       <div class="section-intro">
         <h2>⛩️ 參拜與附近宮廟導覽</h2>
-        <p class="section-desc">自動搜尋周邊清淨道場與公車、火車交通路線</p>
+        <p class="section-desc">搜尋周邊道場與多模式 (公車/單車/步行/開車) 路線指引</p>
       </div>
+
       <button id="locateBtn" class="ritual-btn full-width locate-action-btn">
         <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="3 11 22 2 13 21 11 13 3 11"/></svg>
         <span>取得目前位置</span>
       </button>
+
+      <div id="locationBadge" class="location-badge is-hidden">
+        <span class="live-dot"></span>
+        <span id="locationBadgeText">已定位附近宮廟</span>
+      </div>
+
+      <!-- Deity Category Filter Chips -->
+      <div class="filter-chips" id="deityFilters">
+        <button class="chip-btn is-active" data-filter="all">全選</button>
+        <button class="chip-btn" data-filter="媽祖">媽祖</button>
+        <button class="chip-btn" data-filter="觀音">觀音</button>
+        <button class="chip-btn" data-filter="關聖帝君">關帝</button>
+        <button class="chip-btn" data-filter="土地公">福德正神</button>
+      </div>
+
       <div id="nearbyList" class="temple-list"></div>
     </section>
 
@@ -147,7 +170,7 @@
       </div>
       <div id="askChat" class="chat-log"></div>
       <div class="input-row sticky-input">
-        <input id="askInput" type="text" placeholder="例如：萬春宮主要拜什麼神明？" />
+        <input id="askInput" type="text" placeholder="例如：這間廟主要拜什麼神明？" />
         <button id="askBtn" aria-label="發問">
           <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.536 21.686a.5.5 0 0 0 .937-.024l6.5-19a.496.496 0 0 0-.635-.635l-19 6.5a.5.5 0 0 0-.024.937l7.93 3.18a2 2 0 0 1 1.112 1.11z"/><path d="m21.854 2.147-10.94 10.939"/></svg>
         </button>

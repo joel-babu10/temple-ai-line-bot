@@ -66,6 +66,34 @@ body {
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
 }
 
+.chime-toggle-btn {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  z-index: 5;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  border-radius: var(--radius-full);
+  background: rgba(37, 29, 24, 0.7);
+  border: 1px solid rgba(199, 154, 69, 0.35);
+  color: var(--gold-soft);
+  font-size: 0.75rem;
+  cursor: pointer;
+  backdrop-filter: blur(8px);
+  transition: all 0.2s ease;
+}
+
+.chime-toggle-btn:hover {
+  background: rgba(199, 154, 69, 0.2);
+}
+
+.chime-toggle-btn .icon {
+  width: 14px;
+  height: 14px;
+}
+
 .flame-bg-glow {
   position: absolute;
   top: -40px;
@@ -151,6 +179,7 @@ body {
   font-size: 0.88rem;
   color: var(--paper-dim);
   letter-spacing: 0.04em;
+  transition: all 0.3s ease;
 }
 
 /* ---------- Sticky Segmented Navigation Tabbar ---------- */
@@ -284,6 +313,7 @@ body {
   font-size: 0.85rem;
   color: var(--gold-bright);
   margin-bottom: 8px;
+  transition: all 0.3s ease;
 }
 
 .deity-dot {
@@ -615,7 +645,69 @@ body {
   font-family: var(--font-body);
 }
 
-/* ---------- Tab 2: Nearby Temples ---------- */
+/* ---------- Tab 2: Nearby Temples & Location Badge ---------- */
+
+.location-badge {
+  margin-top: 10px;
+  padding: 8px 14px;
+  border-radius: var(--radius-full);
+  background: rgba(15, 118, 110, 0.2);
+  border: 1px solid var(--jade-light);
+  color: var(--jade-light);
+  font-size: 0.82rem;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  animation: fadeIn 0.3s ease;
+}
+
+.location-badge.is-hidden {
+  display: none;
+}
+
+.live-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--jade-light);
+  box-shadow: 0 0 8px var(--jade-light);
+  animation: pulseDot 2s infinite;
+}
+
+@keyframes pulseDot {
+  0%, 100% { transform: scale(1); opacity: 1; }
+  50% { transform: scale(1.4); opacity: 0.6; }
+}
+
+/* Deity Filter Chips */
+
+.filter-chips {
+  display: flex;
+  gap: 8px;
+  margin-top: 12px;
+  overflow-x: auto;
+  padding-bottom: 4px;
+}
+
+.chip-btn {
+  padding: 5px 12px;
+  border-radius: var(--radius-full);
+  background: var(--ink-elevated);
+  border: 1px solid rgba(199, 154, 69, 0.25);
+  color: var(--paper-dim);
+  font-size: 0.78rem;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.chip-btn.is-active {
+  background: var(--lacquer-vivid);
+  border-color: var(--gold-soft);
+  color: var(--gold-bright);
+  font-weight: 600;
+}
 
 .temple-list {
   margin-top: 14px;
@@ -658,36 +750,176 @@ body {
   font-weight: 600;
 }
 
-.temple-card button {
+.temple-card .nav-trigger-btn {
   margin-top: 12px;
   padding: 8px 14px;
   border-radius: var(--radius-sm);
   border: 1px solid var(--gold);
-  background: rgba(199, 154, 69, 0.1);
-  color: var(--gold-soft);
+  background: rgba(199, 154, 69, 0.12);
+  color: var(--gold-bright);
   font-size: 0.84rem;
-  font-weight: 500;
+  font-weight: 600;
   cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
   transition: all 0.2s ease;
 }
 
-.temple-card button:hover {
-  background: rgba(199, 154, 69, 0.25);
+.temple-card .nav-trigger-btn:hover {
+  background: rgba(199, 154, 69, 0.3);
 }
 
-.transit-info {
-  margin-top: 12px;
-  padding: 10px 12px;
-  border-radius: var(--radius-sm);
-  background: rgba(239, 230, 216, 0.06);
-  border: 1px dashed rgba(199, 154, 69, 0.3);
-  font-size: 0.85rem;
-  color: var(--paper);
-  line-height: 1.5;
+/* ---------- Animated Multi-Mode Route Drawer ---------- */
+
+.route-drawer {
+  margin-top: 14px;
+  padding: 16px;
+  border-radius: var(--radius-md);
+  background: var(--ink-elevated);
+  border: 1px dashed rgba(199, 154, 69, 0.4);
+  animation: fadeIn 0.3s ease;
 }
 
-.transit-info.is-hidden {
+.route-drawer.is-hidden {
   display: none;
+}
+
+.mode-tabs {
+  display: flex;
+  gap: 6px;
+  margin-bottom: 14px;
+  border-bottom: 1px solid rgba(199, 154, 69, 0.2);
+  padding-bottom: 8px;
+}
+
+.mode-btn {
+  flex: 1;
+  padding: 6px 4px;
+  border-radius: var(--radius-sm);
+  background: rgba(20, 16, 14, 0.6);
+  border: 1px solid rgba(199, 154, 69, 0.2);
+  color: var(--paper-dim);
+  font-size: 0.78rem;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  transition: all 0.2s ease;
+}
+
+.mode-btn.is-active {
+  background: var(--lacquer);
+  border-color: var(--gold);
+  color: var(--gold-bright);
+  font-weight: 600;
+}
+
+.route-summary-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 12px;
+  background: rgba(245, 158, 11, 0.1);
+  border-radius: var(--radius-sm);
+  border: 1px solid rgba(245, 158, 11, 0.25);
+  margin-bottom: 14px;
+  font-size: 0.85rem;
+  color: var(--gold-bright);
+}
+
+.route-summary-bar .eta {
+  font-weight: 700;
+}
+
+.route-animation-box {
+  position: relative;
+  padding: 12px 14px;
+  background: rgba(20, 16, 14, 0.5);
+  border-radius: var(--radius-sm);
+  margin-bottom: 14px;
+}
+
+.route-timeline {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  position: relative;
+}
+
+.route-step {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  font-size: 0.85rem;
+  line-height: 1.5;
+  position: relative;
+  z-index: 2;
+}
+
+.route-step-icon {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: var(--ink-surface);
+  border: 1px solid var(--gold);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.75rem;
+  flex-shrink: 0;
+}
+
+.pulse-line-container {
+  position: absolute;
+  top: 24px;
+  left: 20px;
+  bottom: 24px;
+  width: 2px;
+  background: rgba(199, 154, 69, 0.3);
+  z-index: 1;
+}
+
+.moving-dot {
+  position: absolute;
+  top: 0;
+  left: -3px;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--gold-glow);
+  box-shadow: 0 0 10px var(--gold-glow);
+  animation: moveRouteDot 2.5s infinite linear;
+}
+
+@keyframes moveRouteDot {
+  0% { top: 0%; opacity: 0; }
+  10% { opacity: 1; }
+  90% { opacity: 1; }
+  100% { top: 100%; opacity: 0; }
+}
+
+.gmaps-nav-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  padding: 10px;
+  border-radius: var(--radius-sm);
+  background: linear-gradient(135deg, var(--jade) 0%, #0d5c56 100%);
+  border: 1px solid var(--jade-light);
+  color: var(--paper);
+  font-size: 0.88rem;
+  font-weight: 600;
+  text-decoration: none;
+  cursor: pointer;
+  transition: transform 0.15s ease;
+}
+
+.gmaps-nav-btn:active {
+  transform: scale(0.97);
 }
 
 /* ---------- Tab 3: Festivals ---------- */

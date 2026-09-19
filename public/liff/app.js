@@ -1,11 +1,50 @@
 const API_BASE = '/api';
 
-// ---------- LIFF init (safe to no-op outside the LINE app, e.g. while testing in a browser) ----------
+// ---------- Web Audio API Temple Bell Chime Synthesizer ----------
+let chimeEnabled = true;
+const chimeBtn = document.getElementById('chimeToggleBtn');
+
+if (chimeBtn) {
+  chimeBtn.addEventListener('click', () => {
+    chimeEnabled = !chimeEnabled;
+    chimeBtn.querySelector('span').textContent = `磬音: ${chimeEnabled ? '開' : '關'}`;
+    chimeBtn.style.opacity = chimeEnabled ? '1' : '0.5';
+    if (chimeEnabled) playTempleChime(528, 0.4);
+  });
+}
+
+function playTempleChime(freq = 432, duration = 0.8) {
+  if (!chimeEnabled) return;
+  try {
+    const AudioCtx = window.AudioContext || window.webkitAudioContext;
+    if (!AudioCtx) return;
+    const ctx = new AudioCtx();
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+
+    osc.type = 'sine';
+    osc.frequency.setValueAtTime(freq, ctx.currentTime);
+    osc.frequency.exponentialRampToValueAtTime(freq * 0.5, ctx.currentTime + duration);
+
+    gain.gain.setValueAtTime(0.3, ctx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + duration);
+
+    osc.connect(gain);
+    gain.connect(ctx.destination);
+
+    osc.start();
+    osc.stop(ctx.currentTime + duration);
+  } catch (e) {
+    // Ignore audio errors
+  }
+}
+
+// ---------- LIFF init ----------
 async function initLiff() {
   try {
     await liff.init({ liffId: window.APP_CONFIG.LIFF_ID });
   } catch (err) {
-    console.warn('LIFF init skipped (probably running outside LINE):', err.message);
+    console.warn('LIFF init skipped (running outside LINE):', err.message);
   }
 }
 initLiff();
@@ -17,6 +56,7 @@ document.querySelectorAll('.tab-btn').forEach((btn) => {
     document.querySelectorAll('.tab-panel').forEach((p) => p.classList.remove('is-active'));
     btn.classList.add('is-active');
     document.getElementById(`tab-${btn.dataset.tab}`).classList.add('is-active');
+    playTempleChime(320, 0.2);
   });
 });
 
@@ -34,10 +74,10 @@ incenseBtn.addEventListener('click', () => {
   incenseBtn.disabled = true;
   incenseBtn.querySelector('span:last-child').textContent = '已上香 🙏';
   jiaoBtn.disabled = false;
+  playTempleChime(440, 0.6);
 });
 
 jiaoBtn.addEventListener('click', () => {
-  // Weighted coin toss: needs a "聖筊" (one up, one down) to proceed, matching real ritual flow.
   const outcomes = ['聖筊 ✅ 神明應允', '笑筊，再擲一次', '陰筊，再擲一次'];
   const roll = Math.random();
   const outcome = roll < 0.5 ? outcomes[0] : roll < 0.75 ? outcomes[1] : outcomes[2];
@@ -46,6 +86,9 @@ jiaoBtn.addEventListener('click', () => {
   if (outcome === outcomes[0]) {
     drawBtn.disabled = false;
     fireConfetti();
+    playTempleChime(528, 0.8);
+  } else {
+    playTempleChime(280, 0.4);
   }
 });
 
@@ -60,6 +103,7 @@ drawBtn.addEventListener('click', async () => {
   fortuneCard.classList.remove('is-hidden');
   interpretBox.classList.remove('is-hidden');
   fireConfetti();
+  playTempleChime(660, 1.0);
 });
 
 function fireConfetti() {
@@ -108,26 +152,69 @@ function appendChat(containerId, text, role) {
   el.scrollIntoView({ behavior: 'smooth', block: 'end' });
 }
 
-// ---------- Nearby temples ----------
+// ---------- Nearby temples & Location ----------
+let userLocation = null;
+let cachedTemples = [];
+let activeFilter = 'all';
+
 document.getElementById('locateBtn').addEventListener('click', async () => {
+  const locateBtn = document.getElementById('locateBtn');
+  locateBtn.disabled = true;
+  locateBtn.querySelector('span').textContent = '定位查詢中…';
+
   try {
-    const { lat, lng } = await getLocation();
+    userLocation = await getLocation();
+    const { lat, lng } = userLocation;
     const res = await fetch(`${API_BASE}/temples/nearby?lat=${lat}&lng=${lng}`);
-    const temples = await res.json();
-    renderNearby(temples, lat, lng);
+    cachedTemples = await res.json();
+
+    // 1. Dynamic Nearest Temple Context Update
+    if (cachedTemples.length > 0) {
+      const nearest = cachedTemples[0];
+      const subTitleText = document.getElementById('subTitleText');
+      const deityBadgeText = document.getElementById('deityBadgeText');
+      const locationBadge = document.getElementById('locationBadge');
+      const locationBadgeText = document.getElementById('locationBadgeText');
+
+      if (subTitleText) {
+        subTitleText.textContent = `📍 您附近的宮廟：${nearest.name} (約 ${nearest.distanceKm ?? 0} km)`;
+      }
+      if (deityBadgeText) {
+        deityBadgeText.textContent = `大殿主神 · ${nearest.name}${nearest.deity ? ` (${nearest.deity})` : ''}`;
+      }
+      if (locationBadge && locationBadgeText) {
+        locationBadgeText.textContent = `已定位：距「${nearest.name}」約 ${nearest.distanceKm ?? 0} km`;
+        locationBadge.classList.remove('is-hidden');
+      }
+    }
+
+    renderNearbyList();
+    playTempleChime(480, 0.5);
   } catch (err) {
     document.getElementById('nearbyList').innerHTML = `<p class="hint">無法取得位置：${err.message}</p>`;
+  } finally {
+    locateBtn.disabled = false;
+    locateBtn.querySelector('span').textContent = '重新更新位置';
   }
 });
 
+// Deity filter chips
+document.querySelectorAll('.chip-btn').forEach((chip) => {
+  chip.addEventListener('click', () => {
+    document.querySelectorAll('.chip-btn').forEach((c) => c.classList.remove('is-active'));
+    chip.classList.add('is-active');
+    activeFilter = chip.dataset.filter;
+    renderNearbyList();
+  });
+});
+
 async function getLocation() {
-  // Prefer LIFF's location API inside the LINE app; fall back to browser geolocation for local testing.
   if (window.liff && liff.isInClient && liff.isInClient()) {
     try {
       const pos = await liff.getLocation();
       return { lat: pos.latitude, lng: pos.longitude };
     } catch (e) {
-      // fall through to browser geolocation
+      // fall through
     }
   }
   return new Promise((resolve, reject) => {
@@ -139,40 +226,190 @@ async function getLocation() {
   });
 }
 
-function renderNearby(temples, userLat, userLng) {
+function renderNearbyList() {
   const list = document.getElementById('nearbyList');
   list.innerHTML = '';
 
-  temples.forEach((t) => {
+  const filtered = cachedTemples.filter((t) => {
+    if (activeFilter === 'all') return true;
+    return (t.deity || '').includes(activeFilter) || (t.name || '').includes(activeFilter);
+  });
+
+  if (!filtered.length) {
+    list.innerHTML = '<p class="hint">附近沒有符合此過濾條件的宮廟。</p>';
+    return;
+  }
+
+  filtered.forEach((t) => {
     const card = document.createElement('div');
     card.className = 'temple-card';
+    const dist = t.distanceKm ?? 0;
+
     card.innerHTML = `
       <h3>${t.name}</h3>
-      <p class="distance">距離約 ${t.distanceKm ?? '?'} 公里</p>
+      <p class="distance">距離約 ${dist} 公里</p>
       <p>${t.deity ? `主祀：${t.deity}　` : ''}${t.address || ''}</p>
       ${t.highlights ? `<p>${t.highlights}</p>` : ''}
-      <button data-id="${t.id || ''}">查看公車／火車怎麼去</button>
-      <div class="transit-info is-hidden"></div>
+      <button class="nav-trigger-btn" data-id="${t.id || ''}">
+        <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s-8-4.5-8-11.8A8 8 0 0 1 12 2a8 8 0 0 1 8 8.2c0 7.3-8 11.8-8 11.8z"/><circle cx="12" cy="10" r="3"/></svg>
+        <span>路線指引 (單車/步行/公車/開車)</span>
+      </button>
+      <div class="route-drawer is-hidden" id="drawer-${t.id || Math.random()}"></div>
     `;
 
-    const transitBtn = card.querySelector('button');
-    const transitInfo = card.querySelector('.transit-info');
+    const navBtn = card.querySelector('.nav-trigger-btn');
+    const drawer = card.querySelector('.route-drawer');
 
-    transitBtn.addEventListener('click', async () => {
-      if (!t.id) {
-        transitInfo.textContent = '這間廟不在本地知識庫中，暫時無法提供交通建議。';
-        transitInfo.classList.remove('is-hidden');
-        return;
+    navBtn.addEventListener('click', () => {
+      const isHidden = drawer.classList.contains('is-hidden');
+      document.querySelectorAll('.route-drawer').forEach((d) => d.classList.add('is-hidden'));
+
+      if (isHidden) {
+        renderRouteDrawer(drawer, t, userLocation);
+        drawer.classList.remove('is-hidden');
       }
-      transitInfo.textContent = '查詢中…';
-      transitInfo.classList.remove('is-hidden');
-
-      const res = await fetch(`${API_BASE}/temples/${t.id}/transit?lat=${userLat}&lng=${userLng}`);
-      const data = await res.json();
-      transitInfo.textContent = data.summary;
     });
 
     list.appendChild(card);
+  });
+}
+
+// ---------- Animated Multi-Mode Route Drawer Renderer ----------
+function renderRouteDrawer(container, temple, userLoc) {
+  const dist = temple.distanceKm || 1.2;
+
+  // Estimates calculation
+  const walkMins = Math.round((dist / 4.5) * 60);
+  const walkSteps = Math.round(dist * 1400);
+  const walkCals = Math.round(dist * 50);
+
+  const bikeMins = Math.max(2, Math.round((dist / 15) * 60));
+  const bikeCals = Math.round(dist * 35);
+
+  const transitMins = Math.max(5, Math.round((dist / 12) * 60) + 4);
+  const driveMins = Math.max(3, Math.round((dist / 25) * 60) + 2);
+
+  const gmapsUrl = temple.lat && temple.lng
+    ? `https://www.google.com/maps/dir/?api=1&destination=${temple.lat},${temple.lng}`
+    : `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(temple.name)}`;
+
+  container.innerHTML = `
+    <div class="mode-tabs">
+      <button class="mode-btn is-active" data-mode="transit">🚌 公車/火車</button>
+      <button class="mode-btn" data-mode="bike">🚲 騎單車</button>
+      <button class="mode-btn" data-mode="walk">🚶 徒步散步</button>
+      <button class="mode-btn" data-mode="drive">🚗 開車/騎車</button>
+    </div>
+
+    <div class="mode-content" id="mode-content-box"></div>
+
+    <a href="${gmapsUrl}" target="_blank" rel="noopener" class="gmaps-nav-btn">
+      <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="3 11 22 2 13 21 11 13 3 11"/></svg>
+      <span>開啟 Google Maps 導航</span>
+    </a>
+  `;
+
+  const modeContentBox = container.querySelector('#mode-content-box');
+  const modeBtns = container.querySelectorAll('.mode-btn');
+
+  function updateMode(mode) {
+    modeBtns.forEach((b) => b.classList.toggle('is-active', b.dataset.mode === mode));
+
+    let summaryText = '';
+    let stepsHtml = '';
+
+    if (mode === 'transit') {
+      summaryText = `預估全程約 ${transitMins} 分鐘 (約 ${dist} km)`;
+      const busLines = temple.nearestBus ? temple.nearestBus.join('、') : '市區公車';
+      const rail = temple.nearestRail || '附近火車站';
+      stepsHtml = `
+        <div class="route-step">
+          <div class="route-step-icon">🚶</div>
+          <div>步行約 3 分鐘前往附近公車站牌</div>
+        </div>
+        <div class="route-step">
+          <div class="route-step-icon">🚌</div>
+          <div>搭乘公車於「${busLines}」下車 (或台鐵至${rail})</div>
+        </div>
+        <div class="route-step">
+          <div class="route-step-icon">⛩️</div>
+          <div>步行約 2 分鐘抵達 <strong>${temple.name}</strong> 正殿參拜</div>
+        </div>
+      `;
+    } else if (mode === 'bike') {
+      summaryText = `預估騎乘 ${bikeMins} 分鐘 | 消耗卡路里 約 ${bikeCals} kcal`;
+      stepsHtml = `
+        <div class="route-step">
+          <div class="route-step-icon">🚲</div>
+          <div>解鎖 YouBike / 騎乘單車出發</div>
+        </div>
+        <div class="route-step">
+          <div class="route-step-icon">🚴</div>
+          <div>沿市區自行車道 / 慢車道行駛約 ${dist} km</div>
+        </div>
+        <div class="route-step">
+          <div class="route-step-icon">⛩️</div>
+          <div>停放單車於廟前廣場，進入 <strong>${temple.name}</strong></div>
+        </div>
+      `;
+    } else if (mode === 'walk') {
+      summaryText = `預估徒步 ${walkMins} 分鐘 | 約 ${walkSteps.toLocaleString()} 步 | 消耗 ${walkCals} kcal`;
+      stepsHtml = `
+        <div class="route-step">
+          <div class="route-step-icon">🚶</div>
+          <div>享受沿途散步靜心，朝 ${temple.name} 方向前行</div>
+        </div>
+        <div class="route-step">
+          <div class="route-step-icon">📍</div>
+          <div>沿人行道步行約 ${dist} km (${walkSteps} 步)</div>
+        </div>
+        <div class="route-step">
+          <div class="route-step-icon">⛩️</div>
+          <div>抵達 <strong>${temple.name}</strong>，誠心敬香</div>
+        </div>
+      `;
+    } else if (mode === 'drive') {
+      summaryText = `預估車程 ${driveMins} 分鐘 (約 ${dist} km)`;
+      stepsHtml = `
+        <div class="route-step">
+          <div class="route-step-icon">🚗</div>
+          <div>沿主要幹道駕車/騎機車前行</div>
+        </div>
+        <div class="route-step">
+          <div class="route-step-icon">🅿️</div>
+          <div>停放至廟宇附屬停車場或周邊收費停車格</div>
+        </div>
+        <div class="route-step">
+          <div class="route-step-icon">⛩️</div>
+          <div>步行進入 <strong>${temple.name}</strong> 大殿參拜</div>
+        </div>
+      `;
+    }
+
+    modeContentBox.innerHTML = `
+      <div class="route-summary-bar">
+        <span>⏱️ <span class="eta">${summaryText}</span></span>
+      </div>
+
+      <div class="route-animation-box">
+        <div class="pulse-line-container">
+          <div class="moving-dot"></div>
+        </div>
+        <div class="route-timeline">
+          ${stepsHtml}
+        </div>
+      </div>
+    `;
+  }
+
+  // Default mode
+  updateMode('transit');
+
+  modeBtns.forEach((btn) => {
+    btn.addEventListener('click', () => {
+      updateMode(btn.dataset.mode);
+      playTempleChime(360, 0.2);
+    });
   });
 }
 
