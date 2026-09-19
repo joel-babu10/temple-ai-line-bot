@@ -14,6 +14,84 @@
   <!-- Background Ambient Ember Sparks & Floating Dust Container -->
   <div id="sparkDustContainer" class="spark-dust-bg" aria-hidden="true"></div>
 
+  <!-- Floating Cute Divine Spirit Pet Mascot (神獸 焰寶) -->
+  <div id="divinePetWidget" class="divine-pet-widget" title="點擊問廟公 AI" aria-label="神獸小靈獸">
+    <div class="pet-speech-bubble" id="petSpeechBubble">
+      <span>問我！🐾</span>
+    </div>
+    <div class="pet-avatar-wrapper">
+      <div class="pet-aura-glow"></div>
+      <div class="pet-character">
+        <svg class="pet-svg" viewBox="0 0 100 100" fill="none">
+          <defs>
+            <linearGradient id="petBodyGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stop-color="#ffe39d" />
+              <stop offset="60%" stop-color="#e4c77a" />
+              <stop offset="100%" stop-color="#c79a45" />
+            </linearGradient>
+            <linearGradient id="flameEarsGrad" x1="0%" y1="100%" x2="0%" y2="0%">
+              <stop offset="0%" stop-color="#7a1f1f" />
+              <stop offset="50%" stop-color="#f59e0b" />
+              <stop offset="100%" stop-color="#ffd700" />
+            </linearGradient>
+          </defs>
+          <!-- Ears / Flame Tufts -->
+          <path d="M22 36 Q14 8 32 22 Z" fill="url(#flameEarsGrad)"/>
+          <path d="M78 36 Q86 8 68 22 Z" fill="url(#flameEarsGrad)"/>
+          <path d="M26 34 Q20 16 32 24 Z" fill="#ffd700"/>
+          <path d="M74 34 Q80 16 68 24 Z" fill="#ffd700"/>
+          <!-- Body Head Base -->
+          <ellipse cx="50" cy="56" rx="34" ry="29" fill="url(#petBodyGrad)"/>
+          <ellipse cx="50" cy="58" rx="32" ry="27" fill="#fff5de" opacity="0.4"/>
+          <!-- Golden Horn with Dynamic Deity Color Sync -->
+          <path id="petHornPath" class="pet-horn-path" d="M50 14 L43 32 L57 32 Z" fill="#ffd700" stroke="#c79a45" stroke-width="1.5"/>
+          <ellipse id="petHornBase" class="pet-horn-base" cx="50" cy="32" rx="7" ry="2.5" fill="#c79a45"/>
+          <!-- Face Eyes -->
+          <ellipse cx="37" cy="52" rx="4.5" ry="6" fill="#1c1613"/>
+          <ellipse cx="63" cy="52" rx="4.5" ry="6" fill="#1c1613"/>
+          <ellipse cx="38.5" cy="50" rx="1.8" ry="2.3" fill="#ffffff"/>
+          <ellipse cx="64.5" cy="50" rx="1.8" ry="2.3" fill="#ffffff"/>
+          <!-- Rosy Cheeks -->
+          <ellipse cx="29" cy="59" rx="5.5" ry="3.5" fill="#ff7b7b" opacity="0.75"/>
+          <ellipse cx="71" cy="59" rx="5.5" ry="3.5" fill="#ff7b7b" opacity="0.75"/>
+          <!-- Cute Smile -->
+          <path d="M43 60 Q50 67 57 60" stroke="#1c1613" stroke-width="2.5" stroke-linecap="round" fill="none"/>
+          <ellipse cx="50" cy="64" rx="3" ry="2" fill="#ff7b7b" opacity="0.8"/>
+          <!-- Sacred Bell Collar -->
+          <rect x="34" y="74" width="32" height="6" rx="3" fill="#9b2c2c"/>
+          <circle cx="50" cy="80" r="5" fill="#ffd700" stroke="#c79a45" stroke-width="1"/>
+        </svg>
+      </div>
+      <span class="pet-badge">神獸</span>
+    </div>
+  </div>
+
+<!-- Global SVG Gradients for Custom Divine Symbols -->
+<svg width="0" height="0" style="position:absolute;width:0;height:0;overflow:hidden;" aria-hidden="true">
+  <defs>
+    <linearGradient id="mazuCrownGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#ffe066"/>
+      <stop offset="100%" stop-color="#d97706"/>
+    </linearGradient>
+    <linearGradient id="guanyinVaseGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#ccfbf1"/>
+      <stop offset="100%" stop-color="#0d9488"/>
+    </linearGradient>
+    <linearGradient id="guangongShieldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#ef4444"/>
+      <stop offset="100%" stop-color="#7f1d1d"/>
+    </linearGradient>
+    <linearGradient id="tudiIngotGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#fef08a"/>
+      <stop offset="100%" stop-color="#d97706"/>
+    </linearGradient>
+    <linearGradient id="yuelaoHeartGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#fda4af"/>
+      <stop offset="100%" stop-color="#be123c"/>
+    </linearGradient>
+  </defs>
+</svg>
+
   <!-- App Header with Animated Sacred Flame Lighting Ambient -->
   <header class="temple-header">
     <div class="flame-bg-glow" aria-hidden="true"></div>
@@ -27,13 +105,21 @@
 
     <div class="header-brand">
       <div class="flame-emblem animated-flame" aria-hidden="true">
-        <svg class="flame-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-          <path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"/>
-        </svg>
+        <div class="flame-core-container">
+          <div class="flame-layer-outer"></div>
+          <div class="flame-layer-middle"></div>
+          <div class="flame-layer-inner"></div>
+          <div class="flame-layer-core"></div>
+          <div class="flame-sparks">
+            <span class="flame-spark s1"></span>
+            <span class="flame-spark s2"></span>
+            <span class="flame-spark s3"></span>
+          </div>
+        </div>
       </div>
       <div class="brand-titles">
         <h1>FLAME AI <span class="brand-separator">|</span> 焰智 AI</h1>
-        <p class="subtitle" id="subTitleText">AI 智慧宮廟小幫手 · 參拜求籤與解籤</p>
+        <p class="subtitle" id="subTitleText">✨ 智慧參拜 · 祈福解籤</p>
       </div>
     </div>
   </header>
@@ -68,13 +154,64 @@
     <!-- Tab 1: 求籤解籤 -->
     <section id="tab-divination" class="tab-panel is-active">
 
+      <!-- Daily Divine Blessing Card Micro-Widget -->
+      <div class="daily-blessing-card" id="dailyBlessingCard">
+        <div class="blessing-card-header">
+          <span class="blessing-card-title">🌸 每日靈驗平安符</span>
+          <button class="blessing-refresh-btn" id="refreshBlessingBtn" title="換一張平安符" aria-label="換平安符">
+            <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/></svg>
+            <span>換平安符</span>
+          </button>
+        </div>
+        <p class="blessing-text" id="dailyBlessingText">✨ 媽祖賜福：吉星高照 · 行路平安</p>
+      </div>
+
       <!-- Interactive Sacred Altar Stage -->
       <div class="altar-stage-card">
-        <div class="altar-deity-badge">
-          <span class="deity-dot"></span>
-          <span id="deityBadgeText">大殿主神 · 天上聖母 (媽祖)</span>
+        <!-- Cute Minimal Background Switch Animations -->
+        <div class="altar-bg-glow-pulse" id="altarBgGlowPulse" aria-hidden="true"></div>
+        <div class="deity-switch-particles" id="deitySwitchParticles" aria-hidden="true"></div>
+
+        <!-- Deity Selector Pills with Custom Researched Divine Vector Icons -->
+        <div class="deity-select-pills" id="deitySelectPills">
+          <button class="deity-pill is-active" data-deity-id="mazu" data-deity-badge="主神 · 媽祖娘娘" data-deity-power="✨ 神威：航海護國 · 災厄消除" data-deity-freq="528" data-deity-color="#f59e0b">
+            <svg class="deity-svg-icon" viewBox="0 0 36 36" fill="none"><path stroke="#ffd700" stroke-width="2" d="M6 24 C10 18, 26 18, 30 24"/><path fill="url(#mazuCrownGrad)" stroke="#ffd700" stroke-width="1.5" d="M10 20 L18 6 L26 20 Z"/><circle cx="18" cy="8" r="2.5" fill="#f59e0b"/><circle cx="11" cy="24" r="1.5" fill="#ffd700"/><circle cx="18" cy="24" r="1.5" fill="#ffd700"/><circle cx="25" cy="24" r="1.5" fill="#ffd700"/><line x1="11" y1="24" x2="11" y2="30" stroke="#ffd700" stroke-width="1.2" stroke-dasharray="1 1"/><line x1="18" y1="24" x2="18" y2="31" stroke="#ffd700" stroke-width="1.2" stroke-dasharray="1 1"/><line x1="25" y1="24" x2="25" y2="30" stroke="#ffd700" stroke-width="1.2" stroke-dasharray="1 1"/><path stroke="#38bdf8" stroke-width="1.5" fill="none" d="M4 31 Q 9 27, 18 31 T 32 31"/></svg>
+            <span>媽祖</span>
+          </button>
+          <button class="deity-pill" data-deity-id="guanyin" data-deity-badge="主神 · 觀音佛祖" data-deity-power="✨ 神威：慈悲救苦 · 隨感隨應" data-deity-freq="639" data-deity-color="#2dd4bf">
+            <svg class="deity-svg-icon" viewBox="0 0 36 36" fill="none"><path fill="#2dd4bf" opacity="0.6" d="M8 26 C 12 32, 24 32, 28 26 C 24 24, 12 24, 8 26 Z"/><path stroke="#5eead4" stroke-width="1.5" d="M11 25 C 18 30, 18 30, 25 25"/><path fill="url(#guanyinVaseGrad)" stroke="#5eead4" stroke-width="1.2" d="M16 12 C 14 16, 13 20, 15 24 L 21 24 C 23 20, 22 16, 20 12 Z"/><path stroke="#34d399" stroke-width="1.5" stroke-linecap="round" fill="none" d="M18 10 Q 24 4, 27 7"/><circle cx="18" cy="5" r="1.5" fill="#a7f3d0"/></svg>
+            <span>觀音</span>
+          </button>
+          <button class="deity-pill" data-deity-id="guangong" data-deity-badge="主神 · 關聖帝君" data-deity-power="✨ 神威：忠義鎮宅 · 招財伏魔" data-deity-freq="432" data-deity-color="#b91c1c">
+            <svg class="deity-svg-icon" viewBox="0 0 36 36" fill="none"><path fill="url(#guangongShieldGrad)" stroke="#f87171" stroke-width="1.2" d="M18 3 L 30 9 V 20 C 30 27, 18 33, 18 33 C 18 33, 6 27, 6 20 V 9 Z"/><path stroke="#ffd700" stroke-width="2" stroke-linecap="round" d="M12 28 L 24 8"/><path fill="#4ade80" stroke="#ffd700" stroke-width="1.2" d="M20 6 C 27 5, 30 11, 24 14 C 22 11, 20 8, 20 6 Z"/><circle cx="15" cy="23" r="2" fill="#ef4444"/></svg>
+            <span>關帝</span>
+          </button>
+          <button class="deity-pill" data-deity-id="tudigong" data-deity-badge="主神 · 福德正神" data-deity-power="✨ 神威：保佑地脈 · 賜福聚財" data-deity-freq="396" data-deity-color="#e4c77a">
+            <svg class="deity-svg-icon" viewBox="0 0 36 36" fill="none"><path fill="url(#tudiIngotGrad)" stroke="#ffd700" stroke-width="1.5" d="M6 16 C 6 12, 10 10, 18 10 C 26 10, 30 12, 30 16 C 30 24, 24 28, 18 28 C 12 28, 6 24, 6 16 Z"/><ellipse cx="18" cy="15" rx="8" ry="4" fill="#fef08a" stroke="#eab308" stroke-width="1"/><ellipse cx="18" cy="14" rx="4" ry="2.5" fill="#f59e0b"/><path stroke="#fbbf24" stroke-width="1.5" stroke-linecap="round" fill="none" d="M9 25 Q 18 32, 27 25"/></svg>
+            <span>土地公</span>
+          </button>
+          <button class="deity-pill" data-deity-id="yuelao" data-deity-badge="主神 · 月老星君" data-deity-power="✨ 神威：紅線牽緣 · 婚姻圓滿" data-deity-freq="741" data-deity-color="#ff7b7b">
+            <svg class="deity-svg-icon" viewBox="0 0 36 36" fill="none"><path fill="url(#yuelaoHeartGrad)" stroke="#f43f5e" stroke-width="1.5" d="M12 18 C 7 12, 6 22, 18 29 C 30 22, 29 12, 24 18 C 20 22, 16 22, 12 18 Z"/><path stroke="#ff4d4d" stroke-width="2" stroke-linecap="round" fill="none" d="M4 14 Q 12 8, 18 14 T 32 14"/><circle cx="18" cy="14" r="3" fill="#ffd700" stroke="#f43f5e" stroke-width="1"/></svg>
+            <span>月老</span>
+          </button>
         </div>
-        <p class="altar-guide">心誠則靈 · 請先稟明姓名、生辰、居住地址與祈求事項</p>
+
+        <!-- Majestic Divine Shrine Frame -->
+        <div class="divine-deity-container" id="deityContainer">
+          <div class="divine-aura-ring" aria-hidden="true"></div>
+          <div class="divine-burst-ring" id="divineBurst"></div>
+          <div class="divine-avatar-emblem" id="deityAvatarEmblem">
+            <span class="deity-icon-main" id="deityIconMain">
+              <svg class="deity-svg-icon" viewBox="0 0 36 36" fill="none"><path stroke="#ffd700" stroke-width="2" d="M6 24 C10 18, 26 18, 30 24"/><path fill="url(#mazuCrownGrad)" stroke="#ffd700" stroke-width="1.5" d="M10 20 L18 6 L26 20 Z"/><circle cx="18" cy="8" r="2.5" fill="#f59e0b"/><circle cx="11" cy="24" r="1.5" fill="#ffd700"/><circle cx="18" cy="24" r="1.5" fill="#ffd700"/><circle cx="25" cy="24" r="1.5" fill="#ffd700"/><line x1="11" y1="24" x2="11" y2="30" stroke="#ffd700" stroke-width="1.2" stroke-dasharray="1 1"/><line x1="18" y1="24" x2="18" y2="31" stroke="#ffd700" stroke-width="1.2" stroke-dasharray="1 1"/><line x1="25" y1="24" x2="25" y2="30" stroke="#ffd700" stroke-width="1.2" stroke-dasharray="1 1"/><path stroke="#38bdf8" stroke-width="1.5" fill="none" d="M4 31 Q 9 27, 18 31 T 32 31"/></svg>
+            </span>
+          </div>
+          <div class="altar-deity-badge" id="deityBadge">
+            <span class="deity-dot"></span>
+            <span id="deityBadgeText">主神 · 媽祖娘娘</span>
+          </div>
+          <div class="deity-power-tag" id="deityPowerTag">✨ 神威：航海護國 · 災厄消除</div>
+        </div>
+        <p class="altar-guide">✨ 虔誠稟明心願 · 請示指示</p>
 
         <!-- Incense Burner Visual -->
         <div class="incense-burner-visual" id="incenseBurner">
@@ -93,16 +230,16 @@
         <div class="altar" id="altarStage">
           <button id="incenseBtn" class="ritual-btn primary-step">
             <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"/></svg>
-            <span>點一炷香</span>
+            <span>🌸 點香敬拜</span>
           </button>
           <button id="jiaoBtn" class="ritual-btn secondary-step" disabled>
             <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="8" r="6"/><path d="M18.09 10.37A6 6 0 1 1 10.34 18"/><path d="M7 6h1v4"/><path d="m16.71 13.88.7.71-2.82 2.82"/></svg>
-            <span>擲筊請示</span>
+            <span>🌙 聖筊請示</span>
           </button>
           <p id="jiaoResult" class="ritual-result"></p>
           <button id="drawBtn" class="ritual-btn tertiary-step" disabled>
             <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m12 3-1.9 5.8a2 2 0 0 1-1.287 1.288L3 12l5.8 1.9a2 2 0 0 1 1.288 1.287L12 21l1.9-5.8a2 2 0 0 1 1.287-1.288L21 12l-5.8-1.9a2 2 0 0 1-1.288-1.287Z"/></svg>
-            <span>抽籤</span>
+            <span>📜 誠心抽籤</span>
           </button>
         </div>
       </div>
@@ -127,14 +264,14 @@
             <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
           </div>
           <div>
-            <h3>焰智 AI 廟公 · 白話聖意解讀</h3>
-            <p class="ai-subtitle">結合媽祖籤詩典故與現代智慧輔導</p>
+            <h3>🤖 焰智 AI 解籤</h3>
+            <p class="ai-subtitle">✨ 白話解析神明聖意</p>
           </div>
         </div>
 
-        <label for="questionInput">想問媽祖什麼事？（工作／感情／健康／考試…）</label>
+        <label for="questionInput">想請示什麼呢？ (事業/感情/健康)</label>
         <div class="input-row">
-          <input id="questionInput" type="text" placeholder="例如：這個月換工作好嗎？" />
+          <input id="questionInput" type="text" placeholder="例如：最近換工作好嗎？" />
           <button id="askInterpretBtn" aria-label="請示">
             <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.536 21.686a.5.5 0 0 0 .937-.024l6.5-19a.496.496 0 0 0-.635-.635l-19 6.5a.5.5 0 0 0-.024.937l7.93 3.18a2 2 0 0 1 1.112 1.11z"/><path d="m21.854 2.147-10.94 10.939"/></svg>
           </button>
@@ -146,13 +283,13 @@
     <!-- Tab 2: 附近宮廟 -->
     <section id="tab-nearby" class="tab-panel">
       <div class="section-intro">
-        <h2>⛩️ 參拜與附近宮廟導覽</h2>
-        <p class="section-desc">搜尋周邊道場與多模式 (公車/單車/步行/開車) 路線指引</p>
+        <h2>⛩️ 周邊參拜宮廟</h2>
+        <p class="section-desc">✨ 定位尋找 nearby 道場與路線</p>
       </div>
 
       <button id="locateBtn" class="ritual-btn full-width locate-action-btn">
         <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="3 11 22 2 13 21 11 13 3 11"/></svg>
-        <span>取得目前位置</span>
+        <span>📍 定位找附近宮廟</span>
       </button>
 
       <div id="locationBadge" class="location-badge is-hidden">
@@ -175,15 +312,15 @@
     <!-- Tab 3: 線上點燈祈福牆 -->
     <section id="tab-blessing" class="tab-panel">
       <div class="section-intro">
-        <h2>🪔 線上點光明燈 · 祈福許願牆</h2>
-        <p class="section-desc">虔誠點亮聖焰心燈，祈求神明保佑與福氣庇佑</p>
+        <h2>🪔 線上點燈祈福</h2>
+        <p class="section-desc">✨ 點亮心燈 · 祈求平安保佑</p>
       </div>
 
       <div class="blessing-input-card">
-        <label for="blessingName">祈福信士姓名 / 稱呼：</label>
-        <input type="text" id="blessingName" placeholder="例如：張大明 或 匿名信士" />
+        <label for="blessingName">信士姓名：</label>
+        <input type="text" id="blessingName" placeholder="例如：張大明" />
 
-        <label style="margin-top: 10px;">選擇祈福燈心願：</label>
+        <label style="margin-top: 10px;">選擇心願：</label>
         <div class="blessing-type-grid" id="blessingTypes">
           <button class="blessing-type-btn is-active" data-type="平安順遂">🌸 平安順遂</button>
           <button class="blessing-type-btn" data-type="事業亨通">💼 事業亨通</button>
@@ -193,12 +330,12 @@
         </div>
 
         <button id="lightLampBtn" class="ritual-btn primary-step full-width" style="margin-top: 14px;">
-          <span>🪔 點亮光明燈祈福</span>
+          <span>✨ 點亮心燈</span>
         </button>
       </div>
 
       <div class="blessing-counter-bar">
-        <span>✨ 善信大眾已線上點亮 <strong id="lampCounter">1,286</strong> 盞聖焰心燈</span>
+        <span>✨ 已點亮 <strong id="lampCounter">1,286</strong> 盞心燈</span>
       </div>
 
       <div class="lamp-wall-grid" id="lampWallGrid">
@@ -209,8 +346,8 @@
     <!-- Tab 4: 節慶提醒 -->
     <section id="tab-festivals" class="tab-panel">
       <div class="section-intro">
-        <h2>🏮 民俗節慶與神佛誕辰曆法</h2>
-        <p class="section-desc">提醒您關鍵神明誕辰、祈福點燈與法會時程</p>
+        <h2>🏮 聖誕與民俗節慶</h2>
+        <p class="section-desc">✨ 神明誕辰與祈福提醒</p>
       </div>
       <div id="festivalList" class="festival-list">
         <p class="hint">載入節慶資訊中…</p>
@@ -220,12 +357,12 @@
     <!-- Tab 5: 問廟公 -->
     <section id="tab-ask" class="tab-panel">
       <div class="section-intro">
-        <h2>💬 焰智 AI 廟公線上諮詢</h2>
-        <p class="hint">直接問廟宇歷史、主祀神明、參拜禮儀，或任何你想知道的事。</p>
+        <h2>💬 問焰智 AI 廟公</h2>
+        <p class="hint">✨ 輕鬆詢問宮廟歷史、拜拜禮儀或疑問</p>
       </div>
       <div id="askChat" class="chat-log"></div>
       <div class="input-row sticky-input">
-        <input id="askInput" type="text" placeholder="例如：這間廟主要拜什麼神明？" />
+        <input id="askInput" type="text" placeholder="例如：參拜流程怎麼拜？" />
         <button id="askBtn" aria-label="發問">
           <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.536 21.686a.5.5 0 0 0 .937-.024l6.5-19a.496.496 0 0 0-.635-.635l-19 6.5a.5.5 0 0 0-.024.937l7.93 3.18a2 2 0 0 1 1.112 1.11z"/><path d="m21.854 2.147-10.94 10.939"/></svg>
         </button>

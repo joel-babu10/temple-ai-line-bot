@@ -15,30 +15,40 @@ async function askLLM({ userMessage, context = '' }) {
 
   if (!apiKey) {
     // Offline fallback so the bot still responds during local dev / demo without billing set up.
-    return context
-      ? `（demo 模式，未接上 LLM）根據籤詩「${context}」，這支籤大致的意思是要你耐心看待眼前的事，實際解讀請接上 GEMINI_API_KEY 以取得完整回覆。`
-      : '（demo 模式，未接上 LLM）我先記下你的問題了，接上 GEMINI_API_KEY 之後我就能好好回答你。';
+    // Deliberately generic — the real context can be long (full knowledge base), so it must never
+    // be echoed back raw here.
+    return '（demo 模式，尚未連上 AI，這是暫時的預設回覆）接上 GEMINI_API_KEY 之後我就能好好回答你的問題了 🙏';
   }
 
   const userContent = context
     ? `[系統提供的背景資料，僅供你參考，不要照抄格式]\n${context}\n\n[使用者的話]\n${userMessage}`
     : userMessage;
 
-  const response = await axios.post(
-    `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent`,
-    {
-      system_instruction: { parts: [{ text: SYSTEM_PROMPT }] },
-      contents: [{ role: 'user', parts: [{ text: userContent }] }],
-      generationConfig: { maxOutputTokens: 500 }
-    },
-    {
-      headers: { 'content-type': 'application/json' },
-      params: { key: apiKey }
-    }
-  );
+  try {
+    const response = await axios.post(
+      `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent`,
+      {
+        system_instruction: { parts: [{ text: SYSTEM_PROMPT }] },
+        contents: [{ role: 'user', parts: [{ text: userContent }] }],
+        generationConfig: { maxOutputTokens: 500 }
+      },
+      {
+        headers: { 'content-type': 'application/json' },
+        params: { key: apiKey },
+        timeout: 20000
+      }
+    );
 
-  const text = response.data.candidates?.[0]?.content?.parts?.[0]?.text;
-  return text || '（廟公暫時沒聽清楚，可以再說一次嗎？）';
+    const text = response.data.candidates?.[0]?.content?.parts?.[0]?.text;
+    return text || '（廟公暫時沒聽清楚，可以再說一次嗎？）';
+  } catch (err) {
+    // Never let a Gemini/network error bubble up and kill the reply entirely — the LINE webhook
+    // in particular sends NOTHING back to the user if this throws, which looks like total silence.
+    // Log full detail server-side (visible in Render logs) but keep the user-facing message short.
+    const detail = err.response?.data?.error?.message || err.message;
+    console.error('[llm] Gemini call failed:', detail);
+    return '（廟公這邊訊號有點不穩，晚點再問我一次看看 🙏）';
+  }
 }
 
 module.exports = { askLLM };

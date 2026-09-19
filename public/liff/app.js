@@ -64,6 +64,61 @@ function playTempleChime(freq = 432, duration = 0.8) {
   }
 }
 
+// ---------- Floating Cute Divine Spirit Pet Mascot (神獸 焰寶) ----------
+const divinePetWidget = document.getElementById('divinePetWidget');
+const petSpeechBubble = document.getElementById('petSpeechBubble');
+
+if (divinePetWidget) {
+  divinePetWidget.addEventListener('click', () => {
+    playTempleChime(784, 0.4);
+
+    // Cute double bounce jump animation
+    divinePetWidget.classList.remove('is-jumping');
+    void divinePetWidget.offsetWidth; // force DOM reflow
+    divinePetWidget.classList.add('is-jumping');
+
+    if (petSpeechBubble) {
+      petSpeechBubble.querySelector('span').textContent = '請問！✨';
+      setTimeout(() => {
+        petSpeechBubble.querySelector('span').textContent = '問我！🐾';
+      }, 3000);
+    }
+
+    // Switch tab to "問廟公"
+    document.querySelectorAll('.tab-btn').forEach((b) => b.classList.remove('is-active'));
+    document.querySelectorAll('.tab-panel').forEach((p) => p.classList.remove('is-active'));
+
+    const askTabBtn = document.querySelector('.tab-btn[data-tab="ask"]');
+    const askPanel = document.getElementById('tab-ask');
+
+    if (askTabBtn) askTabBtn.classList.add('is-active');
+    if (askPanel) askPanel.classList.add('is-active');
+
+    // Focus input field
+    const askInput = document.getElementById('askInput');
+    if (askInput) {
+      setTimeout(() => askInput.focus(), 250);
+    }
+  });
+}
+
+// Function to sync Divine Pet Horn and Aura colors with selected deity
+function setPetHornAndAuraColor(color) {
+  const hornPath = document.getElementById('petHornPath');
+  const hornBase = document.getElementById('petHornBase');
+  const petAura = document.querySelector('.pet-aura-glow');
+
+  if (hornPath) {
+    hornPath.setAttribute('fill', color || '#ffd700');
+  }
+  if (hornBase) {
+    hornBase.setAttribute('fill', color || '#c79a45');
+  }
+  if (petAura) {
+    petAura.style.setProperty('--pet-aura-color', color || 'rgba(245, 158, 11, 0.6)');
+  }
+}
+
 // ---------- LIFF init ----------
 async function initLiff() {
   try {
@@ -84,6 +139,189 @@ document.querySelectorAll('.tab-btn').forEach((btn) => {
     playTempleChime(320, 0.2);
   });
 });
+
+// ---------- Researched Custom Deity Vector Symbols Map ----------
+const DEITY_CUSTOM_ICONS = {
+  mazu: `<svg class="deity-svg-icon" viewBox="0 0 36 36" fill="none"><path stroke="#ffd700" stroke-width="2" d="M6 24 C10 18, 26 18, 30 24"/><path fill="url(#mazuCrownGrad)" stroke="#ffd700" stroke-width="1.5" d="M10 20 L18 6 L26 20 Z"/><circle cx="18" cy="8" r="2.5" fill="#f59e0b"/><circle cx="11" cy="24" r="1.5" fill="#ffd700"/><circle cx="18" cy="24" r="1.5" fill="#ffd700"/><circle cx="25" cy="24" r="1.5" fill="#ffd700"/><line x1="11" y1="24" x2="11" y2="30" stroke="#ffd700" stroke-width="1.2" stroke-dasharray="1 1"/><line x1="18" y1="24" x2="18" y2="31" stroke="#ffd700" stroke-width="1.2" stroke-dasharray="1 1"/><line x1="25" y1="24" x2="25" y2="30" stroke="#ffd700" stroke-width="1.2" stroke-dasharray="1 1"/><path stroke="#38bdf8" stroke-width="1.5" fill="none" d="M4 31 Q 9 27, 18 31 T 32 31"/></svg>`,
+  guanyin: `<svg class="deity-svg-icon" viewBox="0 0 36 36" fill="none"><path fill="#2dd4bf" opacity="0.6" d="M8 26 C 12 32, 24 32, 28 26 C 24 24, 12 24, 8 26 Z"/><path stroke="#5eead4" stroke-width="1.5" d="M11 25 C 18 30, 18 30, 25 25"/><path fill="url(#guanyinVaseGrad)" stroke="#5eead4" stroke-width="1.2" d="M16 12 C 14 16, 13 20, 15 24 L 21 24 C 23 20, 22 16, 20 12 Z"/><path stroke="#34d399" stroke-width="1.5" stroke-linecap="round" fill="none" d="M18 10 Q 24 4, 27 7"/><circle cx="18" cy="5" r="1.5" fill="#a7f3d0"/></svg>`,
+  guangong: `<svg class="deity-svg-icon" viewBox="0 0 36 36" fill="none"><path fill="url(#guangongShieldGrad)" stroke="#f87171" stroke-width="1.2" d="M18 3 L 30 9 V 20 C 30 27, 18 33, 18 33 C 18 33, 6 27, 6 20 V 9 Z"/><path stroke="#ffd700" stroke-width="2" stroke-linecap="round" d="M12 28 L 24 8"/><path fill="#4ade80" stroke="#ffd700" stroke-width="1.2" d="M20 6 C 27 5, 30 11, 24 14 C 22 11, 20 8, 20 6 Z"/><circle cx="15" cy="23" r="2" fill="#ef4444"/></svg>`,
+  tudigong: `<svg class="deity-svg-icon" viewBox="0 0 36 36" fill="none"><path fill="url(#tudiIngotGrad)" stroke="#ffd700" stroke-width="1.5" d="M6 16 C 6 12, 10 10, 18 10 C 26 10, 30 12, 30 16 C 30 24, 24 28, 18 28 C 12 28, 6 24, 6 16 Z"/><ellipse cx="18" cy="15" rx="8" ry="4" fill="#fef08a" stroke="#eab308" stroke-width="1"/><ellipse cx="18" cy="14" rx="4" ry="2.5" fill="#f59e0b"/><path stroke="#fbbf24" stroke-width="1.5" stroke-linecap="round" fill="none" d="M9 25 Q 18 32, 27 25"/></svg>`,
+  yuelao: `<svg class="deity-svg-icon" viewBox="0 0 36 36" fill="none"><path fill="url(#yuelaoHeartGrad)" stroke="#f43f5e" stroke-width="1.5" d="M12 18 C 7 12, 6 22, 18 29 C 30 22, 29 12, 24 18 C 20 22, 16 22, 12 18 Z"/><path stroke="#ff4d4d" stroke-width="2" stroke-linecap="round" fill="none" d="M4 14 Q 12 8, 18 14 T 32 14"/><circle cx="18" cy="14" r="3" fill="#ffd700" stroke="#f43f5e" stroke-width="1"/></svg>`
+};
+
+// ---------- Deity Selector Pills & Cute Background Switch Animations ----------
+function triggerCuteBgSwitchParticles(deityId, deityColor) {
+  const bgPulse = document.getElementById('altarBgGlowPulse');
+  const particleContainer = document.getElementById('deitySwitchParticles');
+
+  if (bgPulse) {
+    bgPulse.style.setProperty('--deity-accent', deityColor || 'rgba(245, 158, 11, 0.35)');
+    bgPulse.classList.remove('is-pulsing');
+    void bgPulse.offsetWidth; // force reflow
+    bgPulse.classList.add('is-pulsing');
+  }
+
+  if (particleContainer) {
+    const cuteSymbolsMap = {
+      mazu: ['👑', '✨', '🌊', '⭐️', '💫', '🪷'],
+      guanyin: ['🪷', '💧', '✨', '☸️', '💫', '⭐️'],
+      guangong: ['⚔️', '🔥', '✨', '🛡️', '🌟', '💥'],
+      tudigong: ['🪙', '🌾', '✨', '🍃', '💛', '🌟'],
+      yuelao: ['💖', '🎀', '✨', '🌸', '💕', '💫']
+    };
+
+    const symbols = cuteSymbolsMap[deityId] || ['✨', '🌸', '💫', '⭐️', '🪷'];
+    const count = 7;
+
+    for (let i = 0; i < count; i++) {
+      const p = document.createElement('span');
+      p.className = 'cute-bg-particle';
+      p.textContent = symbols[i % symbols.length];
+      
+      const leftPos = 12 + Math.random() * 76;
+      const bottomPos = 10 + Math.random() * 40;
+      const delay = Math.random() * 0.18;
+      const dur = 1.0 + Math.random() * 0.35;
+      const scale = 0.7 + Math.random() * 0.6;
+
+      p.style.left = `${leftPos}%`;
+      p.style.bottom = `${bottomPos}px`;
+      p.style.animationDelay = `${delay}s`;
+      p.style.animationDuration = `${dur}s`;
+      p.style.fontSize = `${scale}rem`;
+
+      particleContainer.appendChild(p);
+      setTimeout(() => p.remove(), (delay + dur + 0.2) * 1000);
+    }
+  }
+}
+
+const DEITY_FLAME_PALETTES = {
+  mazu: {
+    outer: 'linear-gradient(to top, #7a1f1f 0%, #b91c1c 30%, #f59e0b 75%, #ffd700 100%)',
+    middle: 'linear-gradient(to top, #9b2c2c 0%, #f59e0b 50%, #ffe39d 100%)',
+    glow: 'rgba(245, 158, 11, 0.65)'
+  },
+  guanyin: {
+    outer: 'linear-gradient(to top, #0f766e 0%, #0d9488 30%, #2dd4bf 75%, #a7f3d0 100%)',
+    middle: 'linear-gradient(to top, #115e59 0%, #2dd4bf 50%, #ccfbf1 100%)',
+    glow: 'rgba(45, 212, 191, 0.65)'
+  },
+  guangong: {
+    outer: 'linear-gradient(to top, #450a0a 0%, #991b1b 30%, #ef4444 75%, #fca5a5 100%)',
+    middle: 'linear-gradient(to top, #7f1d1d 0%, #f87171 50%, #fecaca 100%)',
+    glow: 'rgba(239, 68, 68, 0.65)'
+  },
+  tudigong: {
+    outer: 'linear-gradient(to top, #78350f 0%, #b45309 30%, #e4c77a 75%, #fef08a 100%)',
+    middle: 'linear-gradient(to top, #92400e 0%, #f59e0b 50%, #fef9c3 100%)',
+    glow: 'rgba(228, 199, 122, 0.65)'
+  },
+  yuelao: {
+    outer: 'linear-gradient(to top, #881337 0%, #be123c 30%, #ff7b7b 75%, #fda4af 100%)',
+    middle: 'linear-gradient(to top, #9f1239 0%, #fb7185 50%, #ffe4e6 100%)',
+    glow: 'rgba(255, 123, 123, 0.65)'
+  }
+};
+
+function setDeityFlameColor(deityId) {
+  const palette = DEITY_FLAME_PALETTES[deityId] || DEITY_FLAME_PALETTES.mazu;
+  const root = document.documentElement;
+  root.style.setProperty('--flame-outer', palette.outer);
+  root.style.setProperty('--flame-middle', palette.middle);
+  root.style.setProperty('--flame-glow', palette.glow);
+}
+
+document.querySelectorAll('.deity-pill').forEach((pill) => {
+  pill.addEventListener('click', () => {
+    document.querySelectorAll('.deity-pill').forEach((p) => p.classList.remove('is-active'));
+    pill.classList.add('is-active');
+
+    const deityId = pill.dataset.deityId || 'mazu';
+    const badge = pill.dataset.deityBadge || '主神 · 媽祖娘娘';
+    const power = pill.dataset.deityPower || '';
+    const freq = Number(pill.dataset.deityFreq) || 528;
+    const color = pill.dataset.deityColor || '#f59e0b';
+
+    const mainIconEl = document.getElementById('deityIconMain');
+    const badgeTextEl = document.getElementById('deityBadgeText');
+    const powerTagEl = document.getElementById('deityPowerTag');
+    const burstEl = document.getElementById('divineBurst');
+    const emblemEl = document.getElementById('deityAvatarEmblem');
+
+    if (mainIconEl && DEITY_CUSTOM_ICONS[deityId]) {
+      mainIconEl.innerHTML = DEITY_CUSTOM_ICONS[deityId];
+    }
+    if (badgeTextEl) badgeTextEl.textContent = badge;
+    if (powerTagEl) powerTagEl.textContent = power;
+
+    if (burstEl) {
+      burstEl.classList.remove('is-animating');
+      void burstEl.offsetWidth; // force DOM reflow to restart animation
+      burstEl.classList.add('is-animating');
+    }
+
+    if (emblemEl) {
+      emblemEl.classList.remove('is-switched');
+      void emblemEl.offsetWidth; // force DOM reflow to restart animation
+      emblemEl.classList.add('is-switched');
+    }
+
+    // Dynamic Header Sacred Flame Color Shift
+    setDeityFlameColor(deityId);
+
+    // Sync Divine Pet Mascot Horn & Aura Color with Selected Deity
+    setPetHornAndAuraColor(color);
+
+    // Trigger cute minimal background ambient glow & floating particle burst
+    triggerCuteBgSwitchParticles(deityId, color);
+
+    playTempleChime(freq, 0.4);
+  });
+});
+
+// ---------- Daily Divine Blessing Card Swapper ----------
+const DAILY_BLESSINGS = [
+  '🌸 媽祖賜福：吉星高照 · 行路平安 · 萬事順心',
+  '☸️ 觀音護佑：心境平和 · 慈悲喜捨 · 災厄遠離',
+  '⚔️ 關帝加持：浩然正氣 · 小人退散 · 財源廣進',
+  '🌾 土地公賜財：福德加被 · 聚寶納福 · 家和萬事興',
+  '💖 月老牽線：佳偶天成 · 姻緣圓滿 · 喜氣洋洋',
+  '🌟 文昌星君：智慧開朗 · 考運亨通 · 金榜題名'
+];
+
+const refreshBlessingBtn = document.getElementById('refreshBlessingBtn');
+const dailyBlessingText = document.getElementById('dailyBlessingText');
+
+if (refreshBlessingBtn && dailyBlessingText) {
+  refreshBlessingBtn.addEventListener('click', () => {
+    const randomBlessing = DAILY_BLESSINGS[Math.floor(Math.random() * DAILY_BLESSINGS.length)];
+    dailyBlessingText.classList.remove('is-swapping');
+    void dailyBlessingText.offsetWidth; // force DOM reflow
+    dailyBlessingText.textContent = randomBlessing;
+    dailyBlessingText.classList.add('is-swapping');
+    playTempleChime(720, 0.3);
+    if (navigator.vibrate) navigator.vibrate(30);
+  });
+}
+
+// Function to trigger rising ember sparks on incense burner
+function triggerIncenseSparks() {
+  const burner = document.getElementById('incenseBurner');
+  if (!burner) return;
+
+  for (let i = 0; i < 10; i++) {
+    const spark = document.createElement('span');
+    spark.className = 'incense-ember-spark';
+    const leftOffset = 25 + Math.random() * 50;
+    const delay = Math.random() * 0.3;
+    spark.style.left = `${leftOffset}%`;
+    spark.style.bottom = '30px';
+    spark.style.animationDelay = `${delay}s`;
+    burner.appendChild(spark);
+    setTimeout(() => spark.remove(), 1600);
+  }
+}
 
 // ---------- Divination flow with 3D Moon Blocks & Incense Visuals ----------
 const incenseBtn = document.getElementById('incenseBtn');
@@ -107,6 +345,10 @@ incenseBtn.addEventListener('click', () => {
     incenseBurner.classList.add('is-lit');
   }
 
+  // Trigger realistic ember sparks rising from incense sticks
+  triggerIncenseSparks();
+
+  if (navigator.vibrate) navigator.vibrate(40);
   playTempleChime(440, 0.6);
 });
 
@@ -115,7 +357,7 @@ jiaoBtn.addEventListener('click', () => {
   const roll = Math.random();
   const outcome = roll < 0.5 ? outcomes[0] : roll < 0.75 ? outcomes[1] : outcomes[2];
 
-  // Trigger 3D block flip animation
+  // Trigger 3D block flip animation & haptic wooden clack feedback
   if (blockLeft && blockRight) {
     blockLeft.classList.remove('toss-anim-left', 'convex');
     blockRight.classList.remove('toss-anim-right', 'convex');
@@ -126,17 +368,19 @@ jiaoBtn.addEventListener('click', () => {
 
     setTimeout(() => {
       if (outcome === outcomes[0]) {
-        // 聖筊: One flat (up), one convex (down)
         blockRight.classList.add('convex');
       } else if (outcome === outcomes[1]) {
-        // 笑筊: Both flat (up)
       } else {
-        // 陰筊: Both convex (down)
         blockLeft.classList.add('convex');
         blockRight.classList.add('convex');
       }
     }, 250);
   }
+
+  // Double clack wooden chime & tactile double vibration
+  playTempleChime(820, 0.2);
+  setTimeout(() => playTempleChime(640, 0.25), 180);
+  if (navigator.vibrate) navigator.vibrate([35, 45, 35]);
 
   jiaoResult.textContent = outcome;
 
@@ -291,13 +535,13 @@ document.getElementById('locateBtn').addEventListener('click', async () => {
       const locationBadgeText = document.getElementById('locationBadgeText');
 
       if (subTitleText) {
-        subTitleText.textContent = `📍 您附近的宮廟：${nearest.name} (約 ${nearest.distanceKm ?? 0} km)`;
+        subTitleText.textContent = `📍 最近宮廟：${nearest.name} (${nearest.distanceKm ?? 0} km)`;
       }
       if (deityBadgeText) {
-        deityBadgeText.textContent = `大殿主神 · ${nearest.name}${nearest.deity ? ` (${nearest.deity})` : ''}`;
+        deityBadgeText.textContent = `🌸 主神 · ${nearest.name}${nearest.deity ? ` (${nearest.deity})` : ''}`;
       }
       if (locationBadge && locationBadgeText) {
-        locationBadgeText.textContent = `已定位：距「${nearest.name}」約 ${nearest.distanceKm ?? 0} km`;
+        locationBadgeText.textContent = `📍 定位：${nearest.name} (${nearest.distanceKm ?? 0} km)`;
         locationBadge.classList.remove('is-hidden');
       }
     }
@@ -308,7 +552,7 @@ document.getElementById('locateBtn').addEventListener('click', async () => {
     document.getElementById('nearbyList').innerHTML = `<p class="hint">無法取得位置：${err.message}</p>`;
   } finally {
     locateBtn.disabled = false;
-    locateBtn.querySelector('span').textContent = '重新更新位置';
+    locateBtn.querySelector('span').textContent = '📍 重新定位';
   }
 });
 
