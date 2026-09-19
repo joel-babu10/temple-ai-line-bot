@@ -7,6 +7,8 @@ const temples = require('../data/temples.json');
 const { askLLM } = require('../services/llm');
 const { nearbyTemples } = require('../services/places');
 const { getTransitDirections } = require('../services/transit');
+const { checkZodiacClash } = require('../services/zodiac');
+const { buildAppContext } = require('../services/knowledge');
 
 // Draw a random fortune stick (求籤) — call this after the incense + coin-toss animation finishes.
 router.get('/fortune/draw', (req, res) => {
@@ -75,12 +77,40 @@ router.get('/festivals', (req, res) => {
   res.json(withDelta);
 });
 
+// 生肖沖太歲 check — pass a birth year, get back whether it clashes with the current (or given) year.
+router.get('/zodiac/check', async (req, res) => {
+  try {
+    const { birthYear, year, explain } = req.query;
+    if (!birthYear || Number.isNaN(Number(birthYear))) {
+      return res.status(400).json({ error: 'birthYear required (e.g. ?birthYear=1998)' });
+    }
+    const result = checkZodiacClash(Number(birthYear), year ? Number(year) : undefined);
+
+    if (explain === 'true') {
+      const context = `生肖太歲查詢結果：出生年 ${result.birthYear}（生肖：${result.userAnimal}），查詢年份 ${result.checkYear}（生肖：${result.yearAnimal}）。是否犯太歲：${result.isClashing ? '是，類型為「' + result.clashType + '」' : '否'}。今年所有犯太歲生肖：${result.allClashesThisYear.map((c) => `${c.animal}(${c.type})`).join('、')}。`;
+      result.aiMessage = await askLLM({
+        userMessage: result.isClashing
+          ? `請用溫暖口氣跟我解釋今年犯太歲的意思，並給一些安太歲/點光明燈的建議。`
+          : `請用溫暖口氣告訴我今年沒有犯太歲，但仍可以說些新年祝福的話。`,
+        context
+      });
+    }
+
+    res.json(result);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'zodiac_check_failed' });
+  }
+});
+
 // General "ask the temple guide anything" chat used by the knowledge tab.
 router.post('/ask', async (req, res) => {
   try {
     const { question } = req.body;
-    const context = `本地宮廟知識庫：\n${JSON.stringify(temples, null, 2)}`;
-    const reply = await askLLM({ userMessage: question, context });
+    if (!question || !question.trim()) {
+      return res.status(400).json({ error: 'question required' });
+    }
+    const reply = await askLLM({ userMessage: question, context: buildAppContext() });
     res.json({ reply });
   } catch (err) {
     console.error(err);
