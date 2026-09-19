@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
   <title>FLAME AI | 焰智 AI - 智慧宮廟 × LINE × 公益共善平台</title>
-  <meta name="description" content="焰智 AI 智慧宮廟共善平台：線上求籤解籤、萬春宮社群主頁、線上光明燈、數位供養平安米、公益募款與在地真實共善活動。" />
+  <meta name="description" content="焰智 AI 智慧宮廟共善平台：線上求籤解籤、宮廟地圖導覽、線上光明燈、數位供養平安米、公益募款與在地真實共善活動。" />
   <!-- Google Fonts: Noto Serif TC & Noto Sans TC -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -118,55 +118,36 @@
       </div>
       <div class="brand-titles">
         <h1>FLAME AI <span class="brand-separator">|</span> 焰智 AI</h1>
-        <p class="subtitle" id="subTitleText">✨ 智慧宮廟 × LINE × 公益共善平台</p>
+        <p class="subtitle" id="subTitleText">Smart Worship · Sacred Steps · Warm Community</p>
       </div>
     </div>
   </header>
 
-  <!-- Sticky Segmented Tab Navigation -->
+  <!-- Main Navigation 4 Tabs (Clean Professional SVG Icons, Zero Raw Emojis) -->
   <nav class="tabbar" aria-label="功能選單">
     <button class="tab-btn is-active" data-tab="divination">
       <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m12 3-1.9 5.8a2 2 0 0 1-1.287 1.288L3 12l5.8 1.9a2 2 0 0 1 1.288 1.287L12 21l1.9-5.8a2 2 0 0 1 1.287-1.288L21 12l-5.8-1.9a2 2 0 0 1-1.288-1.287Z"/></svg>
-      <span>求籤解籤</span>
+      <span>參拜主頁</span>
     </button>
-    <button class="tab-btn" data-tab="temple">
-      <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21h18M5 21V7l7-4 7 4v14M9 21v-6h6v6"/></svg>
-      <span>萬春宮</span>
+    <button class="tab-btn" data-tab="nearby">
+      <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>
+      <span>宮廟地圖</span>
     </button>
     <button class="tab-btn" data-tab="community">
       <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
-      <span>社群共善</span>
-    </button>
-    <button class="tab-btn" data-tab="blessing">
-      <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
-      <span>線上點燈</span>
+      <span>社群與廟宇</span>
     </button>
     <button class="tab-btn" data-tab="profile">
       <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-      <span>個人共善</span>
-    </button>
-    <button class="tab-btn" data-tab="ask">
-      <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"/></svg>
-      <span>問廟公</span>
+      <span>個人與 AI</span>
     </button>
   </nav>
 
   <!-- Main Viewport Canvas -->
   <main class="app-container">
 
-    <!-- Tab 1: 求籤解籤 -->
+    <!-- Tab 1: 主頁參拜 (HOME / DIVINATION) -->
     <section id="tab-divination" class="tab-panel is-active">
-      <!-- Daily Divine Blessing Card Micro-Widget -->
-      <div class="daily-blessing-card" id="dailyBlessingCard">
-        <div class="blessing-card-header">
-          <span class="blessing-card-title">🌸 每日靈驗平安符</span>
-          <button class="blessing-refresh-btn" id="refreshBlessingBtn" title="換一張平安符" aria-label="換平安符">
-            <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/></svg>
-            <span>換平安符</span>
-          </button>
-        </div>
-        <p class="blessing-text" id="dailyBlessingText">✨ 媽祖賜福：吉星高照 · 行路平安 · 萬事順心</p>
-      </div>
 
       <!-- Interactive Sacred Altar Stage -->
       <div class="altar-stage-card">
@@ -175,23 +156,23 @@
 
         <!-- Deity Selector Pills with Custom Researched Divine Vector Icons -->
         <div class="deity-select-pills" id="deitySelectPills">
-          <button class="deity-pill is-active" data-deity-id="mazu" data-deity-badge="主神 · 媽祖娘娘" data-deity-power="✨ 神威：航海護國 · 災厄消除" data-deity-freq="528" data-deity-color="#f59e0b">
+          <button class="deity-pill is-active" data-deity-id="mazu" data-deity-badge="主神 · 媽祖娘娘" data-deity-power="神威：航海護國 · 災厄消除" data-deity-freq="528" data-deity-color="#f59e0b">
             <svg class="deity-svg-icon" viewBox="0 0 36 36" fill="none"><path stroke="#ffd700" stroke-width="2" d="M6 24 C10 18, 26 18, 30 24"/><path fill="url(#mazuCrownGrad)" stroke="#ffd700" stroke-width="1.5" d="M10 20 L18 6 L26 20 Z"/><circle cx="18" cy="8" r="2.5" fill="#f59e0b"/><circle cx="11" cy="24" r="1.5" fill="#ffd700"/><circle cx="18" cy="24" r="1.5" fill="#ffd700"/><circle cx="25" cy="24" r="1.5" fill="#ffd700"/><line x1="11" y1="24" x2="11" y2="30" stroke="#ffd700" stroke-width="1.2" stroke-dasharray="1 1"/><line x1="18" y1="24" x2="18" y2="31" stroke="#ffd700" stroke-width="1.2" stroke-dasharray="1 1"/><line x1="25" y1="24" x2="25" y2="30" stroke="#ffd700" stroke-width="1.2" stroke-dasharray="1 1"/><path stroke="#38bdf8" stroke-width="1.5" fill="none" d="M4 31 Q 9 27, 18 31 T 32 31"/></svg>
             <span>媽祖</span>
           </button>
-          <button class="deity-pill" data-deity-id="guanyin" data-deity-badge="主神 · 觀音佛祖" data-deity-power="✨ 神威：慈悲救苦 · 隨感隨應" data-deity-freq="639" data-deity-color="#2dd4bf">
+          <button class="deity-pill" data-deity-id="guanyin" data-deity-badge="主神 · 觀音佛祖" data-deity-power="神威：慈悲救苦 · 隨感隨應" data-deity-freq="639" data-deity-color="#2dd4bf">
             <svg class="deity-svg-icon" viewBox="0 0 36 36" fill="none"><path fill="#2dd4bf" opacity="0.6" d="M8 26 C 12 32, 24 32, 28 26 C 24 24, 12 24, 8 26 Z"/><path stroke="#5eead4" stroke-width="1.5" d="M11 25 C 18 30, 18 30, 25 25"/><path fill="url(#guanyinVaseGrad)" stroke="#5eead4" stroke-width="1.2" d="M16 12 C 14 16, 13 20, 15 24 L 21 24 C 23 20, 22 16, 20 12 Z"/><path stroke="#34d399" stroke-width="1.5" stroke-linecap="round" fill="none" d="M18 10 Q 24 4, 27 7"/><circle cx="18" cy="5" r="1.5" fill="#a7f3d0"/></svg>
             <span>觀音</span>
           </button>
-          <button class="deity-pill" data-deity-id="guangong" data-deity-badge="主神 · 關聖帝君" data-deity-power="✨ 神威：忠義鎮宅 · 招財伏魔" data-deity-freq="432" data-deity-color="#b91c1c">
+          <button class="deity-pill" data-deity-id="guangong" data-deity-badge="主神 · 關聖帝君" data-deity-power="神威：忠義鎮宅 · 招財伏魔" data-deity-freq="432" data-deity-color="#b91c1c">
             <svg class="deity-svg-icon" viewBox="0 0 36 36" fill="none"><path fill="url(#guangongShieldGrad)" stroke="#f87171" stroke-width="1.2" d="M18 3 L 30 9 V 20 C 30 27, 18 33, 18 33 C 18 33, 6 27, 6 20 V 9 Z"/><path stroke="#ffd700" stroke-width="2" stroke-linecap="round" d="M12 28 L 24 8"/><path fill="#4ade80" stroke="#ffd700" stroke-width="1.2" d="M20 6 C 27 5, 30 11, 24 14 C 22 11, 20 8, 20 6 Z"/><circle cx="15" cy="23" r="2" fill="#ef4444"/></svg>
             <span>關帝</span>
           </button>
-          <button class="deity-pill" data-deity-id="tudigong" data-deity-badge="主神 · 福德正神" data-deity-power="✨ 神威：保佑地脈 · 賜福聚財" data-deity-freq="396" data-deity-color="#e4c77a">
+          <button class="deity-pill" data-deity-id="tudigong" data-deity-badge="主神 · 福德正神" data-deity-power="神威：保佑地脈 · 賜福聚財" data-deity-freq="396" data-deity-color="#e4c77a">
             <svg class="deity-svg-icon" viewBox="0 0 36 36" fill="none"><path fill="url(#tudiIngotGrad)" stroke="#ffd700" stroke-width="1.5" d="M6 16 C 6 12, 10 10, 18 10 C 26 10, 30 12, 30 16 C 30 24, 24 28, 18 28 C 12 28, 6 24, 6 16 Z"/><ellipse cx="18" cy="15" rx="8" ry="4" fill="#fef08a" stroke="#eab308" stroke-width="1"/><ellipse cx="18" cy="14" rx="4" ry="2.5" fill="#f59e0b"/><path stroke="#fbbf24" stroke-width="1.5" stroke-linecap="round" fill="none" d="M9 25 Q 18 32, 27 25"/></svg>
             <span>土地公</span>
           </button>
-          <button class="deity-pill" data-deity-id="yuelao" data-deity-badge="主神 · 月老星君" data-deity-power="✨ 神威：紅線牽緣 · 婚姻圓滿" data-deity-freq="741" data-deity-color="#ff7b7b">
+          <button class="deity-pill" data-deity-id="yuelao" data-deity-badge="主神 · 月老星君" data-deity-power="神威：紅線牽緣 · 婚姻圓滿" data-deity-freq="741" data-deity-color="#ff7b7b">
             <svg class="deity-svg-icon" viewBox="0 0 36 36" fill="none"><path fill="url(#yuelaoHeartGrad)" stroke="#f43f5e" stroke-width="1.5" d="M12 18 C 7 12, 6 22, 18 29 C 30 22, 29 12, 24 18 C 20 22, 16 22, 12 18 Z"/><path stroke="#ff4d4d" stroke-width="2" stroke-linecap="round" fill="none" d="M4 14 Q 12 8, 18 14 T 32 14"/><circle cx="18" cy="14" r="3" fill="#ffd700" stroke="#f43f5e" stroke-width="1"/></svg>
             <span>月老</span>
           </button>
@@ -210,9 +191,9 @@
             <span class="deity-dot"></span>
             <span id="deityBadgeText">主神 · 媽祖娘娘</span>
           </div>
-          <div class="deity-power-tag" id="deityPowerTag">✨ 神威：航海護國 · 災厄消除</div>
+          <div class="deity-power-tag" id="deityPowerTag">神威：航海護國 · 災厄消除</div>
         </div>
-        <p class="altar-guide">✨ 虔誠稟明心願 · 請示指示</p>
+        <p class="altar-guide">虔心許願 · 焰寶神尊為您指點迷津</p>
 
         <!-- Incense Burner Visual -->
         <div class="incense-burner-visual" id="incenseBurner">
@@ -231,16 +212,16 @@
         <div class="altar" id="altarStage">
           <button id="incenseBtn" class="ritual-btn primary-step">
             <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"/></svg>
-            <span>🌸 點香敬拜</span>
+            <span>點香敬拜</span>
           </button>
           <button id="jiaoBtn" class="ritual-btn secondary-step" disabled>
             <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="8" cy="8" r="6"/><path d="M18.09 10.37A6 6 0 1 1 10.34 18"/><path d="M7 6h1v4"/><path d="m16.71 13.88.7.71-2.82 2.82"/></svg>
-            <span>🌙 聖筊請示</span>
+            <span>聖筊請示</span>
           </button>
           <p id="jiaoResult" class="ritual-result"></p>
           <button id="drawBtn" class="ritual-btn tertiary-step" disabled>
             <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m12 3-1.9 5.8a2 2 0 0 1-1.287 1.288L3 12l5.8 1.9a2 2 0 0 1 1.288 1.287L12 21l1.9-5.8a2 2 0 0 1 1.287-1.288L21 12l-5.8-1.9a2 2 0 0 1-1.288-1.287Z"/></svg>
-            <span>📜 誠心抽籤</span>
+            <span>誠心抽籤</span>
           </button>
         </div>
       </div>
@@ -265,8 +246,8 @@
             <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
           </div>
           <div>
-            <h3>🤖 焰智 AI 解籤</h3>
-            <p class="ai-subtitle">✨ 白話解析神明聖意</p>
+            <h3>焰智 AI 解籤</h3>
+            <p class="ai-subtitle">白話解析神明聖意</p>
           </div>
         </div>
 
@@ -279,342 +260,43 @@
         </div>
         <div id="interpretChat" class="chat-log"></div>
       </div>
+
+      <!-- Relocated Peace Quote Card Section (Positioned Downwards Below Altar) -->
+      <div class="peace-quote-card" id="dailyQuoteSection">
+        <div class="quote-header">
+          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+          <span>每日平安箴言</span>
+        </div>
+        <blockquote class="quote-body">
+          <p class="quote-verse">「諸惡莫作，眾善奉行；自淨其意，是諸佛教。」</p>
+          <cite class="quote-source">— 萬春宮 天上聖母 賜福箴言</cite>
+        </blockquote>
+      </div>
+
+      <!-- Daily Miracle Peace Talisman Micro-Widget (Relocated Downward) -->
+      <div class="daily-blessing-card" id="dailyBlessingCard">
+        <div class="blessing-card-header">
+          <span class="blessing-card-title">每日靈驗平安符</span>
+          <button class="blessing-refresh-btn" id="refreshBlessingBtn" title="換一張平安符" aria-label="換平安符">
+            <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/></svg>
+            <span>換平安符</span>
+          </button>
+        </div>
+        <p class="blessing-text" id="dailyBlessingText">媽祖賜福：吉星高照 · 行路平安 · 萬事順心</p>
+      </div>
+
     </section>
 
-    <!-- Tab 2: 萬春宮社群主頁 (TEMPLE COMMUNITY HUB) -->
-    <section id="tab-temple" class="tab-panel">
-      <!-- Temple Profile Card -->
-      <div class="temple-profile-card">
-        <div class="temple-banner-wrap">
-          <div class="temple-banner-img"></div>
-          <div class="temple-badge-verified">LINE 官方認證 🟢</div>
-        </div>
-        <div class="temple-profile-content">
-          <div class="temple-title-row">
-            <div>
-              <h2 class="temple-main-title">萬春宮 <span class="temple-sub-title">(台中媽祖)</span></h2>
-              <p class="temple-deity-sub">主祀：天上聖母 (媽祖娘娘)</p>
-            </div>
-            <button id="followTempleBtn" class="follow-temple-btn">
-              <span>＋ 追蹤宮廟</span>
-            </button>
-          </div>
-          <p class="temple-slogan">「點亮心燈，行善傳福 · 共善同行」</p>
-          <div class="temple-stats-row">
-            <div class="stat-box"><strong>12,850</strong><span>信徒追蹤</span></div>
-            <div class="stat-box"><strong>520</strong><span>功德分</span></div>
-            <div class="stat-box"><strong>12 場</strong><span>共善活動</span></div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Flagship Donation Campaign -->
-      <div class="campaign-card">
-        <div class="campaign-badge">❤️ 旗艦公益募款</div>
-        <h3 class="campaign-title">萬春宮 ｜ 冬季偏鄉送暖計畫</h3>
-        <p class="campaign-desc">為台中偏鄉獨居長者與弱勢家庭籌措寒冬平安物料包與平安福食。</p>
-        <div class="campaign-progress-wrap">
-          <div class="progress-bar-bg">
-            <div class="progress-bar-fill" style="width: 84%;"></div>
-          </div>
-          <div class="progress-labels">
-            <span>已募集 <strong>NT$ 420,000</strong></span>
-            <span>目標 NT$ 500,000 (84%)</span>
-          </div>
-        </div>
-        <div class="campaign-footer">
-          <span class="campaign-deadline">⏰ 剩餘 12 天</span>
-          <button class="btn-donate-act" id="openDonationBtn">❤️ 支持響應</button>
-        </div>
-      </div>
-
-      <!-- Temple Announcements & Events Grid -->
-      <div class="temple-section-block">
-        <h3 class="block-title">📢 宮廟最新動態與法會</h3>
-        <div class="announcement-list">
-          <div class="announcement-item">
-            <span class="announce-date">9月28日</span>
-            <div>
-              <h4>萬春宮「中秋平安祈福法會」開辦報名</h4>
-              <p>邀請信眾攜家帶眷親臨參拜，祈求闔家平安。</p>
-            </div>
-          </div>
-          <div class="announcement-item">
-            <span class="announce-date">10月5日</span>
-            <div>
-              <h4>天上聖母秋季巡境祈安繞境</h4>
-              <p>將途經社區發放平安米與福食。</p>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Offerings & Lamp Entrance -->
-      <div class="temple-section-block">
-        <h3 class="block-title">🍚 數位供養與線上點燈</h3>
-        <p class="block-sub">「一份供養，也是一份祝福。」</p>
-        <div class="offering-grid">
-          <div class="offering-card">
-            <div class="offering-icon">🍚</div>
-            <h4>平安米供養</h4>
-            <p>每份 $100 · 神前加持轉贈弱勢</p>
-            <button class="offering-btn-act" data-offering="rice">支持供養</button>
-          </div>
-          <div class="offering-card">
-            <div class="offering-icon">🍱</div>
-            <h4>平安福食供齋</h4>
-            <p>每份 $80 · 提供老弱溫飽熱食</p>
-            <button class="offering-btn-act" data-offering="meal">支持供齋</button>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- Tab 3: 社群共善 (COMMUNITY HUB - MAJOR FEATURE) -->
-    <section id="tab-community" class="tab-panel">
-      <!-- Community Impact Dashboard -->
-      <div class="impact-dashboard-card">
-        <div class="impact-header">
-          <h3>🌱 本月共善影響力數據</h3>
-          <span class="impact-tag">讓信仰走進真實生活</span>
-        </div>
-        <div class="impact-stats-grid">
-          <div class="impact-item">
-            <span class="impact-icon">🍚</span>
-            <strong>2,480 包</strong>
-            <label>平安米捐贈</label>
-          </div>
-          <div class="impact-item">
-            <span class="impact-icon">🍱</span>
-            <strong>1,250 份</strong>
-            <label>愛心平安餐</label>
-          </div>
-          <div class="impact-item">
-            <span class="impact-icon">🌱</span>
-            <strong>4 場</strong>
-            <label>環境保護活動</label>
-          </div>
-          <div class="impact-item">
-            <span class="impact-icon">👥</span>
-            <strong>126 位</strong>
-            <label>共善參與者</label>
-          </div>
-        </div>
-      </div>
-
-      <!-- Action Bar: Create Activity Button & Filter Chips -->
-      <div class="community-action-bar">
-        <button class="btn-create-activity" id="openCreateActivityBtn">
-          <span>＋ 發起共善活動</span>
-        </button>
-      </div>
-
-      <!-- Activity Category Filter Chips -->
-      <div class="filter-chips" id="activityCategoryFilters">
-        <button class="chip-btn is-active" data-cat="all">全選</button>
-        <button class="chip-btn" data-cat="健行">🥾 健行</button>
-        <button class="chip-btn" data-cat="單車">🚲 單車</button>
-        <button class="chip-btn" data-cat="環境">🌱 環境</button>
-        <button class="chip-btn" data-cat="攝影">📸 攝影</button>
-        <button class="chip-btn" data-cat="宮廟">🏮 宮廟</button>
-        <button class="chip-btn" data-cat="文化">🎎 文化</button>
-        <button class="chip-btn" data-cat="美食">🍜 美食</button>
-      </div>
-
-      <!-- Activity Cards Feed -->
-      <div class="activity-feed-list" id="activityFeedList">
-        <!-- Activity Card 1 -->
-        <article class="activity-card" data-category="環境">
-          <div class="act-card-header">
-            <span class="act-cat-badge">🌱 環境保護</span>
-            <span class="act-organizer">萬春宮志工團 發起</span>
-          </div>
-          <h3 class="act-title">🌱 彰化大肚溪畔淨川祈福護生行動</h3>
-          <div class="act-meta-row">
-            <span>📅 9月27日 (五) 09:00 AM</span>
-            <span>📍 彰化溪州大肚溪步道</span>
-          </div>
-          <div class="act-participants-row">
-            <div class="avatar-stack">
-              <span class="avatar-dot a1"></span>
-              <span class="avatar-dot a2"></span>
-              <span class="avatar-dot a3"></span>
-            </div>
-            <span class="part-count">已報名 <strong>42 / 50</strong> 人</span>
-          </div>
-          <button class="btn-join-act" data-act-id="act1">加入活動</button>
-        </article>
-
-        <!-- Activity Card 2 -->
-        <article class="activity-card" data-category="健行">
-          <div class="act-card-header">
-            <span class="act-cat-badge">🥾 健行踏青</span>
-            <span class="act-organizer">信徒小張 發起</span>
-          </div>
-          <h3 class="act-title">🥾 週末八卦山步道清晨祈福走山</h3>
-          <div class="act-meta-row">
-            <span>📅 本週六 08:00 AM</span>
-            <span>📍 八卦山生態園區大佛廣場</span>
-          </div>
-          <div class="act-participants-row">
-            <div class="avatar-stack">
-              <span class="avatar-dot a2"></span>
-              <span class="avatar-dot a4"></span>
-            </div>
-            <span class="part-count">已報名 <strong>5 / 10</strong> 人</span>
-          </div>
-          <button class="btn-join-act" data-act-id="act2">加入活動</button>
-        </article>
-
-        <!-- Activity Card 3 -->
-        <article class="activity-card" data-category="文化">
-          <div class="act-card-header">
-            <span class="act-cat-badge">🎎 文化體驗</span>
-            <span class="act-organizer">萬春宮文史會 發起</span>
-          </div>
-          <h3 class="act-title">🎎 萬春宮傳統剪紙與彩繪燈籠手作工作坊</h3>
-          <div class="act-meta-row">
-            <span>📅 10月3日 (六) 14:00 PM</span>
-            <span>📍 萬春宮文史館講堂</span>
-          </div>
-          <div class="act-participants-row">
-            <div class="avatar-stack">
-              <span class="avatar-dot a1"></span>
-              <span class="avatar-dot a3"></span>
-            </div>
-            <span class="part-count">已報名 <strong>18 / 20</strong> 人</span>
-          </div>
-          <button class="btn-join-act" data-act-id="act3">加入活動</button>
-        </article>
-      </div>
-    </section>
-
-    <!-- Tab 4: 線上點燈 & 數位供養 -->
-    <section id="tab-blessing" class="tab-panel">
-      <div class="section-intro">
-        <h2>🪔 線上點燈與祈福</h2>
-        <p class="section-desc">「為自己或家人點一盞光明燈」</p>
-      </div>
-
-      <!-- Target Selector Pills -->
-      <div class="target-select-row">
-        <label>祈福對象：</label>
-        <div class="target-pills" id="targetPills">
-          <button class="target-pill is-active" data-target="自己">自己</button>
-          <button class="target-pill" data-target="家人">家人</button>
-          <button class="target-pill" data-target="親友">親友</button>
-        </div>
-      </div>
-
-      <div class="blessing-input-card">
-        <label for="blessingName">信士/祈福者姓名：</label>
-        <input type="text" id="blessingName" placeholder="例如：張大明" />
-
-        <label style="margin-top: 10px;">選擇安燈種類：</label>
-        <div class="blessing-type-grid" id="blessingTypes">
-          <button class="blessing-type-btn is-active" data-type="光明燈">💡 光明燈 (元辰光彩)</button>
-          <button class="blessing-type-btn" data-type="太歲燈">🏮 太歲燈 (化解太歲)</button>
-          <button class="blessing-type-btn" data-type="文昌燈">📚 文昌燈 (金榜題名)</button>
-          <button class="blessing-type-btn" data-type="姻緣燈">💖 姻緣燈 (良緣圓滿)</button>
-        </div>
-
-        <button id="lightLampBtn" class="ritual-btn primary-step full-width" style="margin-top: 14px;">
-          <span>✨ 點亮祈願燭光</span>
-        </button>
-      </div>
-
-      <div class="blessing-counter-bar">
-        <span>✨ 萬春宮已點亮 <strong id="lampCounter">1,286</strong> 盞心燈</span>
-      </div>
-
-      <!-- Interactive Animated Lamp Wall Grid -->
-      <div class="lamp-wall-grid" id="lampWallGrid">
-        <div class="lamp-card-interactive">
-          <div class="lamp-flame-container">
-            <div class="lamp-flame-flicker"></div>
-          </div>
-          <h4>張大明</h4>
-          <p>光明燈 · 元辰光彩</p>
-        </div>
-        <div class="lamp-card-interactive">
-          <div class="lamp-flame-container">
-            <div class="lamp-flame-flicker"></div>
-          </div>
-          <h4>陳闔家</h4>
-          <p>太歲燈 · 安康順遂</p>
-        </div>
-        <div class="lamp-card-interactive">
-          <div class="lamp-flame-container">
-            <div class="lamp-flame-flicker"></div>
-          </div>
-          <h4>李小英</h4>
-          <p>文昌燈 · 金榜題名</p>
-        </div>
-        <div class="lamp-card-interactive">
-          <div class="lamp-flame-container">
-            <div class="lamp-flame-flicker"></div>
-          </div>
-          <h4>林志明</h4>
-          <p>姻緣燈 · 良緣早定</p>
-        </div>
-      </div>
-    </section>
-
-    <!-- Tab 5: 個人共善 (MY COMMUNITY) -->
-    <section id="tab-profile" class="tab-panel">
-      <div class="user-profile-header">
-        <div class="user-avatar-circle">信</div>
-        <div>
-          <h3>善信大德</h3>
-          <p class="user-sub">功德值：<strong id="userMeritPoints">520</strong> 分 🏅</p>
-        </div>
-      </div>
-
-      <div class="profile-section-block">
-        <h3>⛩️ 我追蹤的宮廟</h3>
-        <div class="my-followed-temples" id="myFollowedTemples">
-          <div class="my-item-card">
-            <span>⛩️ 萬春宮 (台中媽祖)</span>
-            <span class="badge-status">LINE 通知中</span>
-          </div>
-        </div>
-      </div>
-
-      <div class="profile-section-block">
-        <h3>🌱 我參與的共善活動</h3>
-        <div class="my-joined-activities" id="myJoinedActivities">
-          <div class="my-item-card">
-            <span>🌱 彰化大肚溪畔淨川祈福護生行動</span>
-            <span class="badge-status-green">已報名成功</span>
-          </div>
-        </div>
-      </div>
-
-      <div class="profile-section-block">
-        <h3>❤️ 我的供養與募款護持紀錄</h3>
-        <div class="my-donations" id="myDonations">
-          <div class="my-item-card">
-            <span>🍚 萬春宮平安米供養 2 包</span>
-            <span class="badge-status-gold">功德迴向中</span>
-          </div>
-          <div class="my-item-card">
-            <span>❤️ 萬春宮｜冬季偏鄉送暖計畫 ($500)</span>
-            <span class="badge-status-gold">已護持成功</span>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- Tab 6: 附近宮廟 -->
+    <!-- Tab 2: 宮廟地圖 (FULL MAP & NEARBY DISCOVERY) -->
     <section id="tab-nearby" class="tab-panel">
       <div class="section-intro">
-        <h2>⛩️ 周邊參拜宮廟</h2>
-        <p class="section-desc">✨ 定位尋找 nearby 道場與路線</p>
+        <h2>周邊參拜宮廟導覽地圖</h2>
+        <p class="section-desc">定位尋找周邊道場與最佳參拜路線 (步行/單車/公車/開車)</p>
       </div>
 
       <button id="locateBtn" class="ritual-btn full-width locate-action-btn">
         <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="3 11 22 2 13 21 11 13 3 11"/></svg>
-        <span>📍 定位找附近宮廟</span>
+        <span>定位找附近宮廟</span>
       </button>
 
       <div id="locationBadge" class="location-badge is-hidden">
@@ -622,6 +304,7 @@
         <span id="locationBadgeText">已定位附近宮廟</span>
       </div>
 
+      <!-- Deity Filter Chips for Map Discovery -->
       <div class="filter-chips" id="deityFilters">
         <button class="chip-btn is-active" data-filter="all">全選</button>
         <button class="chip-btn" data-filter="媽祖">媽祖</button>
@@ -633,72 +316,395 @@
       <div id="nearbyList" class="temple-list"></div>
     </section>
 
-    <!-- Tab 7: 問廟公 -->
-    <section id="tab-ask" class="tab-panel">
-      <div class="section-intro">
-        <h2>💬 問焰智 AI 廟公</h2>
-        <p class="hint">✨ 輕鬆詢問宮廟歷史、拜拜禮儀或疑問</p>
+    <!-- Tab 3: 社群與廟宇 (X-MODEL COMMUNITY & TEMPLE POSTS FEED) -->
+    <section id="tab-community" class="tab-panel">
+      
+      <!-- Followed Temples Instagram-Style Stories Bar -->
+      <div class="temple-stories-bar" id="templeStoriesBar">
+        <div class="story-item is-active" data-temple="萬春宮" data-subtitle="中秋祈安法會 Live 實況" data-img="廟">
+          <div class="story-ring"><div class="story-avatar temple-avatar">廟</div></div>
+          <span class="story-title">萬春宮</span>
+        </div>
+        <div class="story-item" data-temple="大甲鎮瀾宮" data-subtitle="大甲媽遶境祈福影像紀錄" data-img="鎮">
+          <div class="story-ring"><div class="story-avatar">鎮</div></div>
+          <span class="story-title">鎮瀾宮</span>
+        </div>
+        <div class="story-item" data-temple="白沙屯拱天宮" data-subtitle="白沙屯媽祖徒步進香實錄" data-img="拱">
+          <div class="story-ring"><div class="story-avatar">拱</div></div>
+          <span class="story-title">拱天宮</span>
+        </div>
+        <div class="story-item" data-temple="彰化南瑤宮" data-subtitle="笨港進香三媽六歷史典故" data-img="南">
+          <div class="story-ring"><div class="story-avatar">南</div></div>
+          <span class="story-title">南瑤宮</span>
+        </div>
+        <div class="story-item" data-temple="鹿港天后宮" data-subtitle="國定古蹟文史彩繪剪紙展" data-img="鹿">
+          <div class="story-ring"><div class="story-avatar">鹿</div></div>
+          <span class="story-title">天后宮</span>
+        </div>
       </div>
-      <div id="askChat" class="chat-log"></div>
-      <div class="input-row sticky-input">
-        <input id="askInput" type="text" placeholder="例如：參拜流程怎麼拜？" />
-        <button id="askBtn" aria-label="發問">
-          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14.536 21.686a.5.5 0 0 0 .937-.024l6.5-19a.496.496 0 0 0-.635-.635l-19 6.5a.5.5 0 0 0-.024.937l7.93 3.18a2 2 0 0 1 1.112 1.11z"/><path d="m21.854 2.147-10.94 10.939"/></svg>
+
+      <!-- Collapsible "+" Post Composer Trigger Bar -->
+      <button class="btn-toggle-composer" id="togglePostComposerBtn">
+        <div class="plus-icon-circle">
+          <svg class="icon composer-plus-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        </div>
+        <span>＋ 發布隨手紀錄 / 宮廟公告</span>
+      </button>
+
+      <!-- Wrapped X-Model Post Composer Box (Collapsed by Default) -->
+      <div class="composer-wrap is-collapsed" id="postComposerWrap">
+        <div class="x-post-composer">
+          <div class="composer-top-row">
+            <div class="composer-avatar">信</div>
+            <textarea id="xPostInput" class="composer-textarea" rows="2" placeholder="分享您的善行、隨手紀錄或參拜心得..."></textarea>
+          </div>
+          <div class="composer-bottom-row">
+            <div class="composer-tools">
+              <label class="btn-attach-photo" title="上傳照片">
+                <input type="file" id="xPostFileInput" accept="image/*" style="display:none;" />
+                <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+                <span id="photoFileName">附圖</span>
+              </label>
+              <select id="xPostCategorySelect" class="composer-cat-select">
+                <option value="宮廟貼文">宮廟公告</option>
+                <option value="健行">健行活動</option>
+                <option value="隨手善行">隨手善行</option>
+                <option value="文化">民俗文化</option>
+              </select>
+            </div>
+            <button class="btn-publish-xpost" id="publishXPostBtn">發布貼文</button>
+          </div>
+          <div id="photoPreviewThumb" class="photo-preview-thumb is-hidden"></div>
+        </div>
+      </div>
+
+      <!-- Category Filter Chips -->
+      <div class="filter-chips" id="activityCategoryFilters">
+        <button class="chip-btn is-active" data-cat="all">全部動態</button>
+        <button class="chip-btn" data-cat="宮廟貼文">宮廟公告</button>
+        <button class="chip-btn" data-cat="健行">健行踏青</button>
+        <button class="chip-btn" data-cat="隨手善行">隨手善行</button>
+        <button class="chip-btn" data-cat="文化">民俗文化</button>
+      </div>
+
+      <!-- X-Model Unified Social Feed -->
+      <div class="activity-feed-list" id="activityFeedList">
+        
+        <!-- X-POST CARD 1: TEMPLE OFFICIAL (Verified Badge + Embedded Actions + X Social Bar) -->
+        <article class="x-post-card temple-official-card" data-category="宮廟貼文">
+          <div class="x-post-header">
+            <div class="x-post-avatar temple-avatar">廟</div>
+            <div class="x-post-user-info">
+              <div class="x-user-title-row">
+                <span class="x-user-name">萬春宮 (台中媽祖)</span>
+                <span class="x-verified-badge" title="官方驗證">✓ 官方</span>
+                <span class="x-post-handle">@wanchun_official</span>
+              </div>
+              <span class="x-post-time">2小時前 · 官方公告</span>
+            </div>
+          </div>
+          
+          <div class="x-post-body">
+            <h4 class="x-post-title">萬春宮 ｜ 天上聖母中秋祈安 & 冬季偏鄉送暖計畫</h4>
+            <p class="x-post-text">
+              萬春宮誠邀廣大信眾共修福田！除了臨廟參拜外，線上同步開放安點光明燈與冬令平安米供養，隨喜護持偏鄉獨居長者與弱勢家庭。
+            </p>
+
+            <!-- Campaign Progress inside Post -->
+            <div class="campaign-progress-wrap">
+              <div class="progress-bar-bg">
+                <div class="progress-bar-fill" style="width: 84%;"></div>
+              </div>
+              <div class="progress-labels">
+                <span>已募集 <strong>NT$ 420,000</strong></span>
+                <span>目標 NT$ 500,000 (84%)</span>
+              </div>
+            </div>
+
+            <!-- Integrated Action Buttons inside Temple Post -->
+            <div class="temple-post-actions-grid">
+              <button class="btn-post-act donation-act act-donate open-donation-modal">
+                <span>支持送暖捐款</span>
+              </button>
+              <button class="btn-post-act lamp-act act-lamp open-lamp-modal">
+                <span>為家人線上點燈</span>
+              </button>
+              <button class="btn-post-act offering-act act-rice offering-btn-act" data-offering="rice">
+                <span>供養平安米 ($100)</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- X Social Interaction Bar -->
+          <div class="x-social-bar">
+            <button class="x-social-btn x-btn-reply" title="回覆">
+              <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+              <span class="x-count">24</span>
+            </button>
+            <button class="x-social-btn x-btn-repost" title="轉發">
+              <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 1l4 4-4 4"/><path d="M3 11V9a4 4 0 0 1 4-4h14"/><path d="M7 23l-4-4 4-4"/><path d="M21 13v2a4 4 0 0 1-4 4H3"/></svg>
+              <span class="x-count">18</span>
+            </button>
+            <button class="x-social-btn x-btn-like" title="讚賞/護持">
+              <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+              <span class="x-count">156</span>
+            </button>
+            <button class="x-social-btn x-btn-bookmark" title="收藏">
+              <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
+            </button>
+          </div>
+        </article>
+
+        <!-- IN-FEED COMMUNITY IMPACT STATS DASHBOARD (Positioned in Middle of Feed) -->
+        <div class="impact-dashboard-card in-feed-impact">
+          <div class="impact-header">
+            <h3>本月共善影響力數據</h3>
+            <span class="impact-tag">信仰結合真實生活</span>
+          </div>
+          <div class="impact-stats-grid">
+            <div class="impact-item">
+              <strong>2,480 包</strong>
+              <label>平安米捐贈</label>
+            </div>
+            <div class="impact-item">
+              <strong>1,250 份</strong>
+              <label>愛心平安餐</label>
+            </div>
+            <div class="impact-item">
+              <strong>4 場</strong>
+              <label>環境保護活動</label>
+            </div>
+            <div class="impact-item">
+              <strong>126 位</strong>
+              <label>共善參與者</label>
+            </div>
+          </div>
+        </div>
+
+        <!-- X-POST CARD 2: DEVOTEE COMMUNITY POST (With Attached Photo Card) -->
+        <article class="x-post-card" data-category="隨手善行">
+          <div class="x-post-header">
+            <div class="x-post-avatar user-avatar-a1">林</div>
+            <div class="x-post-user-info">
+              <div class="x-user-title-row">
+                <span class="x-user-name">林師姐</span>
+                <span class="x-post-handle">@lin_blessing</span>
+              </div>
+              <span class="x-post-time">4小時前 · 彰化</span>
+            </div>
+          </div>
+
+          <div class="x-post-body">
+            <p class="x-post-text">
+              今天與志工團一行人前往大肚溪步道隨手撿垃圾與淨川，沿途祈福平安。願山川無災，大眾福慧雙修！
+            </p>
+            
+            <div class="x-post-photo-card">
+              <div class="x-photo-placeholder">
+                <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+                <span>大肚溪步道淨川現場紀錄照片</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- X Social Interaction Bar -->
+          <div class="x-social-bar">
+            <button class="x-social-btn x-btn-reply" title="回覆">
+              <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+              <span class="x-count">8</span>
+            </button>
+            <button class="x-social-btn x-btn-repost" title="轉發">
+              <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 1l4 4-4 4"/><path d="M3 11V9a4 4 0 0 1 4-4h14"/><path d="M7 23l-4-4 4-4"/><path d="M21 13v2a4 4 0 0 1-4 4H3"/></svg>
+              <span class="x-count">5</span>
+            </button>
+            <button class="x-social-btn x-btn-like" title="讚賞">
+              <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+              <span class="x-count">42</span>
+            </button>
+            <button class="x-social-btn x-btn-bookmark" title="收藏">
+              <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
+            </button>
+          </div>
+        </article>
+
+        <!-- X-POST CARD 3: HIKING COMMUNITY POST -->
+        <article class="x-post-card" data-category="健行">
+          <div class="x-post-header">
+            <div class="x-post-avatar user-avatar-a2">張</div>
+            <div class="x-post-user-info">
+              <div class="x-user-title-row">
+                <span class="x-user-name">信徒小張</span>
+                <span class="x-post-handle">@chang_hike</span>
+              </div>
+              <span class="x-post-time">6小時前 · 八卦山</span>
+            </div>
+          </div>
+
+          <div class="x-post-body">
+            <h4 class="x-post-title">週末八卦山步道清晨祈福走山活動號召</h4>
+            <p class="x-post-text">
+              本週六早晨 08:00 AM 預計於八卦山大佛廣場集合走步道，歡迎喜愛健行運動的同修信眾一同參與！
+            </p>
+            <button class="btn-join-act" data-act-id="act2">加入健行活動</button>
+          </div>
+
+          <!-- X Social Interaction Bar -->
+          <div class="x-social-bar">
+            <button class="x-social-btn x-btn-reply" title="回覆">
+              <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+              <span class="x-count">3</span>
+            </button>
+            <button class="x-social-btn x-btn-repost" title="轉發">
+              <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 1l4 4-4 4"/><path d="M3 11V9a4 4 0 0 1 4-4h14"/><path d="M7 23l-4-4 4-4"/><path d="M21 13v2a4 4 0 0 1-4 4H3"/></svg>
+              <span class="x-count">2</span>
+            </button>
+            <button class="x-social-btn x-btn-like" title="讚賞">
+              <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+              <span class="x-count">19</span>
+            </button>
+            <button class="x-social-btn x-btn-bookmark" title="收藏">
+              <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
+            </button>
+          </div>
+        </article>
+
+      </div>
+
+      <!-- Floating Animated "+" Creation Menu (Community Tab Only) -->
+      <div class="fab-create-wrapper" id="fabCreateWrapper">
+        <div class="fab-options-menu" id="fabOptionsMenu">
+          <button class="fab-option-item" id="fabOptionPost">
+            <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+            <span>發布隨手紀錄</span>
+          </button>
+          <button class="fab-option-item" id="fabOptionEvent">
+            <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            <span>發起共善活動</span>
+          </button>
+        </div>
+        <button class="fab-main-btn" id="fabCreateBtn" title="張貼與發起活動" aria-label="張貼選項">
+          <div class="fab-aura-pulse" aria-hidden="true"></div>
+          <svg class="icon fab-icon" viewBox="0 0 24 24" fill="none" stroke="#1a0f00" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="12" y1="5" x2="12" y2="19"/>
+            <line x1="5" y1="12" x2="19" y2="12"/>
+          </svg>
         </button>
+      </div>
+    </section>
+
+    <!-- Tab 4: 個人與 AI (INTEGRATED PROFILE & ASK AI CENTER) -->
+    <section id="tab-profile" class="tab-panel">
+      
+      <!-- User Profile Header Card -->
+      <div class="user-profile-header">
+        <div class="user-avatar-circle">信</div>
+        <div>
+          <h3>善信大德</h3>
+          <p class="user-sub">功德值：<strong id="userMeritPoints">520</strong> 分 ｜ 榮譽修持信士</p>
+        </div>
+      </div>
+
+      <!-- EMBEDDED ASK AI (問廟公) WISDOM CONSULTATION CENTER -->
+      <div class="ask-ai-profile-card">
+        <div class="ask-ai-card-header">
+          <div class="ai-avatar-badge">廟公</div>
+          <div>
+            <h3>問焰智 AI 廟公</h3>
+            <p class="ai-subtitle">線上請示宮廟歷史、參拜儀軌或人生智慧諮詢</p>
+          </div>
+        </div>
+
+        <div id="askChat" class="chat-log ask-chat-profile"></div>
+
+        <div class="input-row">
+          <input id="askInput" type="text" placeholder="請輸入您想向廟公請示的問題..." />
+          <button id="askBtn" aria-label="發問">
+            <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14.536 21.686a.5.5 0 0 0 .937-.024l6.5-19a.496.496 0 0 0-.635-.635l-19 6.5a.5.5 0 0 0-.024.937l7.93 3.18a2 2 0 0 1 1.112 1.11z"/><path d="m21.854 2.147-10.94 10.939"/></svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- Followed Temples Block -->
+      <div class="profile-section-block">
+        <h3>我追蹤的宮廟</h3>
+        <div class="my-followed-temples" id="myFollowedTemples">
+          <div class="my-item-card">
+            <span>萬春宮 (台中媽祖)</span>
+            <span class="badge-status">LINE 通知中</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Joined Activities Block -->
+      <div class="profile-section-block">
+        <h3>我參與的共善活動</h3>
+        <div class="my-joined-activities" id="myJoinedActivities">
+          <div class="my-item-card">
+            <span>彰化大肚溪畔淨川祈福護生行動</span>
+            <span class="badge-status-green">已報名成功</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Donation & Lamp Records Block -->
+      <div class="profile-section-block">
+        <h3>我的點燈、供養與捐款紀錄</h3>
+        <div class="my-donations" id="myDonations">
+          <div class="my-item-card">
+            <span>萬春宮光明燈 (張大明 · 元辰光彩)</span>
+            <span class="badge-status-gold">點燈祈福中</span>
+          </div>
+          <div class="my-item-card">
+            <span>萬春宮平安米供養 2 包</span>
+            <span class="badge-status-gold">功德迴向中</span>
+          </div>
+          <div class="my-item-card">
+            <span>萬春宮｜冬季偏鄉送暖計畫 ($500)</span>
+            <span class="badge-status-gold">已護持成功</span>
+          </div>
+        </div>
       </div>
     </section>
 
   </main>
 
-  <!-- Modal 1: 「發起共善活動」彈窗 -->
-  <div class="modal-backdrop is-hidden" id="createActivityModal">
+  <!-- Modal 1: 「線上安燈與供養」專屬彈窗 (CEREMONIAL LAMP & OFFERING MODAL) -->
+  <div class="modal-backdrop is-hidden" id="lightLampModal">
     <div class="modal-card">
       <div class="modal-header">
-        <h3>「＋ 發起共善活動」</h3>
-        <button class="modal-close-btn" id="closeCreateModalBtn">✕</button>
+        <h3>線上點燈與供養祈福儀軌</h3>
+        <button class="modal-close-btn" id="closeLampModalBtn">✕</button>
       </div>
-      <form id="createActivityForm">
-        <label>活動主題：</label>
-        <input type="text" id="actTitleInput" placeholder="例如：週末八卦山健行" required />
+      <form id="lampSubmitForm">
+        <label>祈福對象：</label>
+        <div class="target-pills" id="modalTargetPills" style="margin-bottom:10px;">
+          <button type="button" class="target-pill is-active" data-target="自己">自己</button>
+          <button type="button" class="target-pill" data-target="家人">家人</button>
+          <button type="button" class="target-pill" data-target="親友">親友</button>
+        </div>
 
-        <label style="margin-top:10px;">活動分類：</label>
-        <select id="actCategorySelect">
-          <option value="健行">🥾 健行</option>
-          <option value="單車">🚲 單車</option>
-          <option value="環境">🌱 環境</option>
-          <option value="攝影">📸 攝影</option>
-          <option value="宮廟">🏮 宮廟</option>
-          <option value="文化">🎎 文化</option>
-          <option value="美食">🍜 美食</option>
-          <option value="社群">👥 社群</option>
+        <label>祈福者/信士姓名：</label>
+        <input type="text" id="modalLampNameInput" placeholder="例如：張大明" required />
+
+        <label style="margin-top:10px;">選擇安燈/供養種類：</label>
+        <select id="modalLampTypeSelect">
+          <option value="光明燈">光明燈 (元辰光彩)</option>
+          <option value="太歲燈">太歲燈 (化解太歲)</option>
+          <option value="文昌燈">文昌燈 (金榜題名)</option>
+          <option value="姻緣燈">姻緣燈 (良緣圓滿)</option>
+          <option value="平安米供養">平安米供養 ($100)</option>
+          <option value="平安福食供齋">平安福食供齋 ($80)</option>
         </select>
 
-        <div class="form-row-2" style="margin-top:10px;">
-          <div>
-            <label>日期：</label>
-            <input type="date" id="actDateInput" required />
-          </div>
-          <div>
-            <label>時間：</label>
-            <input type="time" id="actTimeInput" required />
-          </div>
+        <label style="margin-top:10px;">祈願心願/祝禱文 (選填)：</label>
+        <input type="text" id="modalLampWishInput" placeholder="例如：祈求合家平安、事業順遂" />
+
+        <div class="impact-preview-box" style="margin-top:10px;">
+          <p>點亮之燭光將於萬春宮神前同步安奉，發送 LINE 祈福開光通知。</p>
         </div>
 
-        <label style="margin-top:10px;">集合地點 (請選公共場合)：</label>
-        <input type="text" id="actLocationInput" placeholder="例如：八卦山大佛廣場" required />
-
-        <label style="margin-top:10px;">人數上限：</label>
-        <input type="number" id="actCapacityInput" placeholder="例如：10" min="2" max="100" value="10" />
-
-        <label style="margin-top:10px;">活動說明：</label>
-        <textarea id="actDescInput" rows="3" placeholder="簡述活動流程與攜帶物品…"></textarea>
-
-        <div class="safety-notice-box">
-          <p>🔒 <strong>安全與社群規範提醒：</strong><br/>發起活動請選擇公共公開場所集合，保持互助尊重，非婚友交友社群。</p>
-        </div>
-
-        <button type="submit" class="ritual-btn primary-step full-width" style="margin-top:12px;">
-          <span>確認發起活動</span>
+        <button type="submit" class="ritual-btn primary-step full-width" style="margin-top:14px;">
+          <span>點亮燭光 (發送 LINE 祈福紀錄)</span>
         </button>
       </form>
     </div>
@@ -708,7 +714,7 @@
   <div class="modal-backdrop is-hidden" id="donationModal">
     <div class="modal-card">
       <div class="modal-header">
-        <h3>❤️ 萬春宮 ｜ 冬季偏鄉送暖計畫</h3>
+        <h3>萬春宮 ｜ 冬季偏鄉送暖計畫</h3>
         <button class="modal-close-btn" id="closeDonationModalBtn">✕</button>
       </div>
       <form id="donationForm">
@@ -726,13 +732,42 @@
         <input type="text" id="donorDedicationInput" placeholder="例如：祈求全家安康、事業順利" />
 
         <div class="impact-preview-box" id="impactPreviewBox">
-          <p>🎁 <strong>您的 $100 護持代表：</strong> 為 1 位偏鄉長者提供熱騰騰的冬令平安餐點。</p>
+          <p><strong>您的 $100 護持代表：</strong> 為 1 位偏鄉獨居長者提供熱騰騰的冬令平安餐點包。</p>
         </div>
 
         <button type="submit" class="ritual-btn primary-step full-width" style="margin-top:14px;">
-          <span>❤️ 隨喜護持 (發送 LINE 祈福紀錄)</span>
+          <span>隨喜護持 (發送 LINE 祈福紀錄)</span>
         </button>
       </form>
+    </div>
+  </div>
+
+  <!-- Modal 3: 「宮廟限時動態 / 故事」彈窗 (INSTAGRAM-STYLE TEMPLE STORY MODAL) -->
+  <div class="modal-backdrop is-hidden" id="templeStoryModal">
+    <div class="modal-card story-modal-card">
+      <div class="modal-header">
+        <div class="story-modal-user">
+          <div class="x-post-avatar temple-avatar" id="storyModalAvatar">廟</div>
+          <div>
+            <h3 id="storyModalTitle">萬春宮 ｜ 限時動態</h3>
+            <span class="x-post-time" id="storyModalTime">1小時前 發布</span>
+          </div>
+        </div>
+        <button class="modal-close-btn" id="closeStoryModalBtn">✕</button>
+      </div>
+      <div class="story-modal-body">
+        <div class="story-image-frame" id="storyModalFrame">
+          <div class="story-placeholder-hero">
+            <h4 id="storyHeroTitle">萬春宮中秋祈安法會 Live 實況</h4>
+            <p id="storyHeroDesc">莊嚴誦經祈福 · 線上同步觀禮祈祝合家平安</p>
+          </div>
+        </div>
+        <div class="story-modal-footer">
+          <button class="ritual-btn primary-step full-width" id="storyFollowBtn">
+            <span>✓ 追蹤宮廟 (接收即時 LINE 動態通知)</span>
+          </button>
+        </div>
+      </div>
     </div>
   </div>
 
@@ -741,3 +776,4 @@
   <script src="app.js"></script>
 </body>
 </html>
+

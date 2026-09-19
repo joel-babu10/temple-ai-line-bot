@@ -64,12 +64,78 @@ function playTempleChime(freq = 432, duration = 0.8) {
   }
 }
 
-// ---------- Floating Cute Divine Spirit Pet Mascot (神獸 焰寶) ----------
+// ---------- Floating Cute Divine Spirit Pet Mascot (神獸 焰寶 - 可自由拖曳移動) ----------
 const divinePetWidget = document.getElementById('divinePetWidget');
 const petSpeechBubble = document.getElementById('petSpeechBubble');
 
 if (divinePetWidget) {
-  divinePetWidget.addEventListener('click', () => {
+  let isDragging = false;
+  let startX = 0, startY = 0;
+  let initialLeft = 0, initialTop = 0;
+  let totalDragDistance = 0;
+
+  function onDragStart(e) {
+    totalDragDistance = 0;
+    isDragging = false;
+    const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+    const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+
+    startX = clientX;
+    startY = clientY;
+
+    const rect = divinePetWidget.getBoundingClientRect();
+    initialLeft = rect.left;
+    initialTop = rect.top;
+
+    divinePetWidget.style.right = 'auto';
+    divinePetWidget.style.bottom = 'auto';
+    divinePetWidget.style.left = `${initialLeft}px`;
+    divinePetWidget.style.top = `${initialTop}px`;
+    divinePetWidget.classList.add('is-dragging');
+
+    document.addEventListener('mousemove', onDragMove);
+    document.addEventListener('mouseup', onDragEnd);
+    document.addEventListener('touchmove', onDragMove, { passive: false });
+    document.addEventListener('touchend', onDragEnd);
+  }
+
+  function onDragMove(e) {
+    const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+    const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+
+    const dx = clientX - startX;
+    const dy = clientY - startY;
+    const dist = Math.sqrt(dx * dx + dy * dy);
+    totalDragDistance = dist;
+
+    if (dist > 6) {
+      isDragging = true;
+      if (e.cancelable) e.preventDefault();
+      const newLeft = Math.max(8, Math.min(window.innerWidth - divinePetWidget.offsetWidth - 8, initialLeft + dx));
+      const newTop = Math.max(8, Math.min(window.innerHeight - divinePetWidget.offsetHeight - 8, initialTop + dy));
+
+      divinePetWidget.style.left = `${newLeft}px`;
+      divinePetWidget.style.top = `${newTop}px`;
+    }
+  }
+
+  function onDragEnd() {
+    divinePetWidget.classList.remove('is-dragging');
+    document.removeEventListener('mousemove', onDragMove);
+    document.removeEventListener('mouseup', onDragEnd);
+    document.removeEventListener('touchmove', onDragMove);
+    document.removeEventListener('touchend', onDragEnd);
+  }
+
+  divinePetWidget.addEventListener('mousedown', onDragStart);
+  divinePetWidget.addEventListener('touchstart', onDragStart, { passive: true });
+
+  divinePetWidget.addEventListener('click', (e) => {
+    if (totalDragDistance > 8) {
+      e.stopImmediatePropagation();
+      return;
+    }
+
     playTempleChime(784, 0.4);
 
     // Cute double bounce jump animation
@@ -78,27 +144,30 @@ if (divinePetWidget) {
     divinePetWidget.classList.add('is-jumping');
 
     if (petSpeechBubble) {
-      petSpeechBubble.querySelector('span').textContent = '請問！✨';
+      petSpeechBubble.querySelector('span').textContent = '請問！';
       setTimeout(() => {
-        petSpeechBubble.querySelector('span').textContent = '問我！🐾';
+        petSpeechBubble.querySelector('span').textContent = '問我';
       }, 3000);
     }
 
-    // Switch tab to "問廟公"
+    // Switch tab to "個人與 AI" (profile tab)
     document.querySelectorAll('.tab-btn').forEach((b) => b.classList.remove('is-active'));
     document.querySelectorAll('.tab-panel').forEach((p) => p.classList.remove('is-active'));
 
-    const askTabBtn = document.querySelector('.tab-btn[data-tab="ask"]');
-    const askPanel = document.getElementById('tab-ask');
+    const profileTabBtn = document.querySelector('.tab-btn[data-tab="profile"]');
+    const profilePanel = document.getElementById('tab-profile');
 
-    if (askTabBtn) askTabBtn.classList.add('is-active');
-    if (askPanel) askPanel.classList.add('is-active');
+    if (profileTabBtn) profileTabBtn.classList.add('is-active');
+    if (profilePanel) profilePanel.classList.add('is-active');
 
-    // Focus input field
+    // Scroll to Ask AI input and focus
     const askInput = document.getElementById('askInput');
     if (askInput) {
-      setTimeout(() => askInput.focus(), 250);
+      askInput.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      setTimeout(() => askInput.focus(), 300);
     }
+
+    if (navigator.vibrate) navigator.vibrate([30, 40, 30]);
   });
 }
 
@@ -1047,3 +1116,375 @@ document.addEventListener('click', (e) => {
     if (navigator.vibrate) navigator.vibrate(40);
   }
 });
+
+// 8. Online 光明燈 Modal & Target Selection
+const lightLampModal = document.getElementById('lightLampModal');
+const closeLampModalBtn = document.getElementById('closeLampModalBtn');
+const lampSubmitForm = document.getElementById('lampSubmitForm');
+let selectedLampType = 'guangming';
+
+if (closeLampModalBtn && lightLampModal) {
+  closeLampModalBtn.addEventListener('click', () => {
+    lightLampModal.classList.add('is-hidden');
+  });
+}
+
+// Global delegated listener for opening Light Lamp Modal
+document.addEventListener('click', (e) => {
+  const btn = e.target.closest('.open-lamp-modal, #openLampModalBtn, .act-lamp');
+  if (btn) {
+    if (lightLampModal) {
+      lightLampModal.classList.remove('is-hidden');
+      playTempleChime(660, 0.3);
+    }
+  }
+
+  // Delegated listener for post-embedded donation button
+  const donateBtn = e.target.closest('.act-donate');
+  if (donateBtn) {
+    if (donationModal) {
+      donationModal.classList.remove('is-hidden');
+      playTempleChime(660, 0.3);
+    }
+  }
+
+  // Delegated listener for post-embedded rice offering button
+  const riceBtn = e.target.closest('.act-rice');
+  if (riceBtn && !riceBtn.dataset.done) {
+    riceBtn.dataset.done = 'true';
+    riceBtn.textContent = '✓ 已成功供養平安米';
+    riceBtn.style.background = 'rgba(245, 158, 11, 0.3)';
+    riceBtn.style.color = '#fde68a';
+
+    const myDonations = document.getElementById('myDonations');
+    if (myDonations) {
+      const item = document.createElement('div');
+      item.className = 'my-item-card';
+      item.innerHTML = `<span>🍚 萬春宮平安米護持 1 包 ($100)</span><span class="badge-status-gold">福慧雙修</span>`;
+      myDonations.prepend(item);
+    }
+
+    fireConfetti();
+    playTempleChime(700, 0.4);
+    if (navigator.vibrate) navigator.vibrate(40);
+  }
+});
+
+// Modal Target Pills Selection
+document.querySelectorAll('#modalTargetPills .target-pill').forEach((pill) => {
+  pill.addEventListener('click', () => {
+    document.querySelectorAll('#modalTargetPills .target-pill').forEach((p) => p.classList.remove('is-active'));
+    pill.classList.add('is-active');
+    playTempleChime(500, 0.2);
+  });
+});
+
+// Modal Lamp Type Cards Selection
+document.querySelectorAll('#modalLampGrid .lamp-type-card').forEach((card) => {
+  card.addEventListener('click', () => {
+    document.querySelectorAll('#modalLampGrid .lamp-type-card').forEach((c) => c.classList.remove('is-selected'));
+    card.classList.add('is-selected');
+    selectedLampType = card.dataset.lamp;
+    playTempleChime(540, 0.2);
+  });
+});
+
+if (lampSubmitForm) {
+  lampSubmitForm.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const name = document.getElementById('lampDevoteeName').value.trim();
+    const bday = document.getElementById('lampDevoteeBday').value;
+    const wish = document.getElementById('lampDevoteeWish').value.trim();
+
+    if (!name) return;
+
+    const typeNames = {
+      guangming: '光明燈 (元辰光彩)',
+      taisui: '太歲燈 (趨吉避凶)',
+      wenchang: '文昌燈 (金榜題名)',
+      caishen: '財神燈 (財源廣進)'
+    };
+    const lampTitle = typeNames[selectedLampType] || '光明燈';
+
+    // Add to My Lamp Records in Profile
+    const myLampsContainer = document.getElementById('myLampsContainer');
+    if (myLampsContainer) {
+      const item = document.createElement('div');
+      item.className = 'my-item-card';
+      item.innerHTML = `<span>🕯️ ${name} 的 ${lampTitle}</span><span class="badge-status-gold">點亮中 (至年底)</span>`;
+      myLampsContainer.prepend(item);
+    }
+
+    lampSubmitForm.reset();
+    if (lightLampModal) lightLampModal.classList.add('is-hidden');
+    fireConfetti();
+    playTempleChime(880, 0.6);
+    if (navigator.vibrate) navigator.vibrate([40, 80, 40]);
+  });
+}
+
+// 9. X-Model Post Composer & Photo Upload Handler
+const publishXPostBtn = document.getElementById('publishXPostBtn');
+const xPostInput = document.getElementById('xPostInput');
+const xPostFileInput = document.getElementById('xPostFileInput');
+const xPostCategorySelect = document.getElementById('xPostCategorySelect');
+const photoFileName = document.getElementById('photoFileName');
+const photoPreviewThumb = document.getElementById('photoPreviewThumb');
+let attachedPhotoData = null;
+
+if (xPostFileInput) {
+  xPostFileInput.addEventListener('change', (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      photoFileName.textContent = file.name.length > 8 ? file.name.substring(0, 8) + '...' : file.name;
+      const reader = new FileReader();
+      reader.onload = (evt) => {
+        attachedPhotoData = evt.target.result;
+        if (photoPreviewThumb) {
+          photoPreviewThumb.classList.remove('is-hidden');
+          photoPreviewThumb.innerHTML = `<span>📷 已附圖: ${file.name}</span>`;
+        }
+      };
+      reader.readAsDataURL(file);
+    }
+  });
+}
+
+if (publishXPostBtn) {
+  publishXPostBtn.addEventListener('click', () => {
+    const text = xPostInput.value.trim();
+    const category = xPostCategorySelect ? xPostCategorySelect.value : '隨手善行';
+
+    if (!text && !attachedPhotoData) return;
+
+    const feed = document.getElementById('activityFeedList');
+    if (feed) {
+      const card = document.createElement('article');
+      card.className = 'x-post-card';
+      card.dataset.category = category;
+
+      let photoHtml = '';
+      if (attachedPhotoData) {
+        photoHtml = `
+          <div class="x-post-photo-card">
+            <img src="${attachedPhotoData}" alt="隨手紀錄照片" style="width:100%;max-height:220px;object-fit:cover;display:block;" />
+          </div>
+        `;
+      }
+
+      card.innerHTML = `
+        <div class="x-post-header">
+          <div class="x-post-avatar">信</div>
+          <div class="x-post-user-info">
+            <div class="x-user-title-row">
+              <span class="x-user-name">善信大德 (您)</span>
+              <span class="x-post-handle">@my_account</span>
+            </div>
+            <span class="x-post-time">剛剛 · ${category}</span>
+          </div>
+        </div>
+
+        <div class="x-post-body">
+          <p class="x-post-text">${text.replace(/</g, "&lt;").replace(/>/g, "&gt;")}</p>
+          ${photoHtml}
+        </div>
+
+        <div class="x-social-bar">
+          <button class="x-social-btn x-btn-reply" title="回覆">
+            <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+            <span class="x-count">0</span>
+          </button>
+          <button class="x-social-btn x-btn-repost" title="轉發">
+            <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 1l4 4-4 4"/><path d="M3 11V9a4 4 0 0 1 4-4h14"/><path d="M7 23l-4-4 4-4"/><path d="M21 13v2a4 4 0 0 1-4 4H3"/></svg>
+            <span class="x-count">0</span>
+          </button>
+          <button class="x-social-btn x-btn-like" title="讚賞">
+            <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+            <span class="x-count">0</span>
+          </button>
+          <button class="x-social-btn x-btn-bookmark" title="收藏">
+            <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
+          </button>
+        </div>
+      `;
+
+      feed.prepend(card);
+    }
+
+    // Reset composer
+    xPostInput.value = '';
+    attachedPhotoData = null;
+    if (photoFileName) photoFileName.textContent = '附圖';
+    if (photoPreviewThumb) {
+      photoPreviewThumb.classList.add('is-hidden');
+      photoPreviewThumb.innerHTML = '';
+    }
+    const postComposerWrap = document.getElementById('postComposerWrap');
+    const toggleBtn = document.getElementById('togglePostComposerBtn');
+    if (postComposerWrap) {
+      postComposerWrap.classList.remove('is-expanded');
+      postComposerWrap.classList.add('is-collapsed');
+    }
+    if (toggleBtn) toggleBtn.classList.remove('is-active');
+
+    fireConfetti();
+    playTempleChime(750, 0.4);
+    if (navigator.vibrate) navigator.vibrate([30, 40, 30]);
+  });
+}
+
+// 10. X-Social Interaction Actions (Like, Repost, Bookmark)
+document.addEventListener('click', (e) => {
+  // Like Button Handler
+  const likeBtn = e.target.closest('.x-btn-like');
+  if (likeBtn) {
+    likeBtn.classList.toggle('is-liked');
+    const isLiked = likeBtn.classList.contains('is-liked');
+    const countSpan = likeBtn.querySelector('.x-count');
+    if (countSpan) {
+      let count = parseInt(countSpan.textContent) || 0;
+      countSpan.textContent = isLiked ? count + 1 : Math.max(0, count - 1);
+    }
+    playTempleChime(isLiked ? 660 : 440, 0.2);
+    if (navigator.vibrate) navigator.vibrate(25);
+  }
+
+  // Repost Button Handler
+  const repostBtn = e.target.closest('.x-btn-repost');
+  if (repostBtn) {
+    repostBtn.classList.toggle('is-reposted');
+    const isReposted = repostBtn.classList.contains('is-reposted');
+    const countSpan = repostBtn.querySelector('.x-count');
+    if (countSpan) {
+      let count = parseInt(countSpan.textContent) || 0;
+      countSpan.textContent = isReposted ? count + 1 : Math.max(0, count - 1);
+    }
+    playTempleChime(580, 0.2);
+    if (navigator.vibrate) navigator.vibrate(30);
+  }
+
+  // Bookmark Button Handler
+  const bookmarkBtn = e.target.closest('.x-btn-bookmark');
+  if (bookmarkBtn) {
+    bookmarkBtn.classList.toggle('is-bookmarked');
+    playTempleChime(500, 0.2);
+  }
+});
+
+// 11. Followed Temples Instagram-Style Story Modal Handlers
+const templeStoryModal = document.getElementById('templeStoryModal');
+const closeStoryModalBtn = document.getElementById('closeStoryModalBtn');
+const storyFollowBtn = document.getElementById('storyFollowBtn');
+
+if (closeStoryModalBtn && templeStoryModal) {
+  closeStoryModalBtn.addEventListener('click', () => {
+    templeStoryModal.classList.add('is-hidden');
+  });
+}
+
+document.querySelectorAll('#templeStoriesBar .story-item').forEach((item) => {
+  item.addEventListener('click', () => {
+    const templeName = item.dataset.temple || '宮廟';
+    const subtitle = item.dataset.subtitle || '最新宮廟動態實況';
+    const avatarTxt = item.dataset.img || '廟';
+
+    const titleEl = document.getElementById('storyModalTitle');
+    const avatarEl = document.getElementById('storyModalAvatar');
+    const heroTitleEl = document.getElementById('storyHeroTitle');
+    const heroDescEl = document.getElementById('storyHeroDesc');
+
+    if (titleEl) titleEl.textContent = `${templeName} ｜ 限時動態`;
+    if (avatarEl) avatarEl.textContent = avatarTxt;
+    if (heroTitleEl) heroTitleEl.textContent = `${templeName} ${subtitle}`;
+    if (heroDescEl) heroDescEl.textContent = `莊嚴祈福 · 線上觀禮祈祝平安 ｜ ${templeName} 官方頻道`;
+
+    if (templeStoryModal) {
+      templeStoryModal.classList.remove('is-hidden');
+      playTempleChime(640, 0.3);
+      if (navigator.vibrate) navigator.vibrate(30);
+    }
+  });
+});
+
+if (storyFollowBtn) {
+  storyFollowBtn.addEventListener('click', () => {
+    storyFollowBtn.classList.toggle('is-following');
+    const isFollowing = storyFollowBtn.classList.contains('is-following');
+    storyFollowBtn.innerHTML = isFollowing
+      ? '<span>✓ 已成功追蹤此宮廟 (LINE 通知開啟)</span>'
+      : '<span>✓ 追蹤宮廟 (接收即時 LINE 動態通知)</span>';
+    fireConfetti();
+    playTempleChime(800, 0.5);
+    if (navigator.vibrate) navigator.vibrate([40, 60, 40]);
+  });
+}
+
+// 13. Collapsible Post Composer Toggle Bar Handler
+const togglePostComposerBtn = document.getElementById('togglePostComposerBtn');
+const postComposerWrap = document.getElementById('postComposerWrap');
+
+if (togglePostComposerBtn && postComposerWrap) {
+  togglePostComposerBtn.addEventListener('click', () => {
+    const isCollapsed = postComposerWrap.classList.contains('is-collapsed');
+    if (isCollapsed) {
+      postComposerWrap.classList.remove('is-collapsed');
+      postComposerWrap.classList.add('is-expanded');
+      togglePostComposerBtn.classList.add('is-active');
+      const postInput = document.getElementById('xPostInput');
+      if (postInput) setTimeout(() => postInput.focus(), 250);
+    } else {
+      postComposerWrap.classList.remove('is-expanded');
+      postComposerWrap.classList.add('is-collapsed');
+      togglePostComposerBtn.classList.remove('is-active');
+    }
+    playTempleChime(600, 0.2);
+    if (navigator.vibrate) navigator.vibrate(25);
+  });
+}
+
+// 14. Floating Animated "+" Creation FAB Menu Handlers
+const fabCreateWrapper = document.getElementById('fabCreateWrapper');
+const fabCreateBtn = document.getElementById('fabCreateBtn');
+const fabOptionPost = document.getElementById('fabOptionPost');
+const fabOptionEvent = document.getElementById('fabOptionEvent');
+
+if (fabCreateBtn && fabCreateWrapper) {
+  fabCreateBtn.addEventListener('click', () => {
+    fabCreateWrapper.classList.toggle('is-expanded');
+    const isExpanded = fabCreateWrapper.classList.contains('is-expanded');
+    playTempleChime(isExpanded ? 720 : 480, 0.2);
+    if (navigator.vibrate) navigator.vibrate(30);
+  });
+}
+
+if (fabOptionPost) {
+  fabOptionPost.addEventListener('click', () => {
+    if (fabCreateWrapper) fabCreateWrapper.classList.remove('is-expanded');
+    if (postComposerWrap) {
+      postComposerWrap.classList.remove('is-collapsed');
+      postComposerWrap.classList.add('is-expanded');
+    }
+    if (togglePostComposerBtn) togglePostComposerBtn.classList.add('is-active');
+    const postInput = document.getElementById('xPostInput');
+    if (postInput) {
+      postInput.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      setTimeout(() => postInput.focus(), 300);
+    }
+    playTempleChime(660, 0.2);
+  });
+}
+
+if (fabOptionEvent) {
+  fabOptionEvent.addEventListener('click', () => {
+    if (fabCreateWrapper) fabCreateWrapper.classList.remove('is-expanded');
+    const createModal = document.getElementById('createActivityModal');
+    if (createModal) {
+      createModal.classList.remove('is-hidden');
+    }
+    playTempleChime(660, 0.2);
+  });
+}
+
+
+
+
