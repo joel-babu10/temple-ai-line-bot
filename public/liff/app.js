@@ -1,5 +1,30 @@
 const API_BASE = '/api';
 
+// ---------- Background Ember Sparks Particle Generator ----------
+(function initEmberSparks() {
+  const container = document.getElementById('sparkDustContainer');
+  if (!container) return;
+
+  const sparkCount = 18;
+  for (let i = 0; i < sparkCount; i++) {
+    const particle = document.createElement('div');
+    particle.className = 'ember-particle';
+
+    const leftPos = Math.random() * 100;
+    const delay = Math.random() * 5;
+    const duration = 4 + Math.random() * 4;
+    const size = 2 + Math.random() * 3;
+
+    particle.style.left = `${leftPos}vw`;
+    particle.style.animationDelay = `${delay}s`;
+    particle.style.animationDuration = `${duration}s`;
+    particle.style.width = `${size}px`;
+    particle.style.height = `${size}px`;
+
+    container.appendChild(particle);
+  }
+})();
+
 // ---------- Web Audio API Temple Bell Chime Synthesizer ----------
 let chimeEnabled = true;
 const chimeBtn = document.getElementById('chimeToggleBtn');
@@ -60,13 +85,16 @@ document.querySelectorAll('.tab-btn').forEach((btn) => {
   });
 });
 
-// ---------- Divination flow ----------
+// ---------- Divination flow with 3D Moon Blocks & Incense Visuals ----------
 const incenseBtn = document.getElementById('incenseBtn');
 const jiaoBtn = document.getElementById('jiaoBtn');
 const jiaoResult = document.getElementById('jiaoResult');
 const drawBtn = document.getElementById('drawBtn');
 const fortuneCard = document.getElementById('fortuneCard');
 const interpretBox = document.getElementById('interpretBox');
+const incenseBurner = document.getElementById('incenseBurner');
+const blockLeft = document.getElementById('blockLeft');
+const blockRight = document.getElementById('blockRight');
 
 let currentFortune = null;
 
@@ -74,6 +102,11 @@ incenseBtn.addEventListener('click', () => {
   incenseBtn.disabled = true;
   incenseBtn.querySelector('span:last-child').textContent = '已上香 🙏';
   jiaoBtn.disabled = false;
+
+  if (incenseBurner) {
+    incenseBurner.classList.add('is-lit');
+  }
+
   playTempleChime(440, 0.6);
 });
 
@@ -81,6 +114,30 @@ jiaoBtn.addEventListener('click', () => {
   const outcomes = ['聖筊 ✅ 神明應允', '笑筊，再擲一次', '陰筊，再擲一次'];
   const roll = Math.random();
   const outcome = roll < 0.5 ? outcomes[0] : roll < 0.75 ? outcomes[1] : outcomes[2];
+
+  // Trigger 3D block flip animation
+  if (blockLeft && blockRight) {
+    blockLeft.classList.remove('toss-anim-left', 'convex');
+    blockRight.classList.remove('toss-anim-right', 'convex');
+
+    void blockLeft.offsetWidth; // trigger reflow
+    blockLeft.classList.add('toss-anim-left');
+    blockRight.classList.add('toss-anim-right');
+
+    setTimeout(() => {
+      if (outcome === outcomes[0]) {
+        // 聖筊: One flat (up), one convex (down)
+        blockRight.classList.add('convex');
+      } else if (outcome === outcomes[1]) {
+        // 笑筊: Both flat (up)
+      } else {
+        // 陰筊: Both convex (down)
+        blockLeft.classList.add('convex');
+        blockRight.classList.add('convex');
+      }
+    }, 250);
+  }
+
   jiaoResult.textContent = outcome;
 
   if (outcome === outcomes[0]) {
@@ -136,13 +193,15 @@ async function handleInterpretQuery() {
   appendChat('interpretChat', data.reply, 'ai');
 }
 
-askInterpretBtn.addEventListener('click', handleInterpretQuery);
-questionInput.addEventListener('keydown', (e) => {
-  if (e.key === 'Enter') {
-    e.preventDefault();
-    handleInterpretQuery();
-  }
-});
+if (askInterpretBtn) askInterpretBtn.addEventListener('click', handleInterpretQuery);
+if (questionInput) {
+  questionInput.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      handleInterpretQuery();
+    }
+  });
+}
 
 function appendChat(containerId, text, role) {
   const el = document.createElement('div');
@@ -150,6 +209,62 @@ function appendChat(containerId, text, role) {
   el.textContent = text;
   document.getElementById(containerId).appendChild(el);
   el.scrollIntoView({ behavior: 'smooth', block: 'end' });
+}
+
+// ---------- Tab 3: Interactive Online Blessing Lamp Wall ----------
+let totalLamps = 1286;
+let activeBlessingType = '平安順遂';
+
+const initialLamps = [
+  { name: '張信士', wish: '🌸 平安順遂' },
+  { name: '李信士', wish: '💼 事業亨通' },
+  { name: '陳信士', wish: '💖 良緣圓滿' },
+  { name: '王信士', wish: '🎓 文昌金榜' },
+  { name: '黃信士', wish: '💰 財運亨通' },
+  { name: '林信士', wish: '🌸 平安順遂' }
+];
+
+function renderLampWall() {
+  const grid = document.getElementById('lampWallGrid');
+  if (!grid) return;
+  grid.innerHTML = initialLamps
+    .map(
+      (l) => `
+    <div class="blessing-lamp-card">
+      <div class="lamp-name">${l.name}</div>
+      <div class="lamp-wish">${l.wish}</div>
+    </div>`
+    )
+    .join('');
+}
+renderLampWall();
+
+// Blessing type selector
+document.querySelectorAll('.blessing-type-btn').forEach((btn) => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.blessing-type-btn').forEach((b) => b.classList.remove('is-active'));
+    btn.classList.add('is-active');
+    activeBlessingType = btn.dataset.type;
+  });
+});
+
+const lightLampBtn = document.getElementById('lightLampBtn');
+if (lightLampBtn) {
+  lightLampBtn.addEventListener('click', () => {
+    const nameInput = document.getElementById('blessingName');
+    const name = nameInput.value.trim() || '虔誠信士';
+    const wish = activeBlessingType;
+
+    initialLamps.unshift({ name, wish });
+    totalLamps += 1;
+
+    document.getElementById('lampCounter').textContent = totalLamps.toLocaleString();
+    renderLampWall();
+    fireConfetti();
+    playTempleChime(580, 0.9);
+
+    if (nameInput) nameInput.value = '';
+  });
 }
 
 // ---------- Nearby temples & Location ----------
@@ -168,7 +283,6 @@ document.getElementById('locateBtn').addEventListener('click', async () => {
     const res = await fetch(`${API_BASE}/temples/nearby?lat=${lat}&lng=${lng}`);
     cachedTemples = await res.json();
 
-    // 1. Dynamic Nearest Temple Context Update
     if (cachedTemples.length > 0) {
       const nearest = cachedTemples[0];
       const subTitleText = document.getElementById('subTitleText');
@@ -228,6 +342,7 @@ async function getLocation() {
 
 function renderNearbyList() {
   const list = document.getElementById('nearbyList');
+  if (!list) return;
   list.innerHTML = '';
 
   const filtered = cachedTemples.filter((t) => {
@@ -278,7 +393,6 @@ function renderNearbyList() {
 function renderRouteDrawer(container, temple, userLoc) {
   const dist = temple.distanceKm || 1.2;
 
-  // Estimates calculation
   const walkMins = Math.round((dist / 4.5) * 60);
   const walkSteps = Math.round(dist * 1400);
   const walkCals = Math.round(dist * 50);
@@ -418,6 +532,7 @@ function renderRouteDrawer(container, temple, userLoc) {
   const res = await fetch(`${API_BASE}/festivals`);
   const festivals = await res.json();
   const list = document.getElementById('festivalList');
+  if (!list) return;
 
   if (!festivals.length) {
     list.innerHTML = '<p class="hint">近期沒有節慶活動。</p>';
@@ -457,10 +572,12 @@ async function handleAskQuery() {
   appendChat('askChat', data.reply, 'ai');
 }
 
-askBtn.addEventListener('click', handleAskQuery);
-askInput.addEventListener('keydown', (e) => {
-  if (e.key === 'Enter') {
-    e.preventDefault();
-    handleAskQuery();
-  }
-});
+if (askBtn) askBtn.addEventListener('click', handleAskQuery);
+if (askInput) {
+  askInput.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      handleAskQuery();
+    }
+  });
+}

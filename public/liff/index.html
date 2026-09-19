@@ -11,7 +11,10 @@
 </head>
 <body>
 
-  <!-- App Header with Sacred Flame Lighting Ambient -->
+  <!-- Background Ambient Ember Sparks & Floating Dust Container -->
+  <div id="sparkDustContainer" class="spark-dust-bg" aria-hidden="true"></div>
+
+  <!-- App Header with Animated Sacred Flame Lighting Ambient -->
   <header class="temple-header">
     <div class="flame-bg-glow" aria-hidden="true"></div>
     <div class="incense-wisp" aria-hidden="true"></div>
@@ -23,7 +26,7 @@
     </button>
 
     <div class="header-brand">
-      <div class="flame-emblem" aria-hidden="true">
+      <div class="flame-emblem animated-flame" aria-hidden="true">
         <svg class="flame-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
           <path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"/>
         </svg>
@@ -44,6 +47,10 @@
     <button class="tab-btn" data-tab="nearby">
       <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>
       <span>附近宮廟</span>
+    </button>
+    <button class="tab-btn" data-tab="blessing">
+      <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+      <span>線上點燈</span>
     </button>
     <button class="tab-btn" data-tab="festivals">
       <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
@@ -68,6 +75,20 @@
           <span id="deityBadgeText">大殿主神 · 天上聖母 (媽祖)</span>
         </div>
         <p class="altar-guide">心誠則靈 · 請先稟明姓名、生辰、居住地址與祈求事項</p>
+
+        <!-- Incense Burner Visual -->
+        <div class="incense-burner-visual" id="incenseBurner">
+          <div class="incense-stick stick-1"><span class="ember-tip"></span></div>
+          <div class="incense-stick stick-2"><span class="ember-tip"></span></div>
+          <div class="incense-stick stick-3"><span class="ember-tip"></span></div>
+          <div class="burner-pot">鼎</div>
+        </div>
+
+        <!-- Interactive 3D Moon Blocks Stage -->
+        <div class="jiao-3d-stage" id="jiaoVisualStage">
+          <div class="crescent-block block-left" id="blockLeft"></div>
+          <div class="crescent-block block-right" id="blockRight"></div>
+        </div>
 
         <div class="altar" id="altarStage">
           <button id="incenseBtn" class="ritual-btn primary-step">
@@ -151,7 +172,41 @@
       <div id="nearbyList" class="temple-list"></div>
     </section>
 
-    <!-- Tab 3: 節慶提醒 -->
+    <!-- Tab 3: 線上點燈祈福牆 -->
+    <section id="tab-blessing" class="tab-panel">
+      <div class="section-intro">
+        <h2>🪔 線上點光明燈 · 祈福許願牆</h2>
+        <p class="section-desc">虔誠點亮聖焰心燈，祈求神明保佑與福氣庇佑</p>
+      </div>
+
+      <div class="blessing-input-card">
+        <label for="blessingName">祈福信士姓名 / 稱呼：</label>
+        <input type="text" id="blessingName" placeholder="例如：張大明 或 匿名信士" />
+
+        <label style="margin-top: 10px;">選擇祈福燈心願：</label>
+        <div class="blessing-type-grid" id="blessingTypes">
+          <button class="blessing-type-btn is-active" data-type="平安順遂">🌸 平安順遂</button>
+          <button class="blessing-type-btn" data-type="事業亨通">💼 事業亨通</button>
+          <button class="blessing-type-btn" data-type="良緣圓滿">💖 良緣圓滿</button>
+          <button class="blessing-type-btn" data-type="文昌金榜">🎓 考試金榜</button>
+          <button class="blessing-type-btn" data-type="財運亨通">💰 財運亨通</button>
+        </div>
+
+        <button id="lightLampBtn" class="ritual-btn primary-step full-width" style="margin-top: 14px;">
+          <span>🪔 點亮光明燈祈福</span>
+        </button>
+      </div>
+
+      <div class="blessing-counter-bar">
+        <span>✨ 善信大眾已線上點亮 <strong id="lampCounter">1,286</strong> 盞聖焰心燈</span>
+      </div>
+
+      <div class="lamp-wall-grid" id="lampWallGrid">
+        <!-- Interactive Glowing Lamps dynamically injected here -->
+      </div>
+    </section>
+
+    <!-- Tab 4: 節慶提醒 -->
     <section id="tab-festivals" class="tab-panel">
       <div class="section-intro">
         <h2>🏮 民俗節慶與神佛誕辰曆法</h2>
@@ -162,7 +217,7 @@
       </div>
     </section>
 
-    <!-- Tab 4: 問廟公 -->
+    <!-- Tab 5: 問廟公 -->
     <section id="tab-ask" class="tab-panel">
       <div class="section-intro">
         <h2>💬 焰智 AI 廟公線上諮詢</h2>
