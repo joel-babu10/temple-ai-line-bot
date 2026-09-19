@@ -37,7 +37,7 @@ incenseBtn.addEventListener('click', () => {
 });
 
 jiaoBtn.addEventListener('click', () => {
-  // Simple weighted coin toss: needs a "聖筊" (one up, one down) to proceed, matching real ritual flow.
+  // Weighted coin toss: needs a "聖筊" (one up, one down) to proceed, matching real ritual flow.
   const outcomes = ['聖筊 ✅ 神明應允', '笑筊，再擲一次', '陰筊，再擲一次'];
   const roll = Math.random();
   const outcome = roll < 0.5 ? outcomes[0] : roll < 0.75 ? outcomes[1] : outcomes[2];
@@ -65,21 +65,23 @@ drawBtn.addEventListener('click', async () => {
 function fireConfetti() {
   if (typeof confetti !== 'function') return;
   confetti({
-    particleCount: 60,
-    spread: 65,
+    particleCount: 65,
+    spread: 70,
     startVelocity: 35,
     origin: { y: 0.6 },
-    colors: ['#c79a45', '#e4c77a', '#7a1f1f']
+    colors: ['#c79a45', '#e4c77a', '#7a1f1f', '#ffe39d', '#f59e0b']
   });
 }
 
-document.getElementById('askInterpretBtn').addEventListener('click', async () => {
-  const input = document.getElementById('questionInput');
-  const question = input.value.trim();
+const askInterpretBtn = document.getElementById('askInterpretBtn');
+const questionInput = document.getElementById('questionInput');
+
+async function handleInterpretQuery() {
+  const question = questionInput.value.trim();
   if (!question || !currentFortune) return;
 
   appendChat('interpretChat', question, 'user');
-  input.value = '';
+  questionInput.value = '';
 
   const res = await fetch(`${API_BASE}/fortune/interpret`, {
     method: 'POST',
@@ -88,6 +90,14 @@ document.getElementById('askInterpretBtn').addEventListener('click', async () =>
   });
   const data = await res.json();
   appendChat('interpretChat', data.reply, 'ai');
+}
+
+askInterpretBtn.addEventListener('click', handleInterpretQuery);
+questionInput.addEventListener('keydown', (e) => {
+  if (e.key === 'Enter') {
+    e.preventDefault();
+    handleInterpretQuery();
+  }
 });
 
 function appendChat(containerId, text, role) {
@@ -191,13 +201,15 @@ function renderNearby(temples, userLat, userLng) {
 })();
 
 // ---------- Ask anything ----------
-document.getElementById('askBtn').addEventListener('click', async () => {
-  const input = document.getElementById('askInput');
-  const question = input.value.trim();
+const askBtn = document.getElementById('askBtn');
+const askInput = document.getElementById('askInput');
+
+async function handleAskQuery() {
+  const question = askInput.value.trim();
   if (!question) return;
 
   appendChat('askChat', question, 'user');
-  input.value = '';
+  askInput.value = '';
 
   const res = await fetch(`${API_BASE}/ask`, {
     method: 'POST',
@@ -206,4 +218,12 @@ document.getElementById('askBtn').addEventListener('click', async () => {
   });
   const data = await res.json();
   appendChat('askChat', data.reply, 'ai');
+}
+
+askBtn.addEventListener('click', handleAskQuery);
+askInput.addEventListener('keydown', (e) => {
+  if (e.key === 'Enter') {
+    e.preventDefault();
+    handleAskQuery();
+  }
 });

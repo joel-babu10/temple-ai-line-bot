@@ -1,112 +1,164 @@
 <!DOCTYPE html>
 <html lang="zh-Hant">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-<title>廟公 AI</title>
-<link rel="preconnect" href="https://fonts.googleapis.com" />
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@500;700&family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet" />
-<link rel="stylesheet" href="style.css" />
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>FLAME AI / 焰智 AI · 萬春宮 智慧宮廟</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@500;700&family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
 
-<header class="temple-header">
-  <div class="incense-wisp" aria-hidden="true"></div>
-  <h1>廟公 AI</h1>
-  <p class="subtitle">萬春宮 · 智慧宮廟小幫手</p>
-</header>
-
-<nav class="tabbar" aria-label="功能選單">
-  <button class="tab-btn is-active" data-tab="divination">
-    <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m12 3-1.9 5.8a2 2 0 0 1-1.287 1.288L3 12l5.8 1.9a2 2 0 0 1 1.288 1.287L12 21l1.9-5.8a2 2 0 0 1 1.287-1.288L21 12l-5.8-1.9a2 2 0 0 1-1.288-1.287Z"/></svg>
-    <span>求籤解籤</span>
-  </button>
-  <button class="tab-btn" data-tab="nearby">
-    <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>
-    <span>附近宮廟</span>
-  </button>
-  <button class="tab-btn" data-tab="festivals">
-    <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
-    <span>節慶提醒</span>
-  </button>
-  <button class="tab-btn" data-tab="ask">
-    <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"/></svg>
-    <span>問廟公</span>
-  </button>
-</nav>
-
-<main>
-
-  <!-- 求籤解籤 -->
-  <section id="tab-divination" class="tab-panel is-active">
-    <div class="altar" id="altarStage">
-      <button id="incenseBtn" class="ritual-btn">
-        <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"/></svg>
-        <span>點一炷香</span>
-      </button>
-      <button id="jiaoBtn" class="ritual-btn" disabled>
-        <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="8" r="6"/><path d="M18.09 10.37A6 6 0 1 1 10.34 18"/><path d="M7 6h1v4"/><path d="m16.71 13.88.7.71-2.82 2.82"/></svg>
-        <span>擲筊請示</span>
-      </button>
-      <p id="jiaoResult" class="ritual-result"></p>
-      <button id="drawBtn" class="ritual-btn" disabled>
-        <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m12 3-1.9 5.8a2 2 0 0 1-1.287 1.288L3 12l5.8 1.9a2 2 0 0 1 1.288 1.287L12 21l1.9-5.8a2 2 0 0 1 1.287-1.288L21 12l-5.8-1.9a2 2 0 0 1-1.288-1.287Z"/></svg>
-        <span>抽籤</span>
-      </button>
+  <!-- App Header with Sacred Flame Lighting Ambient -->
+  <header class="temple-header">
+    <div class="flame-bg-glow" aria-hidden="true"></div>
+    <div class="incense-wisp" aria-hidden="true"></div>
+    <div class="header-brand">
+      <div class="flame-emblem" aria-hidden="true">
+        <svg class="flame-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+          <path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"/>
+        </svg>
+      </div>
+      <div class="brand-titles">
+        <h1>FLAME AI <span class="brand-separator">|</span> 焰智 AI</h1>
+        <p class="subtitle">萬春宮 · 智慧宮廟小幫手</p>
+      </div>
     </div>
+  </header>
 
-    <article id="fortuneCard" class="fortune-card is-hidden">
-      <p class="fortune-grade" id="fortuneGrade"></p>
-      <p class="fortune-poem" id="fortunePoem"></p>
-      <p class="fortune-theme" id="fortuneTheme"></p>
-    </article>
+  <!-- Sticky Segmented Tab Navigation -->
+  <nav class="tabbar" aria-label="功能選單">
+    <button class="tab-btn is-active" data-tab="divination">
+      <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m12 3-1.9 5.8a2 2 0 0 1-1.287 1.288L3 12l5.8 1.9a2 2 0 0 1 1.288 1.287L12 21l1.9-5.8a2 2 0 0 1 1.287-1.288L21 12l-5.8-1.9a2 2 0 0 1-1.288-1.287Z"/></svg>
+      <span>求籤解籤</span>
+    </button>
+    <button class="tab-btn" data-tab="nearby">
+      <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>
+      <span>附近宮廟</span>
+    </button>
+    <button class="tab-btn" data-tab="festivals">
+      <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
+      <span>節慶提醒</span>
+    </button>
+    <button class="tab-btn" data-tab="ask">
+      <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"/></svg>
+      <span>問廟公</span>
+    </button>
+  </nav>
 
-    <div id="interpretBox" class="interpret-box is-hidden">
-      <label for="questionInput">想問媽祖什麼事？（工作／感情／健康／考試…）</label>
-      <div class="input-row">
-        <input id="questionInput" type="text" placeholder="例如：這個月換工作好嗎？" />
-        <button id="askInterpretBtn" aria-label="請示">
+  <!-- Main Viewport Canvas -->
+  <main class="app-container">
+
+    <!-- Tab 1: 求籤解籤 -->
+    <section id="tab-divination" class="tab-panel is-active">
+
+      <!-- Interactive Sacred Altar Stage -->
+      <div class="altar-stage-card">
+        <div class="altar-deity-badge">
+          <span class="deity-dot"></span>
+          <span>大殿主神 · 萬春宮天上聖母</span>
+        </div>
+        <p class="altar-guide">心誠則靈 · 請先稟明姓名、生辰、居住地址與祈求事項</p>
+
+        <div class="altar" id="altarStage">
+          <button id="incenseBtn" class="ritual-btn primary-step">
+            <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"/></svg>
+            <span>點一炷香</span>
+          </button>
+          <button id="jiaoBtn" class="ritual-btn secondary-step" disabled>
+            <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="8" r="6"/><path d="M18.09 10.37A6 6 0 1 1 10.34 18"/><path d="M7 6h1v4"/><path d="m16.71 13.88.7.71-2.82 2.82"/></svg>
+            <span>擲筊請示</span>
+          </button>
+          <p id="jiaoResult" class="ritual-result"></p>
+          <button id="drawBtn" class="ritual-btn tertiary-step" disabled>
+            <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m12 3-1.9 5.8a2 2 0 0 1-1.287 1.288L3 12l5.8 1.9a2 2 0 0 1 1.288 1.287L12 21l1.9-5.8a2 2 0 0 1 1.287-1.288L21 12l-5.8-1.9a2 2 0 0 1-1.288-1.287Z"/></svg>
+            <span>抽籤</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Traditional Parchment Fortune Poem Slip -->
+      <article id="fortuneCard" class="fortune-card is-hidden">
+        <div class="cinnabar-stamp" aria-hidden="true">萬春宮印</div>
+        <div class="fortune-card-header">
+          <span class="card-tag">天上聖母靈籤</span>
+        </div>
+        <p class="fortune-grade" id="fortuneGrade"></p>
+        <div class="poem-wrapper">
+          <p class="fortune-poem" id="fortunePoem"></p>
+        </div>
+        <p class="fortune-theme" id="fortuneTheme"></p>
+      </article>
+
+      <!-- AI Interpretation Chat Box -->
+      <div id="interpretBox" class="interpret-box is-hidden">
+        <div class="ai-box-header">
+          <div class="ai-avatar">
+            <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+          </div>
+          <div>
+            <h3>焰智 AI 廟公 · 白話聖意解讀</h3>
+            <p class="ai-subtitle">結合媽祖籤詩典故與現代智慧輔導</p>
+          </div>
+        </div>
+
+        <label for="questionInput">想問媽祖什麼事？（工作／感情／健康／考試…）</label>
+        <div class="input-row">
+          <input id="questionInput" type="text" placeholder="例如：這個月換工作好嗎？" />
+          <button id="askInterpretBtn" aria-label="請示">
+            <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.536 21.686a.5.5 0 0 0 .937-.024l6.5-19a.496.496 0 0 0-.635-.635l-19 6.5a.5.5 0 0 0-.024.937l7.93 3.18a2 2 0 0 1 1.112 1.11z"/><path d="m21.854 2.147-10.94 10.939"/></svg>
+          </button>
+        </div>
+        <div id="interpretChat" class="chat-log"></div>
+      </div>
+    </section>
+
+    <!-- Tab 2: 附近宮廟 -->
+    <section id="tab-nearby" class="tab-panel">
+      <div class="section-intro">
+        <h2>⛩️ 參拜與附近宮廟導覽</h2>
+        <p class="section-desc">自動搜尋周邊清淨道場與公車、火車交通路線</p>
+      </div>
+      <button id="locateBtn" class="ritual-btn full-width locate-action-btn">
+        <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="3 11 22 2 13 21 11 13 3 11"/></svg>
+        <span>取得目前位置</span>
+      </button>
+      <div id="nearbyList" class="temple-list"></div>
+    </section>
+
+    <!-- Tab 3: 節慶提醒 -->
+    <section id="tab-festivals" class="tab-panel">
+      <div class="section-intro">
+        <h2>🏮 民俗節慶與神佛誕辰曆法</h2>
+        <p class="section-desc">提醒您關鍵神明誕辰、祈福點燈與法會時程</p>
+      </div>
+      <div id="festivalList" class="festival-list">
+        <p class="hint">載入節慶資訊中…</p>
+      </div>
+    </section>
+
+    <!-- Tab 4: 問廟公 -->
+    <section id="tab-ask" class="tab-panel">
+      <div class="section-intro">
+        <h2>💬 焰智 AI 廟公線上諮詢</h2>
+        <p class="hint">直接問廟宇歷史、主祀神明、參拜禮儀，或任何你想知道的事。</p>
+      </div>
+      <div id="askChat" class="chat-log"></div>
+      <div class="input-row sticky-input">
+        <input id="askInput" type="text" placeholder="例如：萬春宮主要拜什麼神明？" />
+        <button id="askBtn" aria-label="發問">
           <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.536 21.686a.5.5 0 0 0 .937-.024l6.5-19a.496.496 0 0 0-.635-.635l-19 6.5a.5.5 0 0 0-.024.937l7.93 3.18a2 2 0 0 1 1.112 1.11z"/><path d="m21.854 2.147-10.94 10.939"/></svg>
         </button>
       </div>
-      <div id="interpretChat" class="chat-log"></div>
-    </div>
-  </section>
+    </section>
 
-  <!-- 附近宮廟 -->
-  <section id="tab-nearby" class="tab-panel">
-    <button id="locateBtn" class="ritual-btn full-width">
-      <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="3 11 22 2 13 21 11 13 3 11"/></svg>
-      <span>取得目前位置</span>
-    </button>
-    <div id="nearbyList" class="temple-list"></div>
-  </section>
+  </main>
 
-  <!-- 節慶提醒 -->
-  <section id="tab-festivals" class="tab-panel">
-    <div id="festivalList" class="festival-list">
-      <p class="hint">載入節慶資訊中…</p>
-    </div>
-  </section>
-
-  <!-- 問廟公 -->
-  <section id="tab-ask" class="tab-panel">
-    <p class="hint">直接問廟宇歷史、主祀神明、參拜禮儀，或任何你想知道的事。</p>
-    <div id="askChat" class="chat-log"></div>
-    <div class="input-row">
-      <input id="askInput" type="text" placeholder="例如：萬春宮主要拜什麼神明？" />
-      <button id="askBtn" aria-label="發問">
-        <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.536 21.686a.5.5 0 0 0 .937-.024l6.5-19a.496.496 0 0 0-.635-.635l-19 6.5a.5.5 0 0 0-.024.937l7.93 3.18a2 2 0 0 1 1.112 1.11z"/><path d="m21.854 2.147-10.94 10.939"/></svg>
-      </button>
-    </div>
-  </section>
-
-</main>
-
-<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
-<script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
-<script src="config.js"></script>
-<script src="app.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
+  <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
+  <script src="config.js"></script>
+  <script src="app.js"></script>
 </body>
 </html>
