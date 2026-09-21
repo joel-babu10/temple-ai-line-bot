@@ -8,8 +8,12 @@ const { checkZodiacClash } = require('../services/zodiac');
 const { buildAppContext } = require('../services/knowledge');
 const { nearbyTemples } = require('../services/places');
 const { getTransitDirections } = require('../services/transit');
-const { buildWelcomeFlex, buildFestivalFlex } = require('../services/flexMessages');
+const { buildWelcomeFlex, buildFestivalFlex, buildActivitiesFlex } = require('../services/flexMessages');
+const { subscribeToTemple, unsubscribeFromTemple, getUserTempleSubs } = require('../services/templeSubscriptions');
+const { recordPledge } = require('../services/donations');
 const festivals = require('../data/festivals.json');
+const temples = require('../data/temples.json');
+const templePosts = require('../data/temple-posts.json');
 
 const LIFF_ID = process.env.LIFF_ID || 'YOUR_LIFF_ID';
 const LIFF_URL = `https://liff.line.me/${LIFF_ID}`;
@@ -45,13 +49,6 @@ const LANG_QUICK_REPLY = {
 // Bilingual copy for the handful of rule-based (non-AI) replies, keyed by lang.
 const STRINGS = {
   zh: {
-    welcome:
-      '歡迎光臨🙏 我是焰寶，可以幫你：\n' +
-      '・求籤解籤（輸入「求籤」）\n' +
-      '・找附近宮廟＆公車/火車怎麼去（輸入「附近宮廟」，或直接分享你的 LINE 位置給我）\n' +
-      '・查今年犯太歲嗎（輸入「太歲 1998」，用你的出生年份）\n' +
-      '・廟宇小知識、拜拜禁忌（直接問我就好）\n' +
-      '節慶提醒我也會主動通知你，先加好友就對了！\n\n想先選個語言嗎？',
     langSwitched: '好的，之後我會用中文回覆你 🙏',
     fortuneHint: '點下面連結，點一炷香、擲筊、抽籤，我會幫你解籤 🙏',
     nearbyHint: '直接用 LINE 的「+」分享你的位置給我，或打開這個頁面分享位置，我幫你找附近的廟，還有公車/火車怎麼去 🚌',
@@ -61,16 +58,16 @@ const STRINGS = {
     locationTransitPrefix: '最近的',
     locationTransitSuffix: '交通建議：',
     locationError: '找附近宮廟時卡了一下，可以再試一次嗎 🙏',
-    deityLabel: '主祀'
+    deityLabel: '主祀',
+    subscribeAskName: '跟我說要訂閱哪間廟，例如：「訂閱 萬春宮」\n\n目前可訂閱：' + temples.map((t) => t.name).join('、'),
+    subscribeNotFound: '找不到這間廟耶，目前可訂閱：' + temples.map((t) => t.name).join('、'),
+    subscribeDone: (name) => `好的，已幫你訂閱「${name}」，之後有新活動或樂捐消息我會通知你 🔔`,
+    unsubscribeDone: (name) => `已取消訂閱「${name}」`,
+    donateUsage: '請跟我說要捐款的廟和金額，例如：「捐款 萬春宮 500」',
+    donateTempleNotFound: '找不到這間廟耶，目前可捐款：' + temples.map((t) => t.name).join('、'),
+    donateThanks: (temple, amount) => `感謝您對「${temple}」的樂捐 NT$${amount.toLocaleString()}，您的心意神明都知道 🙏（此為展示用途，未實際收款）`
   },
   en: {
-    welcome:
-      "Welcome 🙏 I'm Yanbao, here's what I can help with:\n" +
-      '・Draw & interpret a fortune stick (type "fortune")\n' +
-      '・Find nearby temples + bus/train directions (type "nearby", or just share your LINE location with me)\n' +
-      '・Check your zodiac clash for this year (type "zodiac 1998" with your birth year)\n' +
-      '・Ask me anything about temple customs and traditions\n' +
-      "I'll also send you festival reminders automatically — just stay friended!\n\nWant to pick a language?",
     langSwitched: "Got it, I'll reply in English from now on 🙏",
     fortuneHint: 'Tap the link below to light incense, toss the divination blocks, and draw a fortune stick 🙏',
     nearbyHint: 'Share your location with me directly via LINE\'s "+" menu, or open this page — I\'ll find nearby temples and how to get there by bus/train 🚌',
@@ -80,12 +77,32 @@ const STRINGS = {
     locationTransitPrefix: 'Getting to',
     locationTransitSuffix: 'by transit:',
     locationError: 'Had trouble looking up nearby temples, mind trying again? 🙏',
-    deityLabel: 'Deity'
+    deityLabel: 'Deity',
+    subscribeAskName: 'Tell me which temple to subscribe to, e.g. "subscribe Wanchun"\n\nAvailable: ' + temples.map((t) => t.nameEn || t.name).join(', '),
+    subscribeNotFound: "Couldn't find that temple. Available: " + temples.map((t) => t.nameEn || t.name).join(', '),
+    subscribeDone: (name) => `Subscribed to "${name}" — I'll notify you about new activities or donation campaigns 🔔`,
+    unsubscribeDone: (name) => `Unsubscribed from "${name}"`,
+    donateUsage: 'Tell me the temple and amount, e.g. "donate Wanchun 500"',
+    donateTempleNotFound: "Couldn't find that temple. Available: " + temples.map((t) => t.nameEn || t.name).join(', '),
+    donateThanks: (temple, amount) => `Thank you for your donation of NT$${amount.toLocaleString()} to "${temple}" 🙏 (demo only, no real payment was made)`
   }
 };
 
-function t(lang, key) {
-  return (STRINGS[lang] || STRINGS.zh)[key];
+function t(lang, key, ...args) {
+  const val = (STRINGS[lang] || STRINGS.zh)[key];
+  return typeof val === 'function' ? val(...args) : val;
+}
+
+// Rough language auto-detection from the message itself — CJK characters means Chinese,
+// otherwise treat as English. Short/ambiguous messages (emoji, numbers only) return null
+// so we fall back to the user's last known preference instead of guessing wrong.
+function detectLang(text) {
+  const stripped = text.replace(/[\s0-9\p{Emoji_Presentation}\p{P}]/gu, '');
+  if (!stripped) return null;
+  const cjkCount = (stripped.match(/[\u4e00-\u9fff]/g) || []).length;
+  if (cjkCount / stripped.length > 0.3) return 'zh';
+  if (/^[a-zA-Z]+$/.test(stripped)) return 'en';
+  return null;
 }
 
 // Appended to LLM calls so free-form replies follow the user's chosen language by default,
@@ -96,13 +113,24 @@ function langInstruction(lang) {
     : '\n\n[使用者偏好中文回覆，除非使用者這則訊息明顯是用其他語言寫的，否則請用中文回覆。]';
 }
 
+function findTempleByName(query) {
+  const q = query.trim().toLowerCase();
+  return temples.find(
+    (t) => t.name.includes(query.trim()) || (t.nameEn && t.nameEn.toLowerCase().includes(q))
+  );
+}
+
 async function handleEvent(event) {
   if (event.type === 'follow') {
     addSubscriber(event.source.userId);
     const lang = getLang(event.source.userId);
     return reply(event.replyToken, [
       buildWelcomeFlex(lang, LIFF_URL),
-      { type: 'text', text: lang === 'en' ? 'Want to switch language anytime? Just type "English" or "中文".' : '想切換語言的話，隨時輸入「中文」或「English」都可以喔', quickReply: LANG_QUICK_REPLY }
+      {
+        type: 'text',
+        text: lang === 'en' ? 'Want to switch language anytime? Just type "English" or "中文".' : '想切換語言的話，隨時輸入「中文」或「English」都可以喔',
+        quickReply: LANG_QUICK_REPLY
+      }
     ]);
   }
 
@@ -113,11 +141,11 @@ async function handleEvent(event) {
 
   if (event.type !== 'message') return;
   const userId = event.source.userId;
-  const lang = getLang(userId);
 
   // Native LINE location share (the map-card "Location" message type, distinct from the
   // LIFF page's own geolocation flow) — previously silently ignored entirely.
   if (event.message.type === 'location') {
+    const lang = getLang(userId);
     const { latitude, longitude } = event.message;
     try {
       const results = await nearbyTemples(latitude, longitude, 3);
@@ -164,6 +192,12 @@ async function handleEvent(event) {
     return reply(event.replyToken, [{ type: 'text', text: t('en', 'langSwitched') }], userId);
   }
 
+  // Auto-detect language from the message itself; only overrides the stored preference
+  // when detection is confident, and keeps it in sync for future messages/notifications.
+  const detected = detectLang(text);
+  const lang = detected || getLang(userId);
+  if (detected && detected !== getLang(userId)) setLang(userId, detected);
+
   if (/求籤|抽籤|解籤|fortune/i.test(text)) {
     return reply(event.replyToken, [
       { type: 'text', text: t(lang, 'fortuneHint') },
@@ -178,12 +212,16 @@ async function handleEvent(event) {
     ]);
   }
 
-  if (/節慶|活動|廟會|festival/i.test(text)) {
+  if (/節慶|festival/i.test(text)) {
     const upcoming = festivals
       .map((f) => ({ ...f, daysAway: Math.round((new Date(f.date2026) - new Date()) / 86400000) }))
       .filter((f) => f.daysAway >= 0)
       .sort((a, b) => a.daysAway - b.daysAway);
     return reply(event.replyToken, [buildFestivalFlex(lang, upcoming)], userId);
+  }
+
+  if (/最新消息|公告|活動|廟會|activit(y|ies)/i.test(text)) {
+    return reply(event.replyToken, [buildActivitiesFlex(lang, templePosts, temples)], userId);
   }
 
   if (/太歲|沖煞|生肖|zodiac/i.test(text)) {
@@ -202,6 +240,43 @@ async function handleEvent(event) {
       context
     });
     return reply(event.replyToken, [{ type: 'text', text: aiMessage }], userId);
+  }
+
+  // 訂閱 <temple> / subscribe <temple> — follow a specific temple for its activity/donation pushes.
+  if (/^(訂閱|subscribe)\b/i.test(text)) {
+    const nameQuery = text.replace(/^(訂閱|subscribe)\b/i, '').trim();
+    if (!nameQuery) return reply(event.replyToken, [{ type: 'text', text: t(lang, 'subscribeAskName') }], userId);
+    const temple = findTempleByName(nameQuery);
+    if (!temple) return reply(event.replyToken, [{ type: 'text', text: t(lang, 'subscribeNotFound') }], userId);
+    subscribeToTemple(userId, temple.id);
+    return reply(event.replyToken, [{ type: 'text', text: t(lang, 'subscribeDone', lang === 'en' ? temple.nameEn || temple.name : temple.name) }], userId);
+  }
+
+  if (/^(取消訂閱|unsubscribe)\b/i.test(text)) {
+    const nameQuery = text.replace(/^(取消訂閱|unsubscribe)\b/i, '').trim();
+    const temple = findTempleByName(nameQuery);
+    if (!temple) return reply(event.replyToken, [{ type: 'text', text: t(lang, 'subscribeNotFound') }], userId);
+    unsubscribeFromTemple(userId, temple.id);
+    return reply(event.replyToken, [{ type: 'text', text: t(lang, 'unsubscribeDone', lang === 'en' ? temple.nameEn || temple.name : temple.name) }], userId);
+  }
+
+  // 捐款 <temple> <amount> / donate <temple> <amount> — mocked pledge, no real payment.
+  if (/^(捐款|樂捐|donate|donation)\b/i.test(text)) {
+    const rest = text.replace(/^(捐款|樂捐|donate|donation)\b/i, '').trim();
+    const amountMatch = rest.match(/(\d+)/);
+    const nameQuery = rest.replace(/(\d+)/, '').trim();
+    if (!amountMatch || !nameQuery) {
+      return reply(event.replyToken, [{ type: 'text', text: t(lang, 'donateUsage') }], userId);
+    }
+    const temple = findTempleByName(nameQuery);
+    if (!temple) return reply(event.replyToken, [{ type: 'text', text: t(lang, 'donateTempleNotFound') }], userId);
+    const amount = Number(amountMatch[1]);
+    recordPledge({ userId, templeId: temple.id, amount });
+    return reply(
+      event.replyToken,
+      [{ type: 'text', text: t(lang, 'donateThanks', lang === 'en' ? temple.nameEn || temple.name : temple.name, amount) }],
+      userId
+    );
   }
 
   // Fall through to general Q&A grounded in the full app knowledge base (temples, customs, features).

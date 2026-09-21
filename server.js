@@ -5,6 +5,7 @@ const path = require('path');
 const webhookRouter = require('./src/routes/webhook');
 const liffApiRouter = require('./src/routes/liff');
 const { startFestivalNotifier } = require('./src/services/notifier');
+const { startPostsNotifier } = require('./src/services/postsNotifier');
 
 const app = express();
 
@@ -22,4 +23,5 @@ const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
   console.log(`line-temple-bot listening on port ${PORT}`);
   startFestivalNotifier();
+  startPostsNotifier();
 });

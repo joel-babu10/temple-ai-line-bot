@@ -1,0 +1,42 @@
+[
+  {
+    "id": "act-1",
+    "type": "activity",
+    "templeId": "wanchun-gong",
+    "title": "媽祖聖誕祝壽法會",
+    "titleEn": "Mazu's Birthday Ceremony",
+    "date2026": "2026-05-09",
+    "description": "萬春宮媽祖聖誕祝壽祭典，歡迎信眾一同參與祝壽、參拜祈福。",
+    "descriptionEn": "Wanchun Temple's annual birthday ceremony for Mazu — join us for the celebration and blessing rituals."
+  },
+  {
+    "id": "act-2",
+    "type": "activity",
+    "templeId": "lecheng-gong",
+    "title": "旱溪媽祖遶境十八庄",
+    "titleEn": "Hanxi Mazu Procession (18 Villages)",
+    "date2026": "2026-04-18",
+    "description": "台中重要宗教盛事，媽祖神轎遶境十八庄，沿途信眾夾道祈福。",
+    "descriptionEn": "One of Taichung's major religious events — Mazu's palanquin processes through eighteen villages."
+  },
+  {
+    "id": "don-1",
+    "type": "donation",
+    "templeId": "wanchun-gong",
+    "title": "冬季偏鄉送暖計畫",
+    "titleEn": "Winter Warmth Relief Campaign",
+    "targetAmount": 500000,
+    "description": "萬春宮冬令平安米供養，隨喜護持偏鄉獨居長者與弱勢家庭。",
+    "descriptionEn": "Wanchun Temple's winter relief program supporting elderly and low-income households in rural areas."
+  },
+  {
+    "id": "don-2",
+    "type": "donation",
+    "templeId": "chenghuang-miao",
+    "title": "平安燈油添香活動",
+    "titleEn": "Blessing Lamp Oil Fund",
+    "targetAmount": 100000,
+    "description": "城隍廟平安燈油添香活動，您的贊助將用於廟宇日常香油與維護。",
+    "descriptionEn": "Support the City God Temple's daily incense and maintenance costs."
+  }
+]

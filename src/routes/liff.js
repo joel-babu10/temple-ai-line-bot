@@ -9,6 +9,9 @@ const { nearbyTemples } = require('../services/places');
 const { getTransitDirections } = require('../services/transit');
 const { checkZodiacClash } = require('../services/zodiac');
 const { buildAppContext } = require('../services/knowledge');
+const { subscribeToTemple, unsubscribeFromTemple, getUserTempleSubs } = require('../services/templeSubscriptions');
+const { recordPledge, listPledges, totalForCampaign } = require('../services/donations');
+const templePosts = require('../data/temple-posts.json');
 
 // Draw a random fortune stick (求籤) — call this after the incense + coin-toss animation finishes.
 router.get('/fortune/draw', (req, res) => {
@@ -116,6 +119,57 @@ router.post('/ask', async (req, res) => {
     console.error(err);
     res.status(500).json({ error: 'ask_failed' });
   }
+});
+
+// Activities + donation campaigns (hardcoded sample data for the demo — see src/data/temple-posts.json).
+router.get('/activities', (req, res) => {
+  const { templeId } = req.query;
+  const posts = templeId ? templePosts.filter((p) => p.templeId === templeId) : templePosts;
+  const withTotals = posts.map((p) =>
+    p.type === 'donation' ? { ...p, raisedAmount: totalForCampaign(p.id) } : p
+  );
+  res.json(withTotals);
+});
+
+// Record a mocked donation pledge — no real payment moves, just an acknowledged intent.
+router.post('/donations', (req, res) => {
+  try {
+    const { userId, templeId, campaignId, amount, name } = req.body;
+    if (!templeId || !amount || Number(amount) <= 0) {
+      return res.status(400).json({ error: 'templeId and a positive amount are required' });
+    }
+    const pledge = recordPledge({ userId, templeId, campaignId, amount: Number(amount), name });
+    res.json({ pledge, message: '感謝您的樂捐，您的心意神明都知道 🙏' });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'donation_failed' });
+  }
+});
+
+router.get('/donations', (req, res) => {
+  const { userId, templeId, campaignId } = req.query;
+  res.json(listPledges({ userId, templeId, campaignId }));
+});
+
+// Follow a specific temple to get its activity/donation notifications pushed via LINE.
+router.post('/subscriptions', (req, res) => {
+  const { userId, templeId } = req.body;
+  if (!userId || !templeId) return res.status(400).json({ error: 'userId and templeId required' });
+  subscribeToTemple(userId, templeId);
+  res.json({ subscribed: getUserTempleSubs(userId) });
+});
+
+router.delete('/subscriptions', (req, res) => {
+  const { userId, templeId } = req.body;
+  if (!userId || !templeId) return res.status(400).json({ error: 'userId and templeId required' });
+  unsubscribeFromTemple(userId, templeId);
+  res.json({ subscribed: getUserTempleSubs(userId) });
+});
+
+router.get('/subscriptions', (req, res) => {
+  const { userId } = req.query;
+  if (!userId) return res.status(400).json({ error: 'userId required' });
+  res.json({ subscribed: getUserTempleSubs(userId) });
 });
 
 module.exports = router;

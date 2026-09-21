@@ -189,6 +189,32 @@ function setPetHornAndAuraColor(color) {
 }
 
 // ---------- LIFF init ----------
+let currentUserId = null;
+
+async function getCurrentUserId() {
+  if (currentUserId) return currentUserId;
+
+  if (window.liff && liff.isLoggedIn && liff.isLoggedIn()) {
+    try {
+      const profile = await liff.getProfile();
+      currentUserId = profile.userId;
+      return currentUserId;
+    } catch (err) {
+      console.warn('liff.getProfile failed, falling back to local id:', err.message);
+    }
+  }
+
+  // Outside LINE (local testing) — a stable per-browser id so donations/subscriptions
+  // still work for demoing in a normal browser.
+  let localId = localStorage.getItem('yanbao_local_user_id');
+  if (!localId) {
+    localId = 'local-' + Math.random().toString(36).slice(2, 12);
+    localStorage.setItem('yanbao_local_user_id', localId);
+  }
+  currentUserId = localId;
+  return currentUserId;
+}
+
 async function initLiff() {
   try {
     await liff.init({ liffId: window.APP_CONFIG.LIFF_ID });
@@ -197,6 +223,24 @@ async function initLiff() {
   }
 }
 initLiff();
+
+// Maps the display names used in the UI (story bar, post cards) to backend temple ids,
+// so following/donating actually targets the right record. Cached after first fetch.
+let templeListCache = null;
+async function resolveTempleIdByName(name) {
+  if (!name) return null;
+  if (!templeListCache) {
+    try {
+      const res = await fetch(`${API_BASE}/temples`);
+      templeListCache = await res.json();
+    } catch (err) {
+      console.warn('failed to load temple list:', err.message);
+      return null;
+    }
+  }
+  const match = templeListCache.find((t) => name.includes(t.name) || t.name.includes(name));
+  return match ? match.id : null;
+}
 
 // ---------- Tabs ----------
 document.querySelectorAll('.tab-btn').forEach((btn) => {
@@ -246,7 +290,7 @@ function triggerCuteBgSwitchParticles(deityId, deityColor) {
       const p = document.createElement('span');
       p.className = 'cute-bg-particle';
       p.textContent = symbols[i % symbols.length];
-      
+
       const leftPos = 12 + Math.random() * 76;
       const bottomPos = 10 + Math.random() * 40;
       const delay = Math.random() * 0.18;
@@ -906,7 +950,7 @@ if (followTempleBtn) {
     followTempleBtn.querySelector('span').textContent = isFollowing
       ? '✓ 已追蹤 (LINE 通知中)'
       : '＋ 追蹤宮廟';
-    
+
     playTempleChime(720, 0.4);
     if (navigator.vibrate) navigator.vibrate(40);
   });
@@ -1070,7 +1114,7 @@ document.querySelectorAll('#amountPills .amount-pill').forEach((pill) => {
 });
 
 if (donationForm) {
-  donationForm.addEventListener('submit', (e) => {
+  donationForm.addEventListener('submit', async (e) => {
     e.preventDefault();
     const donorName = document.getElementById('donorNameInput').value.trim();
     if (!donorName) return;
@@ -1089,6 +1133,19 @@ if (donationForm) {
     fireConfetti();
     playTempleChime(880, 0.6);
     if (navigator.vibrate) navigator.vibrate([40, 80, 40]);
+
+    // Persist the pledge — this donation campaign post is specifically 萬春宮's, so that's
+    // the fixed target; a multi-temple donation feed would need the campaign id passed in.
+    try {
+      const userId = await getCurrentUserId();
+      await fetch(`${API_BASE}/donations`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ userId, templeId: 'wanchun-gong', campaignId: 'don-1', amount: currentDonationAmount, name: donorName })
+      });
+    } catch (err) {
+      console.warn('donation sync failed:', err.message);
+    }
   });
 }
 
@@ -1407,7 +1464,7 @@ document.querySelectorAll('#templeStoriesBar .story-item').forEach((item) => {
 });
 
 if (storyFollowBtn) {
-  storyFollowBtn.addEventListener('click', () => {
+  storyFollowBtn.addEventListener('click', async () => {
     storyFollowBtn.classList.toggle('is-following');
     const isFollowing = storyFollowBtn.classList.contains('is-following');
     storyFollowBtn.innerHTML = isFollowing
@@ -1416,6 +1473,21 @@ if (storyFollowBtn) {
     fireConfetti();
     playTempleChime(800, 0.5);
     if (navigator.vibrate) navigator.vibrate([40, 60, 40]);
+
+    // Persist the follow so LINE can actually push activity/donation updates for this temple.
+    const templeName = document.getElementById('storyModalTitle')?.textContent?.replace('｜ 限時動態', '').trim();
+    const templeId = await resolveTempleIdByName(templeName);
+    if (!templeId) return;
+    try {
+      const userId = await getCurrentUserId();
+      await fetch(`${API_BASE}/subscriptions`, {
+        method: isFollowing ? 'POST' : 'DELETE',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ userId, templeId })
+      });
+    } catch (err) {
+      console.warn('subscription sync failed:', err.message);
+    }
   });
 }
 
@@ -1484,7 +1556,3 @@ if (fabOptionEvent) {
     playTempleChime(660, 0.2);
   });
 }
-
-
-
-
