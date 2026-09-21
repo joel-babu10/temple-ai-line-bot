@@ -8,6 +8,8 @@ const { checkZodiacClash } = require('../services/zodiac');
 const { buildAppContext } = require('../services/knowledge');
 const { nearbyTemples } = require('../services/places');
 const { getTransitDirections } = require('../services/transit');
+const { buildWelcomeFlex, buildFestivalFlex } = require('../services/flexMessages');
+const festivals = require('../data/festivals.json');
 
 const LIFF_ID = process.env.LIFF_ID || 'YOUR_LIFF_ID';
 const LIFF_URL = `https://liff.line.me/${LIFF_ID}`;
@@ -99,7 +101,8 @@ async function handleEvent(event) {
     addSubscriber(event.source.userId);
     const lang = getLang(event.source.userId);
     return reply(event.replyToken, [
-      { type: 'text', text: t(lang, 'welcome'), quickReply: LANG_QUICK_REPLY }
+      buildWelcomeFlex(lang, LIFF_URL),
+      { type: 'text', text: lang === 'en' ? 'Want to switch language anytime? Just type "English" or "中文".' : '想切換語言的話，隨時輸入「中文」或「English」都可以喔', quickReply: LANG_QUICK_REPLY }
     ]);
   }
 
@@ -173,6 +176,14 @@ async function handleEvent(event) {
       { type: 'text', text: t(lang, 'nearbyHint') },
       { type: 'text', text: LIFF_URL }
     ]);
+  }
+
+  if (/節慶|活動|廟會|festival/i.test(text)) {
+    const upcoming = festivals
+      .map((f) => ({ ...f, daysAway: Math.round((new Date(f.date2026) - new Date()) / 86400000) }))
+      .filter((f) => f.daysAway >= 0)
+      .sort((a, b) => a.daysAway - b.daysAway);
+    return reply(event.replyToken, [buildFestivalFlex(lang, upcoming)], userId);
   }
 
   if (/太歲|沖煞|生肖|zodiac/i.test(text)) {
