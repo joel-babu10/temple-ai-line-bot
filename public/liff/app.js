@@ -534,23 +534,32 @@ function fireConfetti() {
 const askInterpretBtn = document.getElementById('askInterpretBtn');
 const questionInput = document.getElementById('questionInput');
 
-async function handleInterpretQuery() {
-  const question = questionInput.value.trim();
+async function handleInterpretQuery(customText) {
+  const question = typeof customText === 'string' ? customText : questionInput.value.trim();
   if (!question || !currentFortune) return;
 
   appendChat('interpretChat', question, 'user');
   questionInput.value = '';
 
-  const res = await fetch(`${API_BASE}/fortune/interpret`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ fortuneId: currentFortune.id, question })
-  });
-  const data = await res.json();
-  appendChat('interpretChat', data.reply, 'ai');
+  showTyping('interpretTyping');
+
+  try {
+    const res = await fetch(`${API_BASE}/fortune/interpret`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ fortuneId: currentFortune.id, question, language: currentLang })
+    });
+    const data = await res.json();
+    hideTyping('interpretTyping');
+    appendChat('interpretChat', data.reply, 'ai', '焰');
+  } catch (e) {
+    hideTyping('interpretTyping');
+    const errText = currentLang === 'en' ? 'Connection error, please try again.' : '連線失敗，請稍後再試。';
+    appendChat('interpretChat', errText, 'ai', '焰');
+  }
 }
 
-if (askInterpretBtn) askInterpretBtn.addEventListener('click', handleInterpretQuery);
+if (askInterpretBtn) askInterpretBtn.addEventListener('click', () => handleInterpretQuery());
 if (questionInput) {
   questionInput.addEventListener('keydown', (e) => {
     if (e.key === 'Enter') {
@@ -560,12 +569,58 @@ if (questionInput) {
   });
 }
 
-function appendChat(containerId, text, role) {
-  const el = document.createElement('div');
-  el.className = `chat-bubble ${role}`;
-  el.textContent = text;
-  document.getElementById(containerId).appendChild(el);
-  el.scrollIntoView({ behavior: 'smooth', block: 'end' });
+function appendChat(containerId, text, role, avatarLabel = role === 'user' ? '信' : '焰') {
+  const container = document.getElementById(containerId);
+  if (!container) return;
+
+  const msgRow = document.createElement('div');
+  msgRow.className = `chat-row ${role}`;
+
+  const timeStr = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+
+  const avatarHtml = role === 'user'
+    ? `<div class="chat-avatar user-avatar">${avatarLabel}</div>`
+    : `<div class="chat-avatar ai-avatar">${avatarLabel}</div>`;
+
+  const formattedText = escapeHtml(text).replace(/\n/g, '<br>');
+
+  const copyBtnHtml = role === 'ai'
+    ? `<button class="btn-copy-bubble" title="複製內容" onclick="copyBubbleText(this)">
+         <svg class="icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+       </button>`
+    : '';
+
+  msgRow.innerHTML = `
+    ${avatarHtml}
+    <div class="bubble-wrapper">
+      <div class="chat-bubble ${role}">
+        <div class="bubble-content">${formattedText}</div>
+        ${copyBtnHtml}
+      </div>
+      <span class="chat-timestamp">${timeStr}</span>
+    </div>
+  `;
+
+  container.appendChild(msgRow);
+  msgRow.scrollIntoView({ behavior: 'smooth', block: 'end' });
+}
+
+function escapeHtml(str) {
+  return String(str).replace(/[&<>"']/g, (m) => ({
+    '&': '&amp;',
+    '<': '&lt;',
+    '>': '&gt;',
+    '"': '&quot;',
+    "'": '&#39;'
+  })[m]);
+}
+
+function copyBubbleText(btn) {
+  const content = btn.closest('.chat-bubble').querySelector('.bubble-content').innerText;
+  navigator.clipboard.writeText(content).then(() => {
+    btn.classList.add('is-copied');
+    setTimeout(() => btn.classList.remove('is-copied'), 2000);
+  });
 }
 
 // ---------- Tab 3: Interactive Online Blessing Lamp Wall ----------
@@ -909,27 +964,154 @@ function renderRouteDrawer(container, temple, userLoc) {
     .join('');
 })();
 
-// ---------- Ask anything ----------
+// ---------- Global Multi-Language State & UI Switcher (zh-TW, en) ----------
+let currentLang = 'zh-TW';
+
+function showTyping(id) {
+  const el = document.getElementById(id);
+  if (el) el.classList.remove('is-hidden');
+}
+
+function hideTyping(id) {
+  const el = document.getElementById(id);
+  if (el) el.classList.add('is-hidden');
+}
+
+function setLanguage(lang) {
+  currentLang = lang;
+
+  document.querySelectorAll('.lang-pill').forEach((btn) => {
+    if (btn.dataset.lang === lang) {
+      btn.classList.add('is-active');
+    } else {
+      btn.classList.remove('is-active');
+    }
+  });
+
+  const isEn = lang === 'en';
+
+  // Ask AI Card
+  const askCardTitle = document.getElementById('askCardTitle');
+  if (askCardTitle) askCardTitle.textContent = isEn ? 'Ask Flame AI Shrine Master' : '問焰智 AI 廟公';
+
+  const askCardSub = document.getElementById('askCardSub');
+  if (askCardSub) askCardSub.textContent = isEn ? 'Consult on temple history, rituals, and spiritual wisdom' : '線上請示宮廟歷史、參拜儀軌或人生智慧諮詢';
+
+  const askInput = document.getElementById('askInput');
+  if (askInput) askInput.placeholder = isEn ? 'Type your question for the Shrine Master...' : '請輸入您想向廟公請示的問題...';
+
+  // Interpret Box
+  const interpretBoxTitle = document.getElementById('interpretBoxTitle');
+  if (interpretBoxTitle) interpretBoxTitle.textContent = isEn ? 'Flame AI Fortune Master' : '焰智 AI 解籤大師';
+
+  const interpretBoxSub = document.getElementById('interpretBoxSub');
+  if (interpretBoxSub) interpretBoxSub.textContent = isEn ? 'Deep guidance & poem interpretation' : '神明籤詩深度白話解析與指引';
+
+  const interpretInputLabel = document.getElementById('interpretInputLabel');
+  if (interpretInputLabel) interpretInputLabel.textContent = isEn ? 'Enter what you would like to inquire about (e.g., career/love/health):' : '請輸入您想請示的具體事項 (如事業/感情/健康)：';
+
+  const questionInput = document.getElementById('questionInput');
+  if (questionInput) questionInput.placeholder = isEn ? 'e.g., Is it a good time to change jobs?' : '例如：最近換工作好嗎？';
+
+  updateChips(isEn);
+}
+
+function updateChips(isEn) {
+  const askChips = document.getElementById('askChips');
+  if (askChips) {
+    askChips.innerHTML = isEn
+      ? `<button class="chip-suggestion-btn" data-query="What is the proper ritual order for first-time temple worship?">🙏 Worship Rituals</button>
+         <button class="chip-suggestion-btn" data-query="Which deity should I pray to for business and wealth?">💰 Wealth Blessing</button>
+         <button class="chip-suggestion-btn" data-query="What is the difference between Tai Sui clash and pacification?">☯️ Tai Sui Guidance</button>
+         <button class="chip-suggestion-btn" data-query="How does lighting a Blessing Lamp work?">🏮 Blessing Lamp</button>`
+      : `<button class="chip-suggestion-btn" data-query="請問頭一次拜媽祖的儀軌順序？">🙏 參拜禮儀</button>
+         <button class="chip-suggestion-btn" data-query="請問求財運該準備哪些供品？">💰 祈福求財</button>
+         <button class="chip-suggestion-btn" data-query="請問犯太歲與安太歲的差異？">☯️ 安太歲</button>
+         <button class="chip-suggestion-btn" data-query="請問如何點光明燈祈福？">🏮 點燈祈福</button>`;
+  }
+
+  const interpretChips = document.getElementById('interpretChips');
+  if (interpretChips) {
+    interpretChips.innerHTML = isEn
+      ? `<button class="chip-suggestion-btn" data-query="Is it a good time to change my career or job?">💼 Career & Work</button>
+         <button class="chip-suggestion-btn" data-query="How will my love life and relationships develop?">❤️ Love & Marriage</button>
+         <button class="chip-suggestion-btn" data-query="What should I be mindful of regarding health?">🌿 Health & Peace</button>
+         <button class="chip-suggestion-btn" data-query="What is my overall fortune and luck summary?">✨ Overall Fortune</button>`
+      : `<button class="chip-suggestion-btn" data-query="請問最近換工作好嗎？">💼 工作事業</button>
+         <button class="chip-suggestion-btn" data-query="請問感情姻緣如何發展？">❤️ 感情感情</button>
+         <button class="chip-suggestion-btn" data-query="請問身體健康有何需要注意？">🌿 健康平安</button>
+         <button class="chip-suggestion-btn" data-query="請問整體運勢吉凶如何？">✨ 綜合運勢</button>`;
+  }
+}
+
+// Click listener for language pills
+document.addEventListener('click', (e) => {
+  const langPill = e.target.closest('.lang-pill');
+  if (langPill) {
+    setLanguage(langPill.dataset.lang);
+  }
+});
+
+// Click listener for quick suggestion chips
+document.addEventListener('click', (e) => {
+  const chipBtn = e.target.closest('.chip-suggestion-btn');
+  if (chipBtn) {
+    const query = chipBtn.dataset.query;
+    if (chipBtn.closest('#askChips')) {
+      handleAskQuery(query);
+    } else if (chipBtn.closest('#interpretChips')) {
+      handleInterpretQuery(query);
+    }
+  }
+});
+
+// Clear Chat Action Buttons
+const clearAskChatBtn = document.getElementById('clearAskChatBtn');
+if (clearAskChatBtn) {
+  clearAskChatBtn.addEventListener('click', () => {
+    const chatLog = document.getElementById('askChat');
+    if (chatLog) chatLog.innerHTML = '';
+  });
+}
+
+const clearInterpretChatBtn = document.getElementById('clearInterpretChatBtn');
+if (clearInterpretChatBtn) {
+  clearInterpretChatBtn.addEventListener('click', () => {
+    const chatLog = document.getElementById('interpretChat');
+    if (chatLog) chatLog.innerHTML = '';
+  });
+}
+
+// ---------- Ask anything Handler ----------
 const askBtn = document.getElementById('askBtn');
 const askInput = document.getElementById('askInput');
 
-async function handleAskQuery() {
-  const question = askInput.value.trim();
+async function handleAskQuery(customText) {
+  const question = typeof customText === 'string' ? customText : askInput.value.trim();
   if (!question) return;
 
   appendChat('askChat', question, 'user');
   askInput.value = '';
 
-  const res = await fetch(`${API_BASE}/ask`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ question })
-  });
-  const data = await res.json();
-  appendChat('askChat', data.reply, 'ai');
+  showTyping('askTyping');
+
+  try {
+    const res = await fetch(`${API_BASE}/ask`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ question, language: currentLang })
+    });
+    const data = await res.json();
+    hideTyping('askTyping');
+    appendChat('askChat', data.reply, 'ai', '廟');
+  } catch (e) {
+    hideTyping('askTyping');
+    const errText = currentLang === 'en' ? 'Connection error, please try again.' : '連線失敗，請稍後再試。';
+    appendChat('askChat', errText, 'ai', '廟');
+  }
 }
 
-if (askBtn) askBtn.addEventListener('click', handleAskQuery);
+if (askBtn) askBtn.addEventListener('click', () => handleAskQuery());
 if (askInput) {
   askInput.addEventListener('keydown', (e) => {
     if (e.key === 'Enter') {

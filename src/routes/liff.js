@@ -22,14 +22,16 @@ router.get('/fortune/draw', (req, res) => {
 // AI interpretation of a drawn fortune, grounded in the actual poem text so the model can't invent it.
 router.post('/fortune/interpret', async (req, res) => {
   try {
-    const { fortuneId, question } = req.body;
+    const { fortuneId, question, language } = req.body;
     const fortune = fortunes.find((f) => f.id === Number(fortuneId));
     if (!fortune) return res.status(404).json({ error: 'unknown fortuneId' });
 
     const context = `籤詩編號 ${fortune.id}（${fortune.grade}）：「${fortune.poem}」\n主題：${fortune.theme}\n一般解釋：${fortune.notes}`;
+    const defaultUserMsg = language === 'en' ? 'Please explain the general meaning of this divine poem for me.' : '請幫我解釋這支籤大概的意思。';
     const reply = await askLLM({
-      userMessage: question || '請幫我解釋這支籤大概的意思。',
-      context
+      userMessage: question || defaultUserMsg,
+      context,
+      language: language || 'zh-TW'
     });
 
     res.json({ fortune, reply });
@@ -109,11 +111,15 @@ router.get('/zodiac/check', async (req, res) => {
 // General "ask the temple guide anything" chat used by the knowledge tab.
 router.post('/ask', async (req, res) => {
   try {
-    const { question } = req.body;
+    const { question, language } = req.body;
     if (!question || !question.trim()) {
       return res.status(400).json({ error: 'question required' });
     }
-    const reply = await askLLM({ userMessage: question, context: buildAppContext() });
+    const reply = await askLLM({
+      userMessage: question,
+      context: buildAppContext(),
+      language: language || 'zh-TW'
+    });
     res.json({ reply });
   } catch (err) {
     console.error(err);

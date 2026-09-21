@@ -10,16 +10,22 @@ const SYSTEM_PROMPT = `你是「焰寶」，一隻親切可愛的神獸 AI，是
 5. 不做醫療、法律、投資等專業建議的斷言，遇到嚴肅的人生決定，語氣上鼓勵使用者參考解籤只是心理上的參考，最終仍要自己判斷。
 6. 直接輸出最終回覆本身。絕對不要輸出你的草稿、規劃過程、內部思考、語氣分析、「Drafting the response」之類的後設說明——使用者只會看到你輸出的文字，不會看到任何思考過程。`;
 
-async function askLLM({ userMessage, context = '' }) {
+async function askLLM({ userMessage, context = '', language = 'zh-TW' }) {
   const apiKey = process.env.GEMINI_API_KEY;
   const model = process.env.GEMINI_MODEL || 'gemini-3.5-flash';
 
   if (!apiKey) {
-    // Offline fallback so the bot still responds during local dev / demo without billing set up.
-    // Deliberately generic — the real context can be long (full knowledge base), so it must never
-    // be echoed back raw here.
+    if (language === 'en') {
+      return '(Demo Mode: AI not connected yet. This is a default response) Once GEMINI_API_KEY is configured, I will be ready to answer your questions! 🙏';
+    }
     return '（demo 模式，尚未連上 AI，這是暫時的預設回覆）接上 GEMINI_API_KEY 之後我就能好好回答你的問題了 🙏';
   }
+
+  const langInstruction = language === 'en'
+    ? '\n\nIMPORTANT: The user has chosen English. Please reply entirely in friendly, clear, and polite English as the warm divine mascot Flame (焰寶).'
+    : '\n\n請使用繁體中文回答。';
+
+  const fullSystemPrompt = SYSTEM_PROMPT + langInstruction;
 
   const userContent = context
     ? `[系統提供的背景資料，僅供你參考，不要照抄格式]\n${context}\n\n[使用者的話]\n${userMessage}`
@@ -29,15 +35,12 @@ async function askLLM({ userMessage, context = '' }) {
     const response = await axios.post(
       `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent`,
       {
-        system_instruction: { parts: [{ text: SYSTEM_PROMPT }] },
+        system_instruction: { parts: [{ text: fullSystemPrompt }] },
         contents: [{ role: 'user', parts: [{ text: userContent }] }],
         generationConfig: {
-        maxOutputTokens: 500,
-        // Disables "thinking" mode: without this, Gemini 2.5/3.x can leak its internal
-        // reasoning/drafting process into the visible reply text, and thinking also adds
-        // meaningful latency for zero benefit on a short conversational reply like this.
-        thinkingConfig: { thinkingBudget: 0 }
-      }
+          maxOutputTokens: 500,
+          thinkingConfig: { thinkingBudget: 0 }
+        }
       },
       {
         headers: { 'content-type': 'application/json' },
@@ -47,14 +50,16 @@ async function askLLM({ userMessage, context = '' }) {
     );
 
     const text = response.data.candidates?.[0]?.content?.parts?.[0]?.text;
-    return text || '（焰寶剛剛恍神了一下，可以再說一次嗎？）';
+    if (text) return text;
+    return language === 'en' 
+      ? '(Flame got a bit distracted, could you please ask again? 🙏)' 
+      : '（焰寶剛剛恍神了一下，可以再說一次嗎？）';
   } catch (err) {
-    // Never let a Gemini/network error bubble up and kill the reply entirely — the LINE webhook
-    // in particular sends NOTHING back to the user if this throws, which looks like total silence.
-    // Log full detail server-side (visible in Render logs) but keep the user-facing message short.
     const detail = err.response?.data?.error?.message || err.message;
     console.error('[llm] Gemini call failed:', detail);
-    return '（焰寶這邊訊號有點不穩，晚點再問我一次看看 🙏）';
+    return language === 'en'
+      ? '(Flame has a weak signal right now, please try again in a moment 🙏)'
+      : '（焰寶這邊訊號有點不穩，晚點再問我一次看看 🙏）';
   }
 }
 

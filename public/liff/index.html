@@ -96,11 +96,17 @@
     <div class="flame-bg-glow" aria-hidden="true"></div>
     <div class="incense-wisp" aria-hidden="true"></div>
     
-    <!-- Audio Chime Toggle Button -->
-    <button id="chimeToggleBtn" class="chime-toggle-btn" title="聲音音效開關" aria-label="切換磬音">
-      <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 5L6 9H2v6h4l5 4V5z"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/></svg>
-      <span>磬音: 開</span>
-    </button>
+    <!-- Header Controls: Audio Chime Toggle & Language Selector -->
+    <div class="header-controls">
+      <button id="chimeToggleBtn" class="chime-toggle-btn" title="聲音音效開關" aria-label="切換磬音">
+        <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 5L6 9H2v6h4l5 4V5z"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/></svg>
+        <span>磬音: 開</span>
+      </button>
+      <div class="global-lang-selector" title="選擇語言 / Select Language">
+        <button class="lang-pill is-active" data-lang="zh-TW">繁中</button>
+        <button class="lang-pill" data-lang="en">EN</button>
+      </div>
+    </div>
 
     <div class="header-brand">
       <div class="flame-emblem animated-flame" aria-hidden="true">
@@ -242,23 +248,45 @@
       <!-- AI Interpretation Chat Box -->
       <div id="interpretBox" class="interpret-box is-hidden">
         <div class="ai-box-header">
-          <div class="ai-avatar">
-            <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+          <div class="ai-avatar-badge-wrap">
+            <div class="ai-avatar">
+              <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+            </div>
+            <span class="status-online-dot" title="在線中"></span>
           </div>
-          <div>
-            <h3>焰智 AI 解籤</h3>
-            <p class="ai-subtitle">白話解析神明聖意</p>
+          <div class="header-info">
+            <h3 id="interpretBoxTitle">焰智 AI 解籤大師</h3>
+            <p class="ai-subtitle" id="interpretBoxSub">神明籤詩深度白話解析與指引</p>
+          </div>
+          <div class="chat-header-actions">
+            <button id="clearInterpretChatBtn" class="chat-action-btn" title="清除對話">
+              <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+            </button>
           </div>
         </div>
 
-        <label for="questionInput">想請示什麼呢？ (事業/感情/健康)</label>
+        <div class="suggestion-chips-container" id="interpretChips">
+          <button class="chip-suggestion-btn" data-query="請問最近換工作好嗎？">💼 工作事業</button>
+          <button class="chip-suggestion-btn" data-query="請問感情姻緣如何發展？">❤️ 感情感情</button>
+          <button class="chip-suggestion-btn" data-query="請問身體健康有何需要注意？">🌿 健康平安</button>
+          <button class="chip-suggestion-btn" data-query="請問整體運勢吉凶如何？">✨ 綜合運勢</button>
+        </div>
+
+        <div id="interpretChat" class="chat-log"></div>
+
+        <div class="typing-indicator is-hidden" id="interpretTyping">
+          <div class="typing-avatar">焰</div>
+          <div class="typing-dots"><span></span><span></span><span></span></div>
+          <span class="typing-text">焰寶解析籤詩中...</span>
+        </div>
+
+        <label for="questionInput" class="input-label" id="interpretInputLabel">請輸入您想請示的具體事項 (如事業/感情/健康)：</label>
         <div class="input-row">
           <input id="questionInput" type="text" placeholder="例如：最近換工作好嗎？" />
           <button id="askInterpretBtn" aria-label="請示">
             <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14.536 21.686a.5.5 0 0 0 .937-.024l6.5-19a.496.496 0 0 0-.635-.635l-19 6.5a.5.5 0 0 0-.024.937l7.93 3.18a2 2 0 0 1 1.112 1.11z"/><path d="m21.854 2.147-10.94 10.939"/></svg>
           </button>
         </div>
-        <div id="interpretChat" class="chat-log"></div>
       </div>
 
       <!-- Relocated Peace Quote Card Section (Positioned Downwards Below Altar) -->
@@ -607,14 +635,35 @@
       <!-- EMBEDDED ASK AI (問廟公) WISDOM CONSULTATION CENTER -->
       <div class="ask-ai-profile-card">
         <div class="ask-ai-card-header">
-          <div class="ai-avatar-badge">廟公</div>
-          <div>
-            <h3>問焰智 AI 廟公</h3>
-            <p class="ai-subtitle">線上請示宮廟歷史、參拜儀軌或人生智慧諮詢</p>
+          <div class="ai-avatar-badge-wrap">
+            <div class="ai-avatar-badge">廟公</div>
+            <span class="status-online-dot" title="在線中"></span>
+          </div>
+          <div class="header-info">
+            <h3 id="askCardTitle">問焰智 AI 廟公</h3>
+            <p class="ai-subtitle" id="askCardSub">線上請示宮廟歷史、參拜儀軌或人生智慧諮詢</p>
+          </div>
+          <div class="chat-header-actions">
+            <button id="clearAskChatBtn" class="chat-action-btn" title="清除對話">
+              <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+            </button>
           </div>
         </div>
 
+        <div class="suggestion-chips-container" id="askChips">
+          <button class="chip-suggestion-btn" data-query="請問頭一次拜媽祖的儀軌順序？">🙏 參拜禮儀</button>
+          <button class="chip-suggestion-btn" data-query="請問求財運該準備哪些供品？">💰 祈福求財</button>
+          <button class="chip-suggestion-btn" data-query="請問犯太歲與安太歲的差異？">☯️ 安太歲</button>
+          <button class="chip-suggestion-btn" data-query="請問如何點光明燈祈福？">🏮 點燈祈福</button>
+        </div>
+
         <div id="askChat" class="chat-log ask-chat-profile"></div>
+
+        <div class="typing-indicator is-hidden" id="askTyping">
+          <div class="typing-avatar">廟</div>
+          <div class="typing-dots"><span></span><span></span><span></span></div>
+          <span class="typing-text">廟公思考中...</span>
+        </div>
 
         <div class="input-row">
           <input id="askInput" type="text" placeholder="請輸入您想向廟公請示的問題..." />
