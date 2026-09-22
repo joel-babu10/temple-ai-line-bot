@@ -13,6 +13,8 @@ function getStandardQuickReplies(lang = 'zh', liffUrl = '') {
       { type: 'action', action: { type: 'message', label: isEn ? '2. Nearby' : '2. ⛩️ 附近', text: '2' } },
       { type: 'action', action: { type: 'message', label: isEn ? '3. Zodiac' : '3. 🎐 太歲', text: '3' } },
       { type: 'action', action: { type: 'message', label: isEn ? '4. Festivals' : '4. 🏮 節慶', text: '4' } },
+      { type: 'action', action: { type: 'message', label: isEn ? '7. Oracle' : '7. 📜 神諭', text: '7' } },
+      { type: 'action', action: { type: 'message', label: isEn ? '8. Welfare' : '8. 💖 公益', text: '8' } },
       ...(liffUrl
         ? [{ type: 'action', action: { type: 'uri', label: isEn ? '5. Web App' : '5. 📱 Web參拜', uri: liffUrl } }]
         : []),
@@ -39,7 +41,7 @@ function buildCleanMenuFlex(lang = 'zh', liffUrl = '') {
         paddingAll: '16px',
         contents: [
           { type: 'text', text: isEn ? 'Flame AI Shrine Master' : '🐾 焰寶 智慧宮廟服務選單', weight: 'bold', color: GOLD_SOFT, size: 'md' },
-          { type: 'text', text: isEn ? 'Tap or type numbers 1-6 for quick access:' : '請直接回覆數字或點選按鈕以使用服務：', color: PAPER, size: 'xs', margin: 'xs' }
+          { type: 'text', text: isEn ? 'Tap or type numbers 1-8 for quick access:' : '請直接回覆數字 1~8 或點選按鈕以使用服務：', color: PAPER, size: 'xs', margin: 'xs' }
         ]
       },
       body: {
@@ -53,6 +55,8 @@ function buildCleanMenuFlex(lang = 'zh', liffUrl = '') {
           { type: 'text', text: isEn ? '3. 🎐 Zodiac & Taisui Clash Check' : '3. 🎐 生肖太歲與沖煞查詢', color: PAPER, size: 'sm', weight: 'bold' },
           { type: 'text', text: isEn ? '4. 🏮 Upcoming Temple Festivals' : '4. 🏮 近期宮廟節慶與祭典提醒', color: PAPER, size: 'sm', weight: 'bold' },
           { type: 'text', text: isEn ? '5. 📱 Open Full Web App Experience' : '5. 📱 開啟線上參拜與社群 Web App', color: PAPER, size: 'sm', weight: 'bold' },
+          { type: 'text', text: isEn ? '7. 📜 Daily Shrine Oracle Blessing' : '7. 📜 每日隨機神諭賜福吉語', color: PAPER, size: 'sm', weight: 'bold' },
+          { type: 'text', text: isEn ? '8. 💖 Temple Welfare & Donations' : '8. 💖 宮廟公益樂捐與善行專案', color: PAPER, size: 'sm', weight: 'bold' },
           { type: 'separator', color: LACQUER, margin: 'md' },
           { type: 'text', text: isEn ? '💡 Or ask any question directly in natural chat!' : '💡 您也可以直接輸入任何問題，焰寶會親切為您解答！', color: GOLD_SOFT, size: 'xs', wrap: true, margin: 'sm' }
         ]
@@ -349,6 +353,139 @@ function buildZodiacFlex(lang, result, aiExplanation) {
   };
 }
 
+function buildDailyWisdomFlex(lang = 'zh', liffUrl = '') {
+  const isEn = lang === 'en';
+  const wisdoms = [
+    { text: '行善積德，福應自然；心存慈悲，處處皆安。', deity: '天上聖母 (媽祖)', topic: '福慧兼修' },
+    { text: '心若正大，光明自現；吉星常照，患難不侵。', deity: '關聖帝君', topic: '正道光明' },
+    { text: '千處祈求千處應，苦海常作渡人舟。', deity: '觀音大士', topic: '慈悲安心' },
+    { text: '土地常懷保佑心，善人處處得金玉。', deity: '福德正神', topic: '平安聚財' },
+    { text: '千里姻緣一線牽，真情所至金石開。', deity: '月老星君', topic: '良緣圓滿' }
+  ];
+  const item = wisdoms[Math.floor(Math.random() * wisdoms.length)];
+
+  return {
+    type: 'flex',
+    altText: isEn ? 'Daily Oracle Blessing — Flame AI' : '📜 今日每日神諭賜福 · 焰寶',
+    contents: {
+      type: 'bubble',
+      styles: {
+        header: { backgroundColor: LACQUER_DEEP },
+        body: { backgroundColor: INK },
+        footer: { backgroundColor: INK }
+      },
+      header: {
+        type: 'box',
+        layout: 'vertical',
+        paddingAll: '16px',
+        contents: [
+          { type: 'text', text: isEn ? '📜 Daily Shrine Oracle' : '📜 每日隨機神諭賜福', weight: 'bold', color: GOLD_SOFT, size: 'md' },
+          { type: 'text', text: isEn ? `Deity: ${item.deity} · ${item.topic}` : `賜福仙尊：${item.deity}  |  ${item.topic}`, color: PAPER, size: 'xs', margin: 'xs' }
+        ]
+      },
+      body: {
+        type: 'box',
+        layout: 'vertical',
+        paddingAll: '16px',
+        contents: [
+          { type: 'text', text: `「${item.text}」`, weight: 'bold', color: GOLD, size: 'sm', wrap: true, align: 'center' },
+          { type: 'separator', color: LACQUER, margin: 'md' },
+          { type: 'text', text: isEn ? '🐾 Flame\'s Daily Warm Thought:' : '🐾 焰寶每日溫馨提點：', weight: 'bold', color: GOLD_SOFT, size: 'xs', margin: 'md' },
+          { type: 'text', text: isEn ? 'Keep a gentle heart today, speak kind words, and blessing will follow you step by step!' : '保持善念，多說好話，神明定會在暗中保佑您平安順遂！', color: PAPER, size: 'xs', wrap: true, margin: 'xs' }
+        ]
+      },
+      footer: {
+        type: 'box',
+        layout: 'horizontal',
+        spacing: 'sm',
+        paddingAll: '12px',
+        contents: [
+          {
+            type: 'button',
+            style: 'secondary',
+            height: 'sm',
+            action: { type: 'message', label: isEn ? '1. Draw Fortune' : '1. 靈籤求籤', text: '1' }
+          },
+          ...(liffUrl
+            ? [
+                {
+                  type: 'button',
+                  style: 'primary',
+                  color: LACQUER,
+                  height: 'sm',
+                  action: { type: 'uri', label: isEn ? '5. Web App' : '5. Web 參拜', uri: liffUrl }
+                }
+              ]
+            : [])
+        ]
+      }
+    }
+  };
+}
+
+function buildDonationsFlex(lang = 'zh', liffUrl = '') {
+  const isEn = lang === 'en';
+  return {
+    type: 'flex',
+    altText: isEn ? 'Temple Donations & Community Welfare' : '💖 宮廟隨喜樂捐與公益專案',
+    contents: {
+      type: 'bubble',
+      styles: {
+        header: { backgroundColor: LACQUER_DEEP },
+        body: { backgroundColor: INK },
+        footer: { backgroundColor: INK }
+      },
+      header: {
+        type: 'box',
+        layout: 'vertical',
+        paddingAll: '16px',
+        contents: [
+          { type: 'text', text: isEn ? '💖 Temple Welfare & Donations' : '💖 宮廟公益樂捐與善行專案', weight: 'bold', color: GOLD_SOFT, size: 'md' },
+          { type: 'text', text: isEn ? 'Participate in warmth & merit building' : '凝聚善念 · 隨喜護持偏鄉與宮廟建設', color: PAPER, size: 'xs', margin: 'xs' }
+        ]
+      },
+      body: {
+        type: 'box',
+        layout: 'vertical',
+        spacing: 'sm',
+        paddingAll: '16px',
+        contents: [
+          { type: 'text', text: isEn ? '1. 🌾 Wanchun Temple Winter Relief Rice' : '1. 🌾 萬春宮 偏鄉獨居長者送暖平安米', color: GOLD, size: 'xs', weight: 'bold' },
+          { type: 'text', text: isEn ? 'Goal: NT$ 100,000 (Raised 84%)' : '目標：NT$ 100,000（已募集 84%）', color: PAPER, size: 'xxs' },
+          { type: 'separator', color: LACQUER, margin: 'xs' },
+          { type: 'text', text: isEn ? '2. 🕯️ Lighting Blessing Lamps for Elders' : '2. 🕯️ 偏鄉學童智慧燈供養專案', color: GOLD, size: 'xs', weight: 'bold' },
+          { type: 'text', text: isEn ? 'Goal: NT$ 50,000 (Raised 62%)' : '目標：NT$ 50,000（已募集 62%）', color: PAPER, size: 'xxs' }
+        ]
+      },
+      footer: {
+        type: 'box',
+        layout: 'vertical',
+        spacing: 'xs',
+        paddingAll: '12px',
+        contents: [
+          {
+            type: 'button',
+            style: 'primary',
+            color: LACQUER,
+            height: 'sm',
+            action: { type: 'message', label: isEn ? 'Donate 500 to Wanchun' : '捐款 萬春宮 500', text: '捐款 萬春宮 500' }
+          },
+          ...(liffUrl
+            ? [
+                {
+                  type: 'button',
+                  style: 'link',
+                  height: 'sm',
+                  action: { type: 'uri', label: isEn ? 'View All on Web' : '開啟 Web App 參與樂捐', uri: liffUrl }
+                }
+              ]
+            : [])
+        ]
+      }
+    }
+  };
+}
+
 module.exports = {
   buildCleanMenuFlex,
   buildWelcomeFlex,
@@ -357,5 +494,7 @@ module.exports = {
   buildFortuneFlex,
   buildTempleCarouselFlex,
   buildZodiacFlex,
+  buildDailyWisdomFlex,
+  buildDonationsFlex,
   getStandardQuickReplies
 };

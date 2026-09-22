@@ -1091,16 +1091,15 @@ function requireLogin(callbackAction) {
     if (typeof callbackAction === 'function') callbackAction();
     return true;
   }
+  const fullLoginPage = document.getElementById('fullLoginPage');
   const demoLoginModal = document.getElementById('demoLoginModal');
-  if (demoLoginModal) {
+  if (fullLoginPage) {
+    fullLoginPage.classList.remove('is-hidden');
+    playTempleChime(600, 0.3);
+    window._pendingLoginCallback = callbackAction;
+  } else if (demoLoginModal) {
     demoLoginModal.classList.remove('is-hidden');
     playTempleChime(600, 0.3);
-    const sub = document.getElementById('loginModalSub');
-    if (sub) {
-      sub.textContent = currentLang === 'en'
-        ? '⚠️ Please log in with LINE or Temple Account to post or participate!'
-        : '⚠️ 請先選擇登入身分（LINE 信眾或廟方機構），即可發布貼文與參與互動！';
-    }
     window._pendingLoginCallback = callbackAction;
   }
   return false;
@@ -1109,14 +1108,56 @@ function requireLogin(callbackAction) {
 // Initialize Header Login Button State
 updateHeaderLoginState();
 
-// Demo LINE Login Modal Handlers
+// Full-Screen Dedicated Login Page & Modal Handlers
 const openLoginModalBtn = document.getElementById('openLoginModalBtn');
 const demoLoginModal = document.getElementById('demoLoginModal');
+const fullLoginPage = document.getElementById('fullLoginPage');
 const closeLoginModalBtn = document.getElementById('closeLoginModalBtn');
+const closeFullLoginPageBtn = document.getElementById('closeFullLoginPageBtn');
 const loginAsBelieverBtn = document.getElementById('loginAsBelieverBtn');
 const loginAsTempleBtn = document.getElementById('loginAsTempleBtn');
+const fullLoginBelieverBtn = document.getElementById('fullLoginBelieverBtn');
+const fullLoginTempleBtn = document.getElementById('fullLoginTempleBtn');
 
-if (openLoginModalBtn && demoLoginModal) {
+function handlePerformLogin(roleType) {
+  if (roleType === 'believer') {
+    loggedInUser = {
+      name: 'LINE 善信大德',
+      nameShort: '善信大德',
+      handle: '@line_believer',
+      avatar: '信',
+      role: 'user',
+      isOfficial: false
+    };
+  } else {
+    loggedInUser = {
+      name: '萬春宮 (台中媽祖)',
+      nameShort: '萬春宮',
+      handle: '@wanchun_official',
+      avatar: '廟',
+      role: 'temple',
+      isOfficial: true
+    };
+  }
+  localStorage.setItem('flame_logged_user', JSON.stringify(loggedInUser));
+
+  if (fullLoginPage) fullLoginPage.classList.add('is-hidden');
+  if (demoLoginModal) demoLoginModal.classList.add('is-hidden');
+
+  updateHeaderLoginState();
+  playTempleChime(roleType === 'believer' ? 680 : 720, 0.4);
+  const successText = roleType === 'believer'
+    ? (currentLang === 'en' ? '✅ Logged in as LINE Believer!' : '✅ 已成功以「LINE 信眾身分」登入！')
+    : (currentLang === 'en' ? '✅ Logged in as Temple Org Manager!' : '✅ 已成功以「廟方機構管理者」登入！');
+  showToast(successText);
+
+  if (typeof window._pendingLoginCallback === 'function') {
+    window._pendingLoginCallback();
+    window._pendingLoginCallback = null;
+  }
+}
+
+if (openLoginModalBtn) {
   openLoginModalBtn.addEventListener('click', () => {
     if (loggedInUser) {
       const confirmLogout = confirm(
@@ -1132,7 +1173,8 @@ if (openLoginModalBtn && demoLoginModal) {
       }
       return;
     }
-    demoLoginModal.classList.remove('is-hidden');
+    if (fullLoginPage) fullLoginPage.classList.remove('is-hidden');
+    else if (demoLoginModal) demoLoginModal.classList.remove('is-hidden');
     playTempleChime(600, 0.3);
   });
 }
@@ -1143,49 +1185,16 @@ if (closeLoginModalBtn && demoLoginModal) {
   });
 }
 
-if (loginAsBelieverBtn && demoLoginModal) {
-  loginAsBelieverBtn.addEventListener('click', () => {
-    loggedInUser = {
-      name: 'LINE 善信大德',
-      nameShort: '善信大德',
-      handle: '@line_believer',
-      avatar: '信',
-      role: 'user',
-      isOfficial: false
-    };
-    localStorage.setItem('flame_logged_user', JSON.stringify(loggedInUser));
-    demoLoginModal.classList.add('is-hidden');
-    updateHeaderLoginState();
-    playTempleChime(680, 0.4);
-    showToast(currentLang === 'en' ? '✅ Logged in as LINE Believer!' : '✅ 已成功以「LINE 信眾身分」登入！');
-    if (typeof window._pendingLoginCallback === 'function') {
-      window._pendingLoginCallback();
-      window._pendingLoginCallback = null;
-    }
+if (closeFullLoginPageBtn && fullLoginPage) {
+  closeFullLoginPageBtn.addEventListener('click', () => {
+    fullLoginPage.classList.add('is-hidden');
   });
 }
 
-if (loginAsTempleBtn && demoLoginModal) {
-  loginAsTempleBtn.addEventListener('click', () => {
-    loggedInUser = {
-      name: '萬春宮 (台中媽祖)',
-      nameShort: '萬春宮',
-      handle: '@wanchun_official',
-      avatar: '廟',
-      role: 'temple',
-      isOfficial: true
-    };
-    localStorage.setItem('flame_logged_user', JSON.stringify(loggedInUser));
-    demoLoginModal.classList.add('is-hidden');
-    updateHeaderLoginState();
-    playTempleChime(720, 0.5);
-    showToast(currentLang === 'en' ? '✅ Logged in as Temple Org Manager!' : '✅ 已成功以「廟方機構管理者」登入！');
-    if (typeof window._pendingLoginCallback === 'function') {
-      window._pendingLoginCallback();
-      window._pendingLoginCallback = null;
-    }
-  });
-}
+if (loginAsBelieverBtn) loginAsBelieverBtn.addEventListener('click', () => handlePerformLogin('believer'));
+if (loginAsTempleBtn) loginAsTempleBtn.addEventListener('click', () => handlePerformLogin('temple'));
+if (fullLoginBelieverBtn) fullLoginBelieverBtn.addEventListener('click', () => handlePerformLogin('believer'));
+if (fullLoginTempleBtn) fullLoginTempleBtn.addEventListener('click', () => handlePerformLogin('temple'));
 
 function updateChips(isEn) {
   const askChips = document.getElementById('askChips');

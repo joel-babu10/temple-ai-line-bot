@@ -882,6 +882,71 @@
         </div>
       </div>
     </div>
+  <!-- Dedicated Full-Screen Login Page View (Shown when posting or logging in) -->
+  <div class="full-login-page is-hidden" id="fullLoginPage">
+    <div class="login-page-container">
+      <button class="login-page-close-btn" id="closeFullLoginPageBtn" title="返回">
+        <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        <span>返回 Web 參拜</span>
+      </button>
+
+      <div class="login-hero-brand">
+        <div class="flame-emblem animated-flame" style="margin: 0 auto;">
+          <div class="flame-core-container">
+            <div class="flame-layer-outer"></div>
+            <div class="flame-layer-middle"></div>
+            <div class="flame-layer-inner"></div>
+            <div class="flame-layer-core"></div>
+          </div>
+        </div>
+        <h2>FLAME AI <span class="brand-separator">|</span> 焰智宮廟</h2>
+        <p class="login-hero-sub">開啟完整的智慧參拜、隨手善行發布與宮廟動態互動</p>
+      </div>
+
+      <div class="login-notice-banner" id="fullLoginNoticeBanner">
+        <span class="notice-icon">🔐</span>
+        <span id="fullLoginNoticeText">登入 LINE 帳號或廟方機構帳號即可發布社群動態與交流</span>
+      </div>
+
+      <div class="login-card-roles-list">
+        <button class="login-page-role-card" id="fullLoginBelieverBtn">
+          <div class="role-badge-icon believer">🟢</div>
+          <div class="role-card-content">
+            <div class="role-title-row">
+              <h3>LINE 信眾身分登入</h3>
+              <span class="role-pill-badge">一般信眾</span>
+            </div>
+            <p>使用 LINE 帳號直接登入，解鎖發布動態、留言互動與線上點燈祈福全功能。</p>
+          </div>
+        </button>
+
+        <button class="login-page-role-card" id="fullLoginTempleBtn">
+          <div class="role-badge-icon temple">⛩️</div>
+          <div class="role-card-content">
+            <div class="role-title-row">
+              <h3>廟方機構管理者登入</h3>
+              <span class="role-pill-badge temple">萬春宮 官方</span>
+            </div>
+            <p>台中萬春宮機構代表專用，可發布官方繞境公告、冬季偏鄉送暖與募資專案。</p>
+          </div>
+        </button>
+      </div>
+
+      <div class="login-page-features-grid">
+        <div class="feature-item">
+          <span class="feat-icon">🔮</span>
+          <span>AI 靈籤解籤</span>
+        </div>
+        <div class="feature-item">
+          <span class="feat-icon">⛩️</span>
+          <span>全台宮廟地圖</span>
+        </div>
+        <div class="feature-item">
+          <span class="feat-icon">🤝</span>
+          <span>隨手善行社群</span>
+        </div>
+      </div>
+    </div>
   </div>
 
   <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>

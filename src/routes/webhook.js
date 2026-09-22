@@ -15,6 +15,8 @@ const {
   buildFortuneFlex,
   buildTempleCarouselFlex,
   buildZodiacFlex,
+  buildDailyWisdomFlex,
+  buildDonationsFlex,
   getStandardQuickReplies
 } = require('../services/flexMessages');
 const { subscribeToTemple, unsubscribeFromTemple } = require('../services/templeSubscriptions');
@@ -326,8 +328,18 @@ async function handleEvent(event) {
   }
 
   // 6 or 選單 or menu -> Show Menu Flex Card
-  if (text === '6' || /^選單$/i.test(text) || /^menu$/i.test(text) || /^help$/i.test(text)) {
+  if (text === '6' || /^選單$/i.test(text) || /^menu$/i.test(text) || /^help$/i.test(text) || /建議|suggestion/i.test(text)) {
     return reply(event.replyToken, [buildCleanMenuFlex(lang, LIFF_URL)], userId, lang);
+  }
+
+  // 7 or 神諭 or oracle or blessing -> Daily Wisdom Blessing Card
+  if (text === '7' || /神諭|賜福|每日靈籤|oracle|blessing/i.test(text)) {
+    return reply(event.replyToken, [buildDailyWisdomFlex(lang, LIFF_URL)], userId, lang);
+  }
+
+  // 8 or 公益 or 專案 or welfare -> Temple Donations & Community Welfare Card
+  if (text === '8' || /公益|專案|樂捐列表|welfare/i.test(text)) {
+    return reply(event.replyToken, [buildDonationsFlex(lang, LIFF_URL)], userId, lang);
   }
 
   // 訂閱 / 取消訂閱 / 捐款 Commands
