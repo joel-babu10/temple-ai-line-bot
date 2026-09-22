@@ -1,34 +1,19 @@
 const API_BASE = '/api';
 
-// ---------- Background Ember Sparks Particle Generator ----------
-(function initEmberSparks() {
-  const container = document.getElementById('sparkDustContainer');
-  if (!container) return;
+// ---------- Global State ----------
+let currentLang = 'zh-TW';
+let currentRole = 'believer'; // 'believer' | 'temple_admin'
+let userProfile = {
+  userId: 'line-user-demo-123',
+  displayName: '善信大德',
+  pictureUrl: '',
+  role: 'believer',
+  templeId: 'wanchun-gong'
+};
 
-  const sparkCount = 18;
-  for (let i = 0; i < sparkCount; i++) {
-    const particle = document.createElement('div');
-    particle.className = 'ember-particle';
-
-    const leftPos = Math.random() * 100;
-    const delay = Math.random() * 5;
-    const duration = 4 + Math.random() * 4;
-    const size = 2 + Math.random() * 3;
-
-    particle.style.left = `${leftPos}vw`;
-    particle.style.animationDelay = `${delay}s`;
-    particle.style.animationDuration = `${duration}s`;
-    particle.style.width = `${size}px`;
-    particle.style.height = `${size}px`;
-
-    container.appendChild(particle);
-  }
-})();
-
-// ---------- Web Audio API Temple Bell Chime Synthesizer ----------
+// ---------- Audio Chime Synthesizer ----------
 let chimeEnabled = true;
 const chimeBtn = document.getElementById('chimeToggleBtn');
-
 if (chimeBtn) {
   chimeBtn.addEventListener('click', () => {
     chimeEnabled = !chimeEnabled;
@@ -59,914 +44,10 @@ function playTempleChime(freq = 432, duration = 0.8) {
 
     osc.start();
     osc.stop(ctx.currentTime + duration);
-  } catch (e) {
-    // Ignore audio errors
-  }
+  } catch (e) {}
 }
 
-// ---------- Floating Cute Divine Spirit Pet Mascot (神獸 焰寶 - 可自由拖曳移動) ----------
-const divinePetWidget = document.getElementById('divinePetWidget');
-const petSpeechBubble = document.getElementById('petSpeechBubble');
-
-if (divinePetWidget) {
-  let isDragging = false;
-  let startX = 0, startY = 0;
-  let initialLeft = 0, initialTop = 0;
-  let totalDragDistance = 0;
-
-  function onDragStart(e) {
-    totalDragDistance = 0;
-    isDragging = false;
-    const clientX = e.touches ? e.touches[0].clientX : e.clientX;
-    const clientY = e.touches ? e.touches[0].clientY : e.clientY;
-
-    startX = clientX;
-    startY = clientY;
-
-    const rect = divinePetWidget.getBoundingClientRect();
-    initialLeft = rect.left;
-    initialTop = rect.top;
-
-    divinePetWidget.style.right = 'auto';
-    divinePetWidget.style.bottom = 'auto';
-    divinePetWidget.style.left = `${initialLeft}px`;
-    divinePetWidget.style.top = `${initialTop}px`;
-    divinePetWidget.classList.add('is-dragging');
-
-    document.addEventListener('mousemove', onDragMove);
-    document.addEventListener('mouseup', onDragEnd);
-    document.addEventListener('touchmove', onDragMove, { passive: false });
-    document.addEventListener('touchend', onDragEnd);
-  }
-
-  function onDragMove(e) {
-    const clientX = e.touches ? e.touches[0].clientX : e.clientX;
-    const clientY = e.touches ? e.touches[0].clientY : e.clientY;
-
-    const dx = clientX - startX;
-    const dy = clientY - startY;
-    const dist = Math.sqrt(dx * dx + dy * dy);
-    totalDragDistance = dist;
-
-    if (dist > 6) {
-      isDragging = true;
-      if (e.cancelable) e.preventDefault();
-      const newLeft = Math.max(8, Math.min(window.innerWidth - divinePetWidget.offsetWidth - 8, initialLeft + dx));
-      const newTop = Math.max(8, Math.min(window.innerHeight - divinePetWidget.offsetHeight - 8, initialTop + dy));
-
-      divinePetWidget.style.left = `${newLeft}px`;
-      divinePetWidget.style.top = `${newTop}px`;
-    }
-  }
-
-  function onDragEnd() {
-    divinePetWidget.classList.remove('is-dragging');
-    document.removeEventListener('mousemove', onDragMove);
-    document.removeEventListener('mouseup', onDragEnd);
-    document.removeEventListener('touchmove', onDragMove);
-    document.removeEventListener('touchend', onDragEnd);
-  }
-
-  divinePetWidget.addEventListener('mousedown', onDragStart);
-  divinePetWidget.addEventListener('touchstart', onDragStart, { passive: true });
-
-  divinePetWidget.addEventListener('click', (e) => {
-    if (totalDragDistance > 8) {
-      e.stopImmediatePropagation();
-      return;
-    }
-
-    playTempleChime(784, 0.4);
-
-    // Cute double bounce jump animation
-    divinePetWidget.classList.remove('is-jumping');
-    void divinePetWidget.offsetWidth; // force DOM reflow
-    divinePetWidget.classList.add('is-jumping');
-
-    if (petSpeechBubble) {
-      petSpeechBubble.querySelector('span').textContent = '請問！';
-      setTimeout(() => {
-        petSpeechBubble.querySelector('span').textContent = '問我';
-      }, 3000);
-    }
-
-    // Switch tab to "個人與 AI" (profile tab)
-    document.querySelectorAll('.tab-btn').forEach((b) => b.classList.remove('is-active'));
-    document.querySelectorAll('.tab-panel').forEach((p) => p.classList.remove('is-active'));
-
-    const profileTabBtn = document.querySelector('.tab-btn[data-tab="profile"]');
-    const profilePanel = document.getElementById('tab-profile');
-
-    if (profileTabBtn) profileTabBtn.classList.add('is-active');
-    if (profilePanel) profilePanel.classList.add('is-active');
-
-    // Scroll to Ask AI input and focus
-    const askInput = document.getElementById('askInput');
-    if (askInput) {
-      askInput.scrollIntoView({ behavior: 'smooth', block: 'center' });
-      setTimeout(() => askInput.focus(), 300);
-    }
-
-    if (navigator.vibrate) navigator.vibrate([30, 40, 30]);
-  });
-}
-
-// Function to sync Divine Pet Horn and Aura colors with selected deity
-function setPetHornAndAuraColor(color) {
-  const hornPath = document.getElementById('petHornPath');
-  const hornBase = document.getElementById('petHornBase');
-  const petAura = document.querySelector('.pet-aura-glow');
-
-  if (hornPath) {
-    hornPath.setAttribute('fill', color || '#ffd700');
-  }
-  if (hornBase) {
-    hornBase.setAttribute('fill', color || '#c79a45');
-  }
-  if (petAura) {
-    petAura.style.setProperty('--pet-aura-color', color || 'rgba(245, 158, 11, 0.6)');
-  }
-}
-
-// ---------- LIFF init ----------
-let currentUserId = null;
-
-async function getCurrentUserId() {
-  if (currentUserId) return currentUserId;
-
-  if (window.liff && liff.isLoggedIn && liff.isLoggedIn()) {
-    try {
-      const profile = await liff.getProfile();
-      currentUserId = profile.userId;
-      return currentUserId;
-    } catch (err) {
-      console.warn('liff.getProfile failed, falling back to local id:', err.message);
-    }
-  }
-
-  // Outside LINE (local testing) — a stable per-browser id so donations/subscriptions
-  // still work for demoing in a normal browser.
-  let localId = localStorage.getItem('yanbao_local_user_id');
-  if (!localId) {
-    localId = 'local-' + Math.random().toString(36).slice(2, 12);
-    localStorage.setItem('yanbao_local_user_id', localId);
-  }
-  currentUserId = localId;
-  return currentUserId;
-}
-
-async function initLiff() {
-  try {
-    await liff.init({ liffId: window.APP_CONFIG.LIFF_ID });
-  } catch (err) {
-    console.warn('LIFF init skipped (running outside LINE):', err.message);
-  }
-}
-initLiff();
-
-// Maps the display names used in the UI (story bar, post cards) to backend temple ids,
-// so following/donating actually targets the right record. Cached after first fetch.
-let templeListCache = null;
-async function resolveTempleIdByName(name) {
-  if (!name) return null;
-  if (!templeListCache) {
-    try {
-      const res = await fetch(`${API_BASE}/temples`);
-      templeListCache = await res.json();
-    } catch (err) {
-      console.warn('failed to load temple list:', err.message);
-      return null;
-    }
-  }
-  const match = templeListCache.find((t) => name.includes(t.name) || t.name.includes(name));
-  return match ? match.id : null;
-}
-
-// ---------- Tabs ----------
-document.querySelectorAll('.tab-btn').forEach((btn) => {
-  btn.addEventListener('click', () => {
-    document.querySelectorAll('.tab-btn').forEach((b) => b.classList.remove('is-active'));
-    document.querySelectorAll('.tab-panel').forEach((p) => p.classList.remove('is-active'));
-    btn.classList.add('is-active');
-    document.getElementById(`tab-${btn.dataset.tab}`).classList.add('is-active');
-    playTempleChime(320, 0.2);
-  });
-});
-
-// ---------- Researched Custom Deity Vector Symbols Map ----------
-const DEITY_CUSTOM_ICONS = {
-  mazu: `<svg class="deity-svg-icon" viewBox="0 0 36 36" fill="none"><path stroke="#ffd700" stroke-width="2" d="M6 24 C10 18, 26 18, 30 24"/><path fill="url(#mazuCrownGrad)" stroke="#ffd700" stroke-width="1.5" d="M10 20 L18 6 L26 20 Z"/><circle cx="18" cy="8" r="2.5" fill="#f59e0b"/><circle cx="11" cy="24" r="1.5" fill="#ffd700"/><circle cx="18" cy="24" r="1.5" fill="#ffd700"/><circle cx="25" cy="24" r="1.5" fill="#ffd700"/><line x1="11" y1="24" x2="11" y2="30" stroke="#ffd700" stroke-width="1.2" stroke-dasharray="1 1"/><line x1="18" y1="24" x2="18" y2="31" stroke="#ffd700" stroke-width="1.2" stroke-dasharray="1 1"/><line x1="25" y1="24" x2="25" y2="30" stroke="#ffd700" stroke-width="1.2" stroke-dasharray="1 1"/><path stroke="#38bdf8" stroke-width="1.5" fill="none" d="M4 31 Q 9 27, 18 31 T 32 31"/></svg>`,
-  guanyin: `<svg class="deity-svg-icon" viewBox="0 0 36 36" fill="none"><path fill="#2dd4bf" opacity="0.6" d="M8 26 C 12 32, 24 32, 28 26 C 24 24, 12 24, 8 26 Z"/><path stroke="#5eead4" stroke-width="1.5" d="M11 25 C 18 30, 18 30, 25 25"/><path fill="url(#guanyinVaseGrad)" stroke="#5eead4" stroke-width="1.2" d="M16 12 C 14 16, 13 20, 15 24 L 21 24 C 23 20, 22 16, 20 12 Z"/><path stroke="#34d399" stroke-width="1.5" stroke-linecap="round" fill="none" d="M18 10 Q 24 4, 27 7"/><circle cx="18" cy="5" r="1.5" fill="#a7f3d0"/></svg>`,
-  guangong: `<svg class="deity-svg-icon" viewBox="0 0 36 36" fill="none"><path fill="url(#guangongShieldGrad)" stroke="#f87171" stroke-width="1.2" d="M18 3 L 30 9 V 20 C 30 27, 18 33, 18 33 C 18 33, 6 27, 6 20 V 9 Z"/><path stroke="#ffd700" stroke-width="2" stroke-linecap="round" d="M12 28 L 24 8"/><path fill="#4ade80" stroke="#ffd700" stroke-width="1.2" d="M20 6 C 27 5, 30 11, 24 14 C 22 11, 20 8, 20 6 Z"/><circle cx="15" cy="23" r="2" fill="#ef4444"/></svg>`,
-  tudigong: `<svg class="deity-svg-icon" viewBox="0 0 36 36" fill="none"><path fill="url(#tudiIngotGrad)" stroke="#ffd700" stroke-width="1.5" d="M6 16 C 6 12, 10 10, 18 10 C 26 10, 30 12, 30 16 C 30 24, 24 28, 18 28 C 12 28, 6 24, 6 16 Z"/><ellipse cx="18" cy="15" rx="8" ry="4" fill="#fef08a" stroke="#eab308" stroke-width="1"/><ellipse cx="18" cy="14" rx="4" ry="2.5" fill="#f59e0b"/><path stroke="#fbbf24" stroke-width="1.5" stroke-linecap="round" fill="none" d="M9 25 Q 18 32, 27 25"/></svg>`,
-  yuelao: `<svg class="deity-svg-icon" viewBox="0 0 36 36" fill="none"><path fill="url(#yuelaoHeartGrad)" stroke="#f43f5e" stroke-width="1.5" d="M12 18 C 7 12, 6 22, 18 29 C 30 22, 29 12, 24 18 C 20 22, 16 22, 12 18 Z"/><path stroke="#ff4d4d" stroke-width="2" stroke-linecap="round" fill="none" d="M4 14 Q 12 8, 18 14 T 32 14"/><circle cx="18" cy="14" r="3" fill="#ffd700" stroke="#f43f5e" stroke-width="1"/></svg>`
-};
-
-// ---------- Deity Selector Pills & Cute Background Switch Animations ----------
-function triggerCuteBgSwitchParticles(deityId, deityColor) {
-  const bgPulse = document.getElementById('altarBgGlowPulse');
-  const particleContainer = document.getElementById('deitySwitchParticles');
-
-  if (bgPulse) {
-    bgPulse.style.setProperty('--deity-accent', deityColor || 'rgba(245, 158, 11, 0.35)');
-    bgPulse.classList.remove('is-pulsing');
-    void bgPulse.offsetWidth; // force reflow
-    bgPulse.classList.add('is-pulsing');
-  }
-
-  if (particleContainer) {
-    const cuteSymbolsMap = {
-      mazu: ['👑', '✨', '🌊', '⭐️', '💫', '🪷'],
-      guanyin: ['🪷', '💧', '✨', '☸️', '💫', '⭐️'],
-      guangong: ['⚔️', '🔥', '✨', '🛡️', '🌟', '💥'],
-      tudigong: ['🪙', '🌾', '✨', '🍃', '💛', '🌟'],
-      yuelao: ['💖', '🎀', '✨', '🌸', '💕', '💫']
-    };
-
-    const symbols = cuteSymbolsMap[deityId] || ['✨', '🌸', '💫', '⭐️', '🪷'];
-    const count = 7;
-
-    for (let i = 0; i < count; i++) {
-      const p = document.createElement('span');
-      p.className = 'cute-bg-particle';
-      p.textContent = symbols[i % symbols.length];
-
-      const leftPos = 12 + Math.random() * 76;
-      const bottomPos = 10 + Math.random() * 40;
-      const delay = Math.random() * 0.18;
-      const dur = 1.0 + Math.random() * 0.35;
-      const scale = 0.7 + Math.random() * 0.6;
-
-      p.style.left = `${leftPos}%`;
-      p.style.bottom = `${bottomPos}px`;
-      p.style.animationDelay = `${delay}s`;
-      p.style.animationDuration = `${dur}s`;
-      p.style.fontSize = `${scale}rem`;
-
-      particleContainer.appendChild(p);
-      setTimeout(() => p.remove(), (delay + dur + 0.2) * 1000);
-    }
-  }
-}
-
-const DEITY_FLAME_PALETTES = {
-  mazu: {
-    outer: 'linear-gradient(to top, #7a1f1f 0%, #b91c1c 30%, #f59e0b 75%, #ffd700 100%)',
-    middle: 'linear-gradient(to top, #9b2c2c 0%, #f59e0b 50%, #ffe39d 100%)',
-    glow: 'rgba(245, 158, 11, 0.65)'
-  },
-  guanyin: {
-    outer: 'linear-gradient(to top, #0f766e 0%, #0d9488 30%, #2dd4bf 75%, #a7f3d0 100%)',
-    middle: 'linear-gradient(to top, #115e59 0%, #2dd4bf 50%, #ccfbf1 100%)',
-    glow: 'rgba(45, 212, 191, 0.65)'
-  },
-  guangong: {
-    outer: 'linear-gradient(to top, #450a0a 0%, #991b1b 30%, #ef4444 75%, #fca5a5 100%)',
-    middle: 'linear-gradient(to top, #7f1d1d 0%, #f87171 50%, #fecaca 100%)',
-    glow: 'rgba(239, 68, 68, 0.65)'
-  },
-  tudigong: {
-    outer: 'linear-gradient(to top, #78350f 0%, #b45309 30%, #e4c77a 75%, #fef08a 100%)',
-    middle: 'linear-gradient(to top, #92400e 0%, #f59e0b 50%, #fef9c3 100%)',
-    glow: 'rgba(228, 199, 122, 0.65)'
-  },
-  yuelao: {
-    outer: 'linear-gradient(to top, #881337 0%, #be123c 30%, #ff7b7b 75%, #fda4af 100%)',
-    middle: 'linear-gradient(to top, #9f1239 0%, #fb7185 50%, #ffe4e6 100%)',
-    glow: 'rgba(255, 123, 123, 0.65)'
-  }
-};
-
-function setDeityFlameColor(deityId) {
-  const palette = DEITY_FLAME_PALETTES[deityId] || DEITY_FLAME_PALETTES.mazu;
-  const root = document.documentElement;
-  root.style.setProperty('--flame-outer', palette.outer);
-  root.style.setProperty('--flame-middle', palette.middle);
-  root.style.setProperty('--flame-glow', palette.glow);
-}
-
-document.querySelectorAll('.deity-pill').forEach((pill) => {
-  pill.addEventListener('click', () => {
-    document.querySelectorAll('.deity-pill').forEach((p) => p.classList.remove('is-active'));
-    pill.classList.add('is-active');
-
-    const deityId = pill.dataset.deityId || 'mazu';
-    const badge = pill.dataset.deityBadge || '主神 · 媽祖娘娘';
-    const power = pill.dataset.deityPower || '';
-    const freq = Number(pill.dataset.deityFreq) || 528;
-    const color = pill.dataset.deityColor || '#f59e0b';
-
-    const mainIconEl = document.getElementById('deityIconMain');
-    const badgeTextEl = document.getElementById('deityBadgeText');
-    const powerTagEl = document.getElementById('deityPowerTag');
-    const burstEl = document.getElementById('divineBurst');
-    const emblemEl = document.getElementById('deityAvatarEmblem');
-
-    if (mainIconEl && DEITY_CUSTOM_ICONS[deityId]) {
-      mainIconEl.innerHTML = DEITY_CUSTOM_ICONS[deityId];
-    }
-    if (badgeTextEl) badgeTextEl.textContent = badge;
-    if (powerTagEl) powerTagEl.textContent = power;
-
-    if (burstEl) {
-      burstEl.classList.remove('is-animating');
-      void burstEl.offsetWidth; // force DOM reflow to restart animation
-      burstEl.classList.add('is-animating');
-    }
-
-    if (emblemEl) {
-      emblemEl.classList.remove('is-switched');
-      void emblemEl.offsetWidth; // force DOM reflow to restart animation
-      emblemEl.classList.add('is-switched');
-    }
-
-    // Dynamic Header Sacred Flame Color Shift
-    setDeityFlameColor(deityId);
-
-    // Sync Divine Pet Mascot Horn & Aura Color with Selected Deity
-    setPetHornAndAuraColor(color);
-
-    // Trigger cute minimal background ambient glow & floating particle burst
-    triggerCuteBgSwitchParticles(deityId, color);
-
-    playTempleChime(freq, 0.4);
-  });
-});
-
-// ---------- Daily Divine Blessing Card Swapper ----------
-const DAILY_BLESSINGS = [
-  '🌸 媽祖賜福：吉星高照 · 行路平安 · 萬事順心',
-  '☸️ 觀音護佑：心境平和 · 慈悲喜捨 · 災厄遠離',
-  '⚔️ 關帝加持：浩然正氣 · 小人退散 · 財源廣進',
-  '🌾 土地公賜財：福德加被 · 聚寶納福 · 家和萬事興',
-  '💖 月老牽線：佳偶天成 · 姻緣圓滿 · 喜氣洋洋',
-  '🌟 文昌星君：智慧開朗 · 考運亨通 · 金榜題名'
-];
-
-const refreshBlessingBtn = document.getElementById('refreshBlessingBtn');
-const dailyBlessingText = document.getElementById('dailyBlessingText');
-
-if (refreshBlessingBtn && dailyBlessingText) {
-  refreshBlessingBtn.addEventListener('click', () => {
-    const randomBlessing = DAILY_BLESSINGS[Math.floor(Math.random() * DAILY_BLESSINGS.length)];
-    dailyBlessingText.classList.remove('is-swapping');
-    void dailyBlessingText.offsetWidth; // force DOM reflow
-    dailyBlessingText.textContent = randomBlessing;
-    dailyBlessingText.classList.add('is-swapping');
-    playTempleChime(720, 0.3);
-    if (navigator.vibrate) navigator.vibrate(30);
-  });
-}
-
-// Function to trigger rising ember sparks on incense burner
-function triggerIncenseSparks() {
-  const burner = document.getElementById('incenseBurner');
-  if (!burner) return;
-
-  for (let i = 0; i < 10; i++) {
-    const spark = document.createElement('span');
-    spark.className = 'incense-ember-spark';
-    const leftOffset = 25 + Math.random() * 50;
-    const delay = Math.random() * 0.3;
-    spark.style.left = `${leftOffset}%`;
-    spark.style.bottom = '30px';
-    spark.style.animationDelay = `${delay}s`;
-    burner.appendChild(spark);
-    setTimeout(() => spark.remove(), 1600);
-  }
-}
-
-// ---------- Divination flow with 3D Moon Blocks & Incense Visuals ----------
-const incenseBtn = document.getElementById('incenseBtn');
-const jiaoBtn = document.getElementById('jiaoBtn');
-const jiaoResult = document.getElementById('jiaoResult');
-const drawBtn = document.getElementById('drawBtn');
-const fortuneCard = document.getElementById('fortuneCard');
-const interpretBox = document.getElementById('interpretBox');
-const incenseBurner = document.getElementById('incenseBurner');
-const blockLeft = document.getElementById('blockLeft');
-const blockRight = document.getElementById('blockRight');
-
-let currentFortune = null;
-
-incenseBtn.addEventListener('click', () => {
-  incenseBtn.disabled = true;
-  incenseBtn.querySelector('span:last-child').textContent = '已上香 🙏';
-  jiaoBtn.disabled = false;
-
-  if (incenseBurner) {
-    incenseBurner.classList.add('is-lit');
-  }
-
-  // Trigger realistic ember sparks rising from incense sticks
-  triggerIncenseSparks();
-
-  if (navigator.vibrate) navigator.vibrate(40);
-  playTempleChime(440, 0.6);
-});
-
-jiaoBtn.addEventListener('click', () => {
-  const outcomes = ['聖筊 ✅ 神明應允', '笑筊，再擲一次', '陰筊，再擲一次'];
-  const roll = Math.random();
-  const outcome = roll < 0.5 ? outcomes[0] : roll < 0.75 ? outcomes[1] : outcomes[2];
-
-  // Trigger 3D block flip animation & haptic wooden clack feedback
-  if (blockLeft && blockRight) {
-    blockLeft.classList.remove('toss-anim-left', 'convex');
-    blockRight.classList.remove('toss-anim-right', 'convex');
-
-    void blockLeft.offsetWidth; // trigger reflow
-    blockLeft.classList.add('toss-anim-left');
-    blockRight.classList.add('toss-anim-right');
-
-    setTimeout(() => {
-      if (outcome === outcomes[0]) {
-        blockRight.classList.add('convex');
-      } else if (outcome === outcomes[1]) {
-      } else {
-        blockLeft.classList.add('convex');
-        blockRight.classList.add('convex');
-      }
-    }, 250);
-  }
-
-  // Double clack wooden chime & tactile double vibration
-  playTempleChime(820, 0.2);
-  setTimeout(() => playTempleChime(640, 0.25), 180);
-  if (navigator.vibrate) navigator.vibrate([35, 45, 35]);
-
-  jiaoResult.textContent = outcome;
-
-  if (outcome === outcomes[0]) {
-    drawBtn.disabled = false;
-    fireConfetti();
-    playTempleChime(528, 0.8);
-  } else {
-    playTempleChime(280, 0.4);
-  }
-});
-
-drawBtn.addEventListener('click', async () => {
-  drawBtn.disabled = true;
-  const res = await fetch(`${API_BASE}/fortune/draw`);
-  currentFortune = await res.json();
-
-  document.getElementById('fortuneGrade').textContent = currentFortune.grade;
-  document.getElementById('fortunePoem').textContent = currentFortune.poem;
-  document.getElementById('fortuneTheme').textContent = `主題：${currentFortune.theme}`;
-  fortuneCard.classList.remove('is-hidden');
-  interpretBox.classList.remove('is-hidden');
-  fireConfetti();
-  playTempleChime(660, 1.0);
-});
-
-function fireConfetti() {
-  if (typeof confetti !== 'function') return;
-  confetti({
-    particleCount: 65,
-    spread: 70,
-    startVelocity: 35,
-    origin: { y: 0.6 },
-    colors: ['#c79a45', '#e4c77a', '#7a1f1f', '#ffe39d', '#f59e0b']
-  });
-}
-
-const askInterpretBtn = document.getElementById('askInterpretBtn');
-const questionInput = document.getElementById('questionInput');
-
-async function handleInterpretQuery(customText) {
-  const question = typeof customText === 'string' ? customText : questionInput.value.trim();
-  if (!question || !currentFortune) return;
-
-  appendChat('interpretChat', question, 'user');
-  questionInput.value = '';
-
-  showTyping('interpretTyping');
-
-  try {
-    const res = await fetch(`${API_BASE}/fortune/interpret`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ fortuneId: currentFortune.id, question, language: currentLang })
-    });
-    const data = await res.json();
-    hideTyping('interpretTyping');
-    appendChat('interpretChat', data.reply, 'ai', '焰');
-  } catch (e) {
-    hideTyping('interpretTyping');
-    const errText = currentLang === 'en' ? 'Connection error, please try again.' : '連線失敗，請稍後再試。';
-    appendChat('interpretChat', errText, 'ai', '焰');
-  }
-}
-
-if (askInterpretBtn) askInterpretBtn.addEventListener('click', () => handleInterpretQuery());
-if (questionInput) {
-  questionInput.addEventListener('keydown', (e) => {
-    if (e.key === 'Enter') {
-      e.preventDefault();
-      handleInterpretQuery();
-    }
-  });
-}
-
-function appendChat(containerId, text, role, avatarLabel = role === 'user' ? '信' : '焰') {
-  const container = document.getElementById(containerId);
-  if (!container) return;
-
-  const msgRow = document.createElement('div');
-  msgRow.className = `chat-row ${role}`;
-
-  const timeStr = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-
-  const avatarHtml = role === 'user'
-    ? `<div class="chat-avatar user-avatar">${avatarLabel}</div>`
-    : `<div class="chat-avatar ai-avatar">${avatarLabel}</div>`;
-
-  const formattedText = escapeHtml(text).replace(/\n/g, '<br>');
-
-  const copyBtnHtml = role === 'ai'
-    ? `<button class="btn-copy-bubble" title="複製內容" onclick="copyBubbleText(this)">
-         <svg class="icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
-       </button>`
-    : '';
-
-  msgRow.innerHTML = `
-    ${avatarHtml}
-    <div class="bubble-wrapper">
-      <div class="chat-bubble ${role}">
-        <div class="bubble-content">${formattedText}</div>
-        ${copyBtnHtml}
-      </div>
-      <span class="chat-timestamp">${timeStr}</span>
-    </div>
-  `;
-
-  container.appendChild(msgRow);
-  msgRow.scrollIntoView({ behavior: 'smooth', block: 'end' });
-}
-
-function escapeHtml(str) {
-  return String(str).replace(/[&<>"']/g, (m) => ({
-    '&': '&amp;',
-    '<': '&lt;',
-    '>': '&gt;',
-    '"': '&quot;',
-    "'": '&#39;'
-  })[m]);
-}
-
-function copyBubbleText(btn) {
-  const content = btn.closest('.chat-bubble').querySelector('.bubble-content').innerText;
-  navigator.clipboard.writeText(content).then(() => {
-    btn.classList.add('is-copied');
-    setTimeout(() => btn.classList.remove('is-copied'), 2000);
-  });
-}
-
-// ---------- Tab 3: Interactive Online Blessing Lamp Wall ----------
-let totalLamps = 1286;
-let activeBlessingType = '平安順遂';
-
-const initialLamps = [
-  { name: '張信士', wish: '🌸 平安順遂' },
-  { name: '李信士', wish: '💼 事業亨通' },
-  { name: '陳信士', wish: '💖 良緣圓滿' },
-  { name: '王信士', wish: '🎓 文昌金榜' },
-  { name: '黃信士', wish: '💰 財運亨通' },
-  { name: '林信士', wish: '🌸 平安順遂' }
-];
-
-function renderLampWall() {
-  const grid = document.getElementById('lampWallGrid');
-  if (!grid) return;
-  grid.innerHTML = initialLamps
-    .map(
-      (l) => `
-    <div class="blessing-lamp-card">
-      <div class="lamp-name">${l.name}</div>
-      <div class="lamp-wish">${l.wish}</div>
-    </div>`
-    )
-    .join('');
-}
-renderLampWall();
-
-// Blessing type selector
-document.querySelectorAll('.blessing-type-btn').forEach((btn) => {
-  btn.addEventListener('click', () => {
-    document.querySelectorAll('.blessing-type-btn').forEach((b) => b.classList.remove('is-active'));
-    btn.classList.add('is-active');
-    activeBlessingType = btn.dataset.type;
-  });
-});
-
-const lightLampBtn = document.getElementById('lightLampBtn');
-if (lightLampBtn) {
-  lightLampBtn.addEventListener('click', () => {
-    const nameInput = document.getElementById('blessingName');
-    const name = nameInput.value.trim() || '虔誠信士';
-    const wish = activeBlessingType;
-
-    initialLamps.unshift({ name, wish });
-    totalLamps += 1;
-
-    document.getElementById('lampCounter').textContent = totalLamps.toLocaleString();
-    renderLampWall();
-    fireConfetti();
-    playTempleChime(580, 0.9);
-
-    if (nameInput) nameInput.value = '';
-  });
-}
-
-// ---------- Nearby temples & Location ----------
-let userLocation = null;
-let cachedTemples = [];
-let activeFilter = 'all';
-
-document.getElementById('locateBtn').addEventListener('click', async () => {
-  const locateBtn = document.getElementById('locateBtn');
-  locateBtn.disabled = true;
-  locateBtn.querySelector('span').textContent = '定位查詢中…';
-
-  try {
-    userLocation = await getLocation();
-    const { lat, lng } = userLocation;
-    const res = await fetch(`${API_BASE}/temples/nearby?lat=${lat}&lng=${lng}`);
-    cachedTemples = await res.json();
-
-    if (cachedTemples.length > 0) {
-      const nearest = cachedTemples[0];
-      const subTitleText = document.getElementById('subTitleText');
-      const deityBadgeText = document.getElementById('deityBadgeText');
-      const locationBadge = document.getElementById('locationBadge');
-      const locationBadgeText = document.getElementById('locationBadgeText');
-
-      if (subTitleText) {
-        subTitleText.textContent = `📍 最近宮廟：${nearest.name} (${nearest.distanceKm ?? 0} km)`;
-      }
-      if (deityBadgeText) {
-        deityBadgeText.textContent = `🌸 主神 · ${nearest.name}${nearest.deity ? ` (${nearest.deity})` : ''}`;
-      }
-      if (locationBadge && locationBadgeText) {
-        locationBadgeText.textContent = `📍 定位：${nearest.name} (${nearest.distanceKm ?? 0} km)`;
-        locationBadge.classList.remove('is-hidden');
-      }
-    }
-
-    renderNearbyList();
-    playTempleChime(480, 0.5);
-  } catch (err) {
-    document.getElementById('nearbyList').innerHTML = `<p class="hint">無法取得位置：${err.message}</p>`;
-  } finally {
-    locateBtn.disabled = false;
-    locateBtn.querySelector('span').textContent = '📍 重新定位';
-  }
-});
-
-// Deity filter chips
-document.querySelectorAll('.chip-btn').forEach((chip) => {
-  chip.addEventListener('click', () => {
-    document.querySelectorAll('.chip-btn').forEach((c) => c.classList.remove('is-active'));
-    chip.classList.add('is-active');
-    activeFilter = chip.dataset.filter;
-    renderNearbyList();
-  });
-});
-
-async function getLocation() {
-  if (window.liff && liff.isInClient && liff.isInClient()) {
-    try {
-      const pos = await liff.getLocation();
-      return { lat: pos.latitude, lng: pos.longitude };
-    } catch (e) {
-      // fall through
-    }
-  }
-  return new Promise((resolve, reject) => {
-    if (!navigator.geolocation) return reject(new Error('此裝置不支援定位'));
-    navigator.geolocation.getCurrentPosition(
-      (pos) => resolve({ lat: pos.coords.latitude, lng: pos.coords.longitude }),
-      (err) => reject(new Error(err.message))
-    );
-  });
-}
-
-function renderNearbyList() {
-  const list = document.getElementById('nearbyList');
-  if (!list) return;
-  list.innerHTML = '';
-
-  const filtered = cachedTemples.filter((t) => {
-    if (activeFilter === 'all') return true;
-    return (t.deity || '').includes(activeFilter) || (t.name || '').includes(activeFilter);
-  });
-
-  if (!filtered.length) {
-    list.innerHTML = '<p class="hint">附近沒有符合此過濾條件的宮廟。</p>';
-    return;
-  }
-
-  filtered.forEach((t) => {
-    const card = document.createElement('div');
-    card.className = 'temple-card';
-    const dist = t.distanceKm ?? 0;
-
-    card.innerHTML = `
-      <h3>${t.name}</h3>
-      <p class="distance">距離約 ${dist} 公里</p>
-      <p>${t.deity ? `主祀：${t.deity}　` : ''}${t.address || ''}</p>
-      ${t.highlights ? `<p>${t.highlights}</p>` : ''}
-      <button class="nav-trigger-btn" data-id="${t.id || ''}">
-        <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s-8-4.5-8-11.8A8 8 0 0 1 12 2a8 8 0 0 1 8 8.2c0 7.3-8 11.8-8 11.8z"/><circle cx="12" cy="10" r="3"/></svg>
-        <span>路線指引 (單車/步行/公車/開車)</span>
-      </button>
-      <div class="route-drawer is-hidden" id="drawer-${t.id || Math.random()}"></div>
-    `;
-
-    const navBtn = card.querySelector('.nav-trigger-btn');
-    const drawer = card.querySelector('.route-drawer');
-
-    navBtn.addEventListener('click', () => {
-      const isHidden = drawer.classList.contains('is-hidden');
-      document.querySelectorAll('.route-drawer').forEach((d) => d.classList.add('is-hidden'));
-
-      if (isHidden) {
-        renderRouteDrawer(drawer, t, userLocation);
-        drawer.classList.remove('is-hidden');
-      }
-    });
-
-    list.appendChild(card);
-  });
-}
-
-// ---------- Animated Multi-Mode Route Drawer Renderer ----------
-function renderRouteDrawer(container, temple, userLoc) {
-  const dist = temple.distanceKm || 1.2;
-
-  const walkMins = Math.round((dist / 4.5) * 60);
-  const walkSteps = Math.round(dist * 1400);
-  const walkCals = Math.round(dist * 50);
-
-  const bikeMins = Math.max(2, Math.round((dist / 15) * 60));
-  const bikeCals = Math.round(dist * 35);
-
-  const transitMins = Math.max(5, Math.round((dist / 12) * 60) + 4);
-  const driveMins = Math.max(3, Math.round((dist / 25) * 60) + 2);
-
-  const gmapsUrl = temple.lat && temple.lng
-    ? `https://www.google.com/maps/dir/?api=1&destination=${temple.lat},${temple.lng}`
-    : `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(temple.name)}`;
-
-  container.innerHTML = `
-    <div class="mode-tabs">
-      <button class="mode-btn is-active" data-mode="transit">🚌 公車/火車</button>
-      <button class="mode-btn" data-mode="bike">🚲 騎單車</button>
-      <button class="mode-btn" data-mode="walk">🚶 徒步散步</button>
-      <button class="mode-btn" data-mode="drive">🚗 開車/騎車</button>
-    </div>
-
-    <div class="mode-content" id="mode-content-box"></div>
-
-    <a href="${gmapsUrl}" target="_blank" rel="noopener" class="gmaps-nav-btn">
-      <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="3 11 22 2 13 21 11 13 3 11"/></svg>
-      <span>開啟 Google Maps 導航</span>
-    </a>
-  `;
-
-  const modeContentBox = container.querySelector('#mode-content-box');
-  const modeBtns = container.querySelectorAll('.mode-btn');
-
-  function updateMode(mode) {
-    modeBtns.forEach((b) => b.classList.toggle('is-active', b.dataset.mode === mode));
-
-    let summaryText = '';
-    let stepsHtml = '';
-
-    if (mode === 'transit') {
-      summaryText = `預估全程約 ${transitMins} 分鐘 (約 ${dist} km)`;
-      const busLines = temple.nearestBus ? temple.nearestBus.join('、') : '市區公車';
-      const rail = temple.nearestRail || '附近火車站';
-      stepsHtml = `
-        <div class="route-step">
-          <div class="route-step-icon">🚶</div>
-          <div>步行約 3 分鐘前往附近公車站牌</div>
-        </div>
-        <div class="route-step">
-          <div class="route-step-icon">🚌</div>
-          <div>搭乘公車於「${busLines}」下車 (或台鐵至${rail})</div>
-        </div>
-        <div class="route-step">
-          <div class="route-step-icon">⛩️</div>
-          <div>步行約 2 分鐘抵達 <strong>${temple.name}</strong> 正殿參拜</div>
-        </div>
-      `;
-    } else if (mode === 'bike') {
-      summaryText = `預估騎乘 ${bikeMins} 分鐘 | 消耗卡路里 約 ${bikeCals} kcal`;
-      stepsHtml = `
-        <div class="route-step">
-          <div class="route-step-icon">🚲</div>
-          <div>解鎖 YouBike / 騎乘單車出發</div>
-        </div>
-        <div class="route-step">
-          <div class="route-step-icon">🚴</div>
-          <div>沿市區自行車道 / 慢車道行駛約 ${dist} km</div>
-        </div>
-        <div class="route-step">
-          <div class="route-step-icon">⛩️</div>
-          <div>停放單車於廟前廣場，進入 <strong>${temple.name}</strong></div>
-        </div>
-      `;
-    } else if (mode === 'walk') {
-      summaryText = `預估徒步 ${walkMins} 分鐘 | 約 ${walkSteps.toLocaleString()} 步 | 消耗 ${walkCals} kcal`;
-      stepsHtml = `
-        <div class="route-step">
-          <div class="route-step-icon">🚶</div>
-          <div>享受沿途散步靜心，朝 ${temple.name} 方向前行</div>
-        </div>
-        <div class="route-step">
-          <div class="route-step-icon">📍</div>
-          <div>沿人行道步行約 ${dist} km (${walkSteps} 步)</div>
-        </div>
-        <div class="route-step">
-          <div class="route-step-icon">⛩️</div>
-          <div>抵達 <strong>${temple.name}</strong>，誠心敬香</div>
-        </div>
-      `;
-    } else if (mode === 'drive') {
-      summaryText = `預估車程 ${driveMins} 分鐘 (約 ${dist} km)`;
-      stepsHtml = `
-        <div class="route-step">
-          <div class="route-step-icon">🚗</div>
-          <div>沿主要幹道駕車/騎機車前行</div>
-        </div>
-        <div class="route-step">
-          <div class="route-step-icon">🅿️</div>
-          <div>停放至廟宇附屬停車場或周邊收費停車格</div>
-        </div>
-        <div class="route-step">
-          <div class="route-step-icon">⛩️</div>
-          <div>步行進入 <strong>${temple.name}</strong> 大殿參拜</div>
-        </div>
-      `;
-    }
-
-    modeContentBox.innerHTML = `
-      <div class="route-summary-bar">
-        <span>⏱️ <span class="eta">${summaryText}</span></span>
-      </div>
-
-      <div class="route-animation-box">
-        <div class="pulse-line-container">
-          <div class="moving-dot"></div>
-        </div>
-        <div class="route-timeline">
-          ${stepsHtml}
-        </div>
-      </div>
-    `;
-  }
-
-  // Default mode
-  updateMode('transit');
-
-  modeBtns.forEach((btn) => {
-    btn.addEventListener('click', () => {
-      updateMode(btn.dataset.mode);
-      playTempleChime(360, 0.2);
-    });
-  });
-}
-
-// ---------- Festivals ----------
-(async function loadFestivals() {
-  const res = await fetch(`${API_BASE}/festivals`);
-  const festivals = await res.json();
-  const list = document.getElementById('festivalList');
-  if (!list) return;
-
-  if (!festivals.length) {
-    list.innerHTML = '<p class="hint">近期沒有節慶活動。</p>';
-    return;
-  }
-
-  list.innerHTML = festivals
-    .map(
-      (f) => `
-      <div class="festival-card">
-        <h3>${f.name}</h3>
-        <p>${f.lunarDate}（國曆 ${f.date2026}）</p>
-        <p class="days-away">${f.daysAway === 0 ? '就是今天！' : `還有 ${f.daysAway} 天`}</p>
-        <p>${f.message}</p>
-      </div>`
-    )
-    .join('');
-})();
-
-// ---------- Global Multi-Language State & UI Switcher (zh-TW, en) ----------
-let currentLang = 'zh-TW';
-
+// ---------- Helper UI Functions ----------
 function showTyping(id) {
   const el = document.getElementById(id);
   if (el) el.classList.remove('is-hidden');
@@ -977,148 +58,104 @@ function hideTyping(id) {
   if (el) el.classList.add('is-hidden');
 }
 
-function setLanguage(lang) {
-  currentLang = lang;
+hideTyping('askTyping');
 
-  document.querySelectorAll('.lang-pill').forEach((btn) => {
-    if (btn.dataset.lang === lang) {
-      btn.classList.add('is-active');
-    } else {
-      btn.classList.remove('is-active');
-    }
+function escapeHtml(str) {
+  return String(str || '').replace(/[&<>"']/g, (m) => ({
+    '&': '&amp;',
+    '<': '&lt;',
+    '>': '&gt;',
+    '"': '&quot;',
+    "'": '&#39;'
+  })[m]);
+}
+
+function appendChat(containerId, text, role, avatarLabel = role === 'user' ? '信' : '廟') {
+  const container = document.getElementById(containerId);
+  if (!container) return;
+
+  const msgRow = document.createElement('div');
+  msgRow.className = `chat-row ${role}`;
+  const timeStr = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+  const avatarHtml = role === 'user'
+    ? `<div class="chat-avatar user-avatar">${avatarLabel}</div>`
+    : `<div class="chat-avatar ai-avatar">${avatarLabel}</div>`;
+  const formattedText = escapeHtml(text).replace(/\n/g, '<br>');
+
+  msgRow.innerHTML = `
+    ${avatarHtml}
+    <div class="bubble-wrapper">
+      <div class="chat-bubble ${role}">
+        <div class="bubble-content">${formattedText}</div>
+      </div>
+      <span class="chat-timestamp">${timeStr}</span>
+    </div>
+  `;
+
+  container.appendChild(msgRow);
+  msgRow.scrollIntoView({ behavior: 'smooth', block: 'end' });
+}
+
+// ---------- Tab Switcher ----------
+const tabBtns = document.querySelectorAll('.tabbar .tab-btn');
+const tabPanels = document.querySelectorAll('.tab-panel');
+
+tabBtns.forEach((btn) => {
+  btn.addEventListener('click', () => {
+    const targetTab = btn.dataset.tab;
+    tabBtns.forEach((b) => b.classList.remove('is-active'));
+    tabPanels.forEach((p) => p.classList.remove('is-active'));
+
+    btn.classList.add('is-active');
+    const targetPanel = document.getElementById(`tab-${targetTab}`);
+    if (targetPanel) targetPanel.classList.add('is-active');
+
+    playTempleChime(480, 0.2);
+
+    if (targetTab === 'community') loadCommunityPosts();
+    if (targetTab === 'donations') loadDonationCampaigns();
+    if (targetTab === 'profile') loadUserProfileUI();
   });
-
-  const isEn = lang === 'en';
-
-  // User Profile Header
-  const userNameTitle = document.getElementById('userNameTitle');
-  if (userNameTitle) userNameTitle.textContent = isEn ? 'Devout Believer' : '善信大德';
-
-  const userSubText = document.getElementById('userSubText');
-  if (userSubText) {
-    userSubText.innerHTML = isEn
-      ? 'Merit Points: <strong id="userMeritPoints">520</strong> | Honorary Practitioner'
-      : '功德值：<strong id="userMeritPoints">520</strong> 分 ｜ 榮譽修持信士';
-  }
-
-  const userAvatarCircle = document.getElementById('userAvatarCircle');
-  if (userAvatarCircle) userAvatarCircle.textContent = isEn ? 'U' : '信';
-
-  // Mascot Speech Bubble & Badge
-  const petSpeechBubble = document.getElementById('petSpeechBubble');
-  if (petSpeechBubble) {
-    const span = petSpeechBubble.querySelector('span');
-    if (span) span.textContent = isEn ? 'Ask me! 🐾' : '問我！🐾';
-  }
-
-  const petBadge = document.querySelector('.pet-badge');
-  if (petBadge) petBadge.textContent = isEn ? 'Mascot' : '神獸';
-
-  // Ask AI Card Header & Badge
-  const askCardTitle = document.getElementById('askCardTitle');
-  if (askCardTitle) askCardTitle.textContent = isEn ? 'Ask Flame AI Shrine Master' : '問焰智 AI 廟公';
-
-  const askCardSub = document.getElementById('askCardSub');
-  if (askCardSub) askCardSub.textContent = isEn ? 'Online consultations regarding temple history, worship rituals, or life wisdom.' : '線上請示宮廟歷史、參拜儀軌或人生智慧諮詢';
-
-  const askInput = document.getElementById('askInput');
-  if (askInput) askInput.placeholder = isEn ? 'Type your question for the Shrine Master...' : '請輸入您想向廟公請示的問題...';
-
-  const askBadge = document.querySelector('.ask-ai-card-header .ai-avatar-badge');
-  if (askBadge) askBadge.textContent = isEn ? 'AI' : '廟公';
-
-  const askTypingText = document.querySelector('#askTyping .typing-text');
-  if (askTypingText) askTypingText.textContent = isEn ? 'Shrine Master is thinking...' : '廟公思考中...';
-
-  // Interpret Box Header & Badge
-  const interpretBoxTitle = document.getElementById('interpretBoxTitle');
-  if (interpretBoxTitle) interpretBoxTitle.textContent = isEn ? 'Flame AI Fortune Master' : '焰智 AI 解籤大師';
-
-  const interpretBoxSub = document.getElementById('interpretBoxSub');
-  if (interpretBoxSub) interpretBoxSub.textContent = isEn ? 'Deep guidance & poem interpretation' : '神明籤詩深度白話解析與指引';
-
-  const interpretInputLabel = document.getElementById('interpretInputLabel');
-  if (interpretInputLabel) interpretInputLabel.textContent = isEn ? 'Enter what you would like to inquire about (e.g., career/love/health):' : '請輸入您想請示的具體事項 (如事業/感情/健康)：';
-
-  const questionInput = document.getElementById('questionInput');
-  if (questionInput) questionInput.placeholder = isEn ? 'e.g., Is it a good time to change jobs?' : '例如：最近換工作好嗎？';
-
-  const interpretTypingText = document.querySelector('#interpretTyping .typing-text');
-  if (interpretTypingText) interpretTypingText.textContent = isEn ? 'Flame AI is interpreting...' : '焰寶解析籤詩中...';
-
-  updateChips(isEn);
-}
-
-function updateChips(isEn) {
-  const askChips = document.getElementById('askChips');
-  if (askChips) {
-    askChips.innerHTML = isEn
-      ? `<button class="chip-suggestion-btn" data-query="What is the proper ritual order for first-time temple worship?">🙏 Worship Rituals</button>
-         <button class="chip-suggestion-btn" data-query="Which deity should I pray to for business and wealth?">💰 Wealth Blessing</button>
-         <button class="chip-suggestion-btn" data-query="What is the difference between Tai Sui clash and pacification?">☯️ Tai Sui Guidance</button>
-         <button class="chip-suggestion-btn" data-query="How does lighting a Blessing Lamp work?">🏮 Blessing Lamp</button>`
-      : `<button class="chip-suggestion-btn" data-query="請問頭一次拜媽祖的儀軌順序？">🙏 參拜禮儀</button>
-         <button class="chip-suggestion-btn" data-query="請問求財運該準備哪些供品？">💰 祈福求財</button>
-         <button class="chip-suggestion-btn" data-query="請問犯太歲與安太歲的差異？">☯️ 安太歲</button>
-         <button class="chip-suggestion-btn" data-query="請問如何點光明燈祈福？">🏮 點燈祈福</button>`;
-  }
-
-  const interpretChips = document.getElementById('interpretChips');
-  if (interpretChips) {
-    interpretChips.innerHTML = isEn
-      ? `<button class="chip-suggestion-btn" data-query="Is it a good time to change my career or job?">💼 Career & Work</button>
-         <button class="chip-suggestion-btn" data-query="How will my love life and relationships develop?">❤️ Love & Marriage</button>
-         <button class="chip-suggestion-btn" data-query="What should I be mindful of regarding health?">🌿 Health & Peace</button>
-         <button class="chip-suggestion-btn" data-query="What is my overall fortune and luck summary?">✨ Overall Fortune</button>`
-      : `<button class="chip-suggestion-btn" data-query="請問最近換工作好嗎？">💼 工作事業</button>
-         <button class="chip-suggestion-btn" data-query="請問感情姻緣如何發展？">❤️ 感情感情</button>
-         <button class="chip-suggestion-btn" data-query="請問身體健康有何需要注意？">🌿 健康平安</button>
-         <button class="chip-suggestion-btn" data-query="請問整體運勢吉凶如何？">✨ 綜合運勢</button>`;
-  }
-}
-
-// Set initial language state
-setLanguage('zh-TW');
-
-// Click listener for language pills
-document.addEventListener('click', (e) => {
-  const langPill = e.target.closest('.lang-pill');
-  if (langPill) {
-    setLanguage(langPill.dataset.lang);
-  }
 });
 
-// Click listener for quick suggestion chips
-document.addEventListener('click', (e) => {
-  const chipBtn = e.target.closest('.chip-suggestion-btn');
-  if (chipBtn) {
-    const query = chipBtn.dataset.query;
-    if (chipBtn.closest('#askChips')) {
-      handleAskQuery(query);
-    } else if (chipBtn.closest('#interpretChips')) {
-      handleInterpretQuery(query);
+// ---------- Top Corner Menu Modal ----------
+const topCornerMenuBtn = document.getElementById('topCornerMenuBtn');
+const cornerMenuModal = document.getElementById('cornerMenuModal');
+const closeCornerMenuBtn = document.getElementById('closeCornerMenuBtn');
+
+if (topCornerMenuBtn && cornerMenuModal) {
+  topCornerMenuBtn.addEventListener('click', () => {
+    cornerMenuModal.classList.remove('is-hidden');
+    playTempleChime(600, 0.3);
+  });
+}
+
+if (closeCornerMenuBtn && cornerMenuModal) {
+  closeCornerMenuBtn.addEventListener('click', () => {
+    cornerMenuModal.classList.add('is-hidden');
+  });
+}
+
+document.querySelectorAll('.menu-tile-btn').forEach((tile) => {
+  tile.addEventListener('click', () => {
+    const action = tile.dataset.action;
+    cornerMenuModal.classList.add('is-hidden');
+
+    if (action === 'draw_fortune') {
+      handleAskQuery('請幫我求一張籤詩並解籤');
+    } else if (action === 'nearby_temples') {
+      handleAskQuery('幫我找附近的宮廟與交通資訊');
+    } else if (action === 'zodiac_check') {
+      handleAskQuery('請幫我查詢生肖太歲沖煞（1998年）');
+    } else if (action === 'open_community') {
+      document.querySelector('.tab-btn[data-tab="community"]').click();
+    } else if (action === 'open_donations') {
+      document.querySelector('.tab-btn[data-tab="donations"]').click();
     }
-  }
+  });
 });
 
-// Clear Chat Action Buttons
-const clearAskChatBtn = document.getElementById('clearAskChatBtn');
-if (clearAskChatBtn) {
-  clearAskChatBtn.addEventListener('click', () => {
-    const chatLog = document.getElementById('askChat');
-    if (chatLog) chatLog.innerHTML = '';
-  });
-}
-
-const clearInterpretChatBtn = document.getElementById('clearInterpretChatBtn');
-if (clearInterpretChatBtn) {
-  clearInterpretChatBtn.addEventListener('click', () => {
-    const chatLog = document.getElementById('interpretChat');
-    if (chatLog) chatLog.innerHTML = '';
-  });
-}
-
-// ---------- Ask anything Handler ----------
+// ---------- Conversational Chat AI Handler ----------
 const askBtn = document.getElementById('askBtn');
 const askInput = document.getElementById('askInput');
 
@@ -1126,7 +163,13 @@ async function handleAskQuery(customText) {
   const question = typeof customText === 'string' ? customText : askInput.value.trim();
   if (!question) return;
 
-  appendChat('askChat', question, 'user');
+  // Switch to chat tab if not active
+  const chatTab = document.querySelector('.tab-btn[data-tab="chat"]');
+  if (chatTab && !chatTab.classList.contains('is-active')) {
+    chatTab.click();
+  }
+
+  appendChat('askChat', question, 'user', userProfile.displayName ? userProfile.displayName.charAt(0) : '信');
   askInput.value = '';
 
   showTyping('askTyping');
@@ -1142,8 +185,7 @@ async function handleAskQuery(customText) {
     appendChat('askChat', data.reply, 'ai', '廟');
   } catch (e) {
     hideTyping('askTyping');
-    const errText = currentLang === 'en' ? 'Connection error, please try again.' : '連線失敗，請稍後再試。';
-    appendChat('askChat', errText, 'ai', '廟');
+    appendChat('askChat', currentLang === 'en' ? 'Connection error, please try again.' : '連線失敗，請稍後再試。', 'ai', '廟');
   }
 }
 
@@ -1157,620 +199,409 @@ if (askInput) {
   });
 }
 
-// ---------- Smart Temple & Community Hub Extensions ----------
+document.querySelectorAll('#askChips .chip-suggestion-btn').forEach((btn) => {
+  btn.addEventListener('click', () => handleAskQuery(btn.dataset.query));
+});
 
-// 1. Follow Temple Toggle Button
-const followTempleBtn = document.getElementById('followTempleBtn');
-if (followTempleBtn) {
-  followTempleBtn.addEventListener('click', () => {
-    followTempleBtn.classList.toggle('is-following');
-    const isFollowing = followTempleBtn.classList.contains('is-following');
-    followTempleBtn.querySelector('span').textContent = isFollowing
-      ? '✓ 已追蹤 (LINE 通知中)'
-      : '＋ 追蹤宮廟';
-
-    playTempleChime(720, 0.4);
-    if (navigator.vibrate) navigator.vibrate(40);
+const clearAskChatBtn = document.getElementById('clearAskChatBtn');
+if (clearAskChatBtn) {
+  clearAskChatBtn.addEventListener('click', () => {
+    const chatLog = document.getElementById('askChat');
+    if (chatLog) chatLog.innerHTML = '';
   });
 }
 
-// 2. Activity Category Filters
-document.querySelectorAll('#activityCategoryFilters .chip-btn').forEach((chip) => {
+// ---------- Community Posts & Comments System ----------
+let activeCategory = 'all';
+
+document.querySelectorAll('#communityCategoryFilters .chip-btn').forEach((chip) => {
   chip.addEventListener('click', () => {
-    document.querySelectorAll('#activityCategoryFilters .chip-btn').forEach((c) => c.classList.remove('is-active'));
+    document.querySelectorAll('#communityCategoryFilters .chip-btn').forEach((c) => c.classList.remove('is-active'));
     chip.classList.add('is-active');
-
-    const cat = chip.dataset.cat;
-    document.querySelectorAll('#activityFeedList .activity-card').forEach((card) => {
-      if (cat === 'all' || card.dataset.category === cat) {
-        card.style.display = 'block';
-      } else {
-        card.style.display = 'none';
-      }
-    });
-
+    activeCategory = chip.dataset.cat;
+    loadCommunityPosts();
     playTempleChime(520, 0.2);
   });
 });
 
-// 3. Join Activity Handler
-document.addEventListener('click', (e) => {
-  if (e.target && e.target.classList.contains('btn-join-act')) {
-    const btn = e.target;
-    btn.classList.toggle('is-joined');
-    const isJoined = btn.classList.contains('is-joined');
-    btn.textContent = isJoined ? '✓ 已成功報名 (排入行事曆)' : '加入活動';
+async function loadCommunityPosts() {
+  const container = document.getElementById('communityFeedList');
+  if (!container) return;
 
-    const card = btn.closest('.activity-card');
-    const title = card ? card.querySelector('.act-title').textContent : '共善活動';
+  container.innerHTML = '<div class="loading-spinner">載入最新動態中...</div>';
 
-    if (isJoined) {
-      fireConfetti();
-      playTempleChime(660, 0.5);
-      if (navigator.vibrate) navigator.vibrate([40, 50, 40]);
+  try {
+    const res = await fetch(`${API_BASE}/posts?category=${activeCategory}`);
+    const posts = await res.json();
 
-      // Add to profile tab
-      const myJoinedContainer = document.getElementById('myJoinedActivities');
-      if (myJoinedContainer) {
-        const item = document.createElement('div');
-        item.className = 'my-item-card';
-        item.innerHTML = `<span>${title}</span><span class="badge-status-green">已報名成功</span>`;
-        myJoinedContainer.prepend(item);
-      }
+    if (!posts || posts.length === 0) {
+      container.innerHTML = '<div class="empty-feed-card">目前沒有此分類的動態。</div>';
+      return;
     }
+
+    container.innerHTML = posts.map(renderPostCard).join('');
+    // Attach comment submit listeners
+    posts.forEach((p) => attachCommentListeners(p.id));
+  } catch (err) {
+    container.innerHTML = '<div class="empty-feed-card">無法載入動態，請稍後再試。</div>';
   }
-});
-
-// 4. Target Pills Selector on Online Blessing
-document.querySelectorAll('#targetPills .target-pill').forEach((pill) => {
-  pill.addEventListener('click', () => {
-    document.querySelectorAll('#targetPills .target-pill').forEach((p) => p.classList.remove('is-active'));
-    pill.classList.add('is-active');
-    playTempleChime(480, 0.2);
-  });
-});
-
-// 5. Create Activity Modal Handler
-const createModal = document.getElementById('createActivityModal');
-const openCreateBtn = document.getElementById('openCreateActivityBtn');
-const closeCreateBtn = document.getElementById('closeCreateModalBtn');
-const createForm = document.getElementById('createActivityForm');
-
-if (openCreateBtn && createModal) {
-  openCreateBtn.addEventListener('click', () => {
-    createModal.classList.remove('is-hidden');
-    playTempleChime(600, 0.3);
-  });
 }
 
-if (closeCreateBtn && createModal) {
-  closeCreateBtn.addEventListener('click', () => {
-    createModal.classList.add('is-hidden');
-  });
-}
+function renderPostCard(post) {
+  const isTemple = post.authorType === 'temple' || post.userRole === 'temple_admin';
+  const roleBadge = isTemple
+    ? '<span class="post-badge temple">⛩️ 廟方官方</span>'
+    : '<span class="post-badge believer">👤 信眾交流</span>';
+  const avatarBg = isTemple ? 'temple-avatar-bg' : 'user-avatar-bg';
+  const avatarChar = isTemple ? '廟' : (post.authorName ? post.authorName.charAt(0) : '信');
 
-if (createForm) {
-  createForm.addEventListener('submit', (e) => {
-    e.preventDefault();
-    const title = document.getElementById('actTitleInput').value.trim();
-    const category = document.getElementById('actCategorySelect').value;
-    const date = document.getElementById('actDateInput').value;
-    const time = document.getElementById('actTimeInput').value;
-    const location = document.getElementById('actLocationInput').value.trim();
-    const capacity = document.getElementById('actCapacityInput').value;
-
-    if (!title || !date || !time || !location) return;
-
-    // Create new Activity Card
-    const feed = document.getElementById('activityFeedList');
-    if (feed) {
-      const card = document.createElement('article');
-      card.className = 'activity-card';
-      card.dataset.category = category;
-      card.innerHTML = `
-        <div class="act-card-header">
-          <span class="act-cat-badge">${category}</span>
-          <span class="act-organizer">您 (信徒) 發起</span>
+  const progressHtml = post.category === 'donation' || post.type === 'donation'
+    ? `<div class="post-donation-progress">
+        <div class="progress-bar-bg"><div class="progress-bar-fill" style="width: ${Math.min(100, Math.round(((post.raisedAmount || 0) / (post.targetAmount || 500000)) * 100))}%"></div></div>
+        <div class="progress-labels">
+          <span>已募集: NT$ ${(post.raisedAmount || 0).toLocaleString()}</span>
+          <span>目標: NT$ ${(post.targetAmount || 500000).toLocaleString()}</span>
         </div>
-        <h3 class="act-title">${title}</h3>
-        <div class="act-meta-row">
-          <span>📅 ${date} ${time}</span>
-          <span>📍 ${location}</span>
-        </div>
-        <div class="act-participants-row">
-          <div class="avatar-stack">
-            <span class="avatar-dot a1"></span>
+        <button class="btn-donate-post" onclick="openDonationModal('${post.id}', '${escapeHtml(post.title)}')">❤️ 立即隨喜樂捐</button>
+       </div>`
+    : '';
+
+  return `
+    <article class="post-card" id="post-card-${post.id}">
+      <div class="post-header">
+        <div class="post-author-avatar ${avatarBg}">${avatarChar}</div>
+        <div class="post-author-info">
+          <div class="author-name-row">
+            <h4>${escapeHtml(post.authorName)}</h4>
+            ${roleBadge}
           </div>
-          <span class="part-count">已報名 <strong>1 / ${capacity}</strong> 人</span>
+          <span class="post-time">${new Date(post.createdAt).toLocaleString([], { month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit' })}</span>
         </div>
-        <button class="btn-join-act is-joined">✓ 您已發起並參加</button>
+      </div>
+      <div class="post-body">
+        <h3 class="post-title">${escapeHtml(post.title)}</h3>
+        <p class="post-desc">${escapeHtml(post.description)}</p>
+        ${progressHtml}
+      </div>
+      <div class="post-footer">
+        <button class="btn-toggle-comments" onclick="toggleComments('${post.id}')">
+          <svg class="icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+          <span>留言 (${post.commentCount || 0})</span>
+        </button>
+      </div>
+
+      <div class="comments-section is-hidden" id="comments-section-${post.id}">
+        <div class="comments-list" id="comments-list-${post.id}">
+          <div class="loading-comments">載入留言中...</div>
+        </div>
+        <div class="add-comment-row">
+          <input type="text" id="comment-input-${post.id}" class="comment-input" placeholder="留個言支持或交流..." />
+          <button class="btn-send-comment" id="btn-send-cmt-${post.id}">發布</button>
+        </div>
+      </div>
+    </article>
+  `;
+}
+
+async function toggleComments(postId) {
+  const sec = document.getElementById(`comments-section-${postId}`);
+  if (!sec) return;
+  sec.classList.toggle('is-hidden');
+  if (!sec.classList.contains('is-hidden')) {
+    loadPostComments(postId);
+  }
+}
+
+async function loadPostComments(postId) {
+  const container = document.getElementById(`comments-list-${postId}`);
+  if (!container) return;
+
+  try {
+    const res = await fetch(`${API_BASE}/posts/${postId}/comments`);
+    const comments = await res.json();
+
+    if (!comments || comments.length === 0) {
+      container.innerHTML = '<div class="no-comments">尚無留言，快來搶頭香！</div>';
+      return;
+    }
+
+    container.innerHTML = comments
+      .map(
+        (c) => `
+      <div class="comment-item">
+        <div class="comment-avatar ${c.userRole === 'temple_admin' ? 'temple-avatar-bg' : 'user-avatar-bg'}">
+          ${c.userRole === 'temple_admin' ? '廟' : (c.userName ? c.userName.charAt(0) : '信')}
+        </div>
+        <div class="comment-content-block">
+          <div class="comment-author-row">
+            <span class="cmt-author">${escapeHtml(c.userName)}</span>
+            ${c.userRole === 'temple_admin' ? '<span class="post-badge temple">廟方</span>' : ''}
+            <span class="cmt-time">${new Date(c.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
+          </div>
+          <p class="cmt-text">${escapeHtml(c.content)}</p>
+        </div>
+      </div>
+    `
+      )
+      .join('');
+  } catch (err) {
+    container.innerHTML = '<div class="no-comments">無法載入留言。</div>';
+  }
+}
+
+function attachCommentListeners(postId) {
+  const btn = document.getElementById(`btn-send-cmt-${postId}`);
+  const input = document.getElementById(`comment-input-${postId}`);
+
+  if (btn && input) {
+    btn.onclick = async () => {
+      const content = input.value.trim();
+      if (!content) return;
+      input.value = '';
+
+      try {
+        await fetch(`${API_BASE}/posts/${postId}/comments`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            userId: userProfile.userId,
+            userName: userProfile.displayName,
+            userRole: currentRole,
+            userAvatar: currentRole === 'temple_admin' ? '廟' : '信',
+            content
+          })
+        });
+        loadPostComments(postId);
+        playTempleChime(620, 0.3);
+      } catch (err) {
+        alert('留言發布失敗，請稍後再試。');
+      }
+    };
+  }
+}
+
+// Create Post Modal Logic
+const openCreatePostBtn = document.getElementById('openCreatePostBtn');
+const createPostModal = document.getElementById('createPostModal');
+const closeCreatePostModalBtn = document.getElementById('closeCreatePostModalBtn');
+const createPostForm = document.getElementById('createPostForm');
+
+if (openCreatePostBtn && createPostModal) {
+  openCreatePostBtn.addEventListener('click', () => {
+    createPostModal.classList.remove('is-hidden');
+    const indicator = document.getElementById('postRoleIndicator');
+    if (indicator) {
+      indicator.textContent = currentRole === 'temple_admin' ? '⛩️ 【台中萬春宮 廟方官方發布】' : '👤 【信眾交流隨筆】';
+      indicator.style.color = currentRole === 'temple_admin' ? '#ffd700' : '#e4c77a';
+    }
+  });
+}
+
+if (closeCreatePostModalBtn && createPostModal) {
+  closeCreatePostModalBtn.addEventListener('click', () => {
+    createPostModal.classList.add('is-hidden');
+  });
+}
+
+if (createPostForm) {
+  createPostForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const title = document.getElementById('postTitle').value.trim();
+    const category = document.getElementById('postCategory').value;
+    const description = document.getElementById('postDesc').value.trim();
+
+    if (!title || !description) return;
+
+    try {
+      await fetch(`${API_BASE}/posts`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          templeId: userProfile.templeId,
+          authorType: currentRole === 'temple_admin' ? 'temple' : 'user',
+          authorName: currentRole === 'temple_admin' ? '台中萬春宮 廟方委員會' : userProfile.displayName,
+          authorAvatar: currentRole === 'temple_admin' ? '廟' : '信',
+          title,
+          category,
+          description,
+          targetAmount: category === 'donation' ? 300000 : undefined
+        })
+      });
+
+      createPostModal.classList.add('is-hidden');
+      createPostForm.reset();
+      loadCommunityPosts();
+      playTempleChime(700, 0.5);
+    } catch (err) {
+      alert('發布失敗，請稍後再試。');
+    }
+  });
+}
+
+// ---------- Donations Tab Handler ----------
+async function loadDonationCampaigns() {
+  const container = document.getElementById('donationCampaignsList');
+  if (!container) return;
+
+  try {
+    const res = await fetch(`${API_BASE}/posts?category=donation`);
+    const campaigns = await res.json();
+
+    container.innerHTML = campaigns
+      .map((c) => {
+        const target = c.targetAmount || 500000;
+        const raised = c.raisedAmount || 0;
+        const percent = Math.min(100, Math.round((raised / target) * 100));
+
+        return `
+        <div class="donation-card">
+          <div class="donation-header-row">
+            <h3>${escapeHtml(c.title)}</h3>
+            <span class="temple-name-tag">台中萬春宮</span>
+          </div>
+          <p class="donation-desc">${escapeHtml(c.description)}</p>
+          <div class="donation-progress-block">
+            <div class="progress-bar-bg"><div class="progress-bar-fill" style="width: ${percent}%"></div></div>
+            <div class="progress-labels">
+              <span>已募集: <strong>NT$ ${raised.toLocaleString()}</strong> (${percent}%)</span>
+              <span>目標: NT$ ${target.toLocaleString()}</span>
+            </div>
+          </div>
+          <div class="donation-card-actions">
+            <button class="btn-donate-primary" onclick="openDonationModal('${c.id}', '${escapeHtml(c.title)}')">❤️ 隨喜樂捐</button>
+          </div>
+        </div>
       `;
-      feed.prepend(card);
-    }
-
-    createForm.reset();
-    createModal.classList.add('is-hidden');
-    fireConfetti();
-    playTempleChime(784, 0.5);
-    if (navigator.vibrate) navigator.vibrate([40, 60, 40]);
-  });
+      })
+      .join('');
+  } catch (err) {
+    container.innerHTML = '<div class="empty-feed-card">無法載入樂捐專案。</div>';
+  }
 }
 
-// 6. Donation Campaign Modal Handler
+// Donation Modal Open / Submit
 const donationModal = document.getElementById('donationModal');
-const openDonationBtn = document.getElementById('openDonationBtn');
-const closeDonationBtn = document.getElementById('closeDonationModalBtn');
+const closeDonationModalBtn = document.getElementById('closeDonationModalBtn');
 const donationForm = document.getElementById('donationForm');
-let currentDonationAmount = 100;
+let activeCampaignId = null;
 
-if (openDonationBtn && donationModal) {
-  openDonationBtn.addEventListener('click', () => {
-    donationModal.classList.remove('is-hidden');
-    playTempleChime(660, 0.3);
-  });
+function openDonationModal(campaignId, title) {
+  activeCampaignId = campaignId;
+  const inputTitle = document.getElementById('donationCampaignTitle');
+  if (inputTitle) inputTitle.value = title || '萬春宮 隨喜公益樂捐';
+  if (donationModal) donationModal.classList.remove('is-hidden');
+  playTempleChime(600, 0.3);
 }
 
-if (closeDonationBtn && donationModal) {
-  closeDonationBtn.addEventListener('click', () => {
-    donationModal.classList.add('is-hidden');
-  });
+if (closeDonationModalBtn && donationModal) {
+  closeDonationModalBtn.addEventListener('click', () => donationModal.classList.add('is-hidden'));
 }
-
-document.querySelectorAll('#amountPills .amount-pill').forEach((pill) => {
-  pill.addEventListener('click', () => {
-    document.querySelectorAll('#amountPills .amount-pill').forEach((p) => p.classList.remove('is-active'));
-    pill.classList.add('is-active');
-    currentDonationAmount = Number(pill.dataset.val);
-
-    const impactBox = document.getElementById('impactPreviewBox');
-    if (impactBox) {
-      const meals = Math.floor(currentDonationAmount / 100);
-      impactBox.innerHTML = `<p>🎁 <strong>您的 $${currentDonationAmount} 護持代表：</strong> 為 ${meals || 1} 位偏鄉獨居長者提供熱騰騰的冬令平安餐點包。</p>`;
-    }
-    playTempleChime(480, 0.2);
-  });
-});
 
 if (donationForm) {
   donationForm.addEventListener('submit', async (e) => {
     e.preventDefault();
-    const donorName = document.getElementById('donorNameInput').value.trim();
-    if (!donorName) return;
+    const amount = Number(document.getElementById('donateAmount').value);
+    const name = document.getElementById('donorName').value.trim() || userProfile.displayName;
 
-    // Add to My Profile Tab
-    const myDonations = document.getElementById('myDonations');
-    if (myDonations) {
-      const item = document.createElement('div');
-      item.className = 'my-item-card';
-      item.innerHTML = `<span>❤️ 萬春宮冬季送暖 ($${currentDonationAmount})</span><span class="badge-status-gold">已護持成功</span>`;
-      myDonations.prepend(item);
-    }
-
-    donationForm.reset();
-    donationModal.classList.add('is-hidden');
-    fireConfetti();
-    playTempleChime(880, 0.6);
-    if (navigator.vibrate) navigator.vibrate([40, 80, 40]);
-
-    // Persist the pledge — this donation campaign post is specifically 萬春宮's, so that's
-    // the fixed target; a multi-temple donation feed would need the campaign id passed in.
     try {
-      const userId = await getCurrentUserId();
-      await fetch(`${API_BASE}/donations`, {
+      const res = await fetch(`${API_BASE}/donations`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ userId, templeId: 'wanchun-gong', campaignId: 'don-1', amount: currentDonationAmount, name: donorName })
+        body: JSON.stringify({
+          userId: userProfile.userId,
+          templeId: userProfile.templeId,
+          campaignId: activeCampaignId,
+          amount,
+          name
+        })
       });
+      const data = await res.json();
+      donationModal.classList.add('is-hidden');
+      alert(data.message || '感謝您的樂捐！');
+      playTempleChime(750, 0.6);
+      loadDonationCampaigns();
     } catch (err) {
-      console.warn('donation sync failed:', err.message);
+      alert('樂捐記錄失敗，請稍後再試。');
     }
   });
 }
 
-// 7. Offerings Support Buttons (.offering-btn-act)
-document.addEventListener('click', (e) => {
-  if (e.target && e.target.classList.contains('offering-btn-act')) {
-    const btn = e.target;
-    const type = btn.dataset.offering;
-    const label = type === 'rice' ? '🍚 平安米供養 1 包 ($100)' : '🍱 平安福食供齋 1 份 ($80)';
+// ---------- Profile & Dual Role Switcher ----------
+function loadUserProfileUI() {
+  const nameTitle = document.getElementById('userNameTitle');
+  const lineIdEl = document.getElementById('userLineId');
+  const badgeEl = document.getElementById('currentRoleBadge');
+  const avatarEl = document.getElementById('profileAvatarLarge');
 
-    btn.textContent = '✓ 已發心支持';
-    btn.style.background = 'rgba(15, 118, 110, 0.3)';
-    btn.style.color = '#6ee7b7';
+  if (nameTitle) nameTitle.textContent = currentRole === 'temple_admin' ? '台中萬春宮 廟方管理者' : userProfile.displayName;
+  if (lineIdEl) lineIdEl.textContent = `LINE ID: ${userProfile.userId}`;
+  if (badgeEl) badgeEl.textContent = currentRole === 'temple_admin' ? '⛩️ 【宮廟管理者權限】' : '👤 【一般信眾權限】';
+  if (avatarEl) avatarEl.textContent = currentRole === 'temple_admin' ? '廟' : (userProfile.displayName ? userProfile.displayName.charAt(0) : '信');
 
-    const myDonations = document.getElementById('myDonations');
-    if (myDonations) {
-      const item = document.createElement('div');
-      item.className = 'my-item-card';
-      item.innerHTML = `<span>${label}</span><span class="badge-status-gold">功德迴向中</span>`;
-      myDonations.prepend(item);
-    }
-
-    fireConfetti();
-    playTempleChime(660, 0.4);
-    if (navigator.vibrate) navigator.vibrate(40);
-  }
-});
-
-// 8. Online 光明燈 Modal & Target Selection
-const lightLampModal = document.getElementById('lightLampModal');
-const closeLampModalBtn = document.getElementById('closeLampModalBtn');
-const lampSubmitForm = document.getElementById('lampSubmitForm');
-let selectedLampType = 'guangming';
-
-if (closeLampModalBtn && lightLampModal) {
-  closeLampModalBtn.addEventListener('click', () => {
-    lightLampModal.classList.add('is-hidden');
-  });
-}
-
-// Global delegated listener for opening Light Lamp Modal
-document.addEventListener('click', (e) => {
-  const btn = e.target.closest('.open-lamp-modal, #openLampModalBtn, .act-lamp');
-  if (btn) {
-    if (lightLampModal) {
-      lightLampModal.classList.remove('is-hidden');
-      playTempleChime(660, 0.3);
-    }
-  }
-
-  // Delegated listener for post-embedded donation button
-  const donateBtn = e.target.closest('.act-donate');
-  if (donateBtn) {
-    if (donationModal) {
-      donationModal.classList.remove('is-hidden');
-      playTempleChime(660, 0.3);
-    }
-  }
-
-  // Delegated listener for post-embedded rice offering button
-  const riceBtn = e.target.closest('.act-rice');
-  if (riceBtn && !riceBtn.dataset.done) {
-    riceBtn.dataset.done = 'true';
-    riceBtn.textContent = '✓ 已成功供養平安米';
-    riceBtn.style.background = 'rgba(245, 158, 11, 0.3)';
-    riceBtn.style.color = '#fde68a';
-
-    const myDonations = document.getElementById('myDonations');
-    if (myDonations) {
-      const item = document.createElement('div');
-      item.className = 'my-item-card';
-      item.innerHTML = `<span>🍚 萬春宮平安米護持 1 包 ($100)</span><span class="badge-status-gold">福慧雙修</span>`;
-      myDonations.prepend(item);
-    }
-
-    fireConfetti();
-    playTempleChime(700, 0.4);
-    if (navigator.vibrate) navigator.vibrate(40);
-  }
-});
-
-// Modal Target Pills Selection
-document.querySelectorAll('#modalTargetPills .target-pill').forEach((pill) => {
-  pill.addEventListener('click', () => {
-    document.querySelectorAll('#modalTargetPills .target-pill').forEach((p) => p.classList.remove('is-active'));
-    pill.classList.add('is-active');
-    playTempleChime(500, 0.2);
-  });
-});
-
-// Modal Lamp Type Cards Selection
-document.querySelectorAll('#modalLampGrid .lamp-type-card').forEach((card) => {
-  card.addEventListener('click', () => {
-    document.querySelectorAll('#modalLampGrid .lamp-type-card').forEach((c) => c.classList.remove('is-selected'));
-    card.classList.add('is-selected');
-    selectedLampType = card.dataset.lamp;
-    playTempleChime(540, 0.2);
-  });
-});
-
-if (lampSubmitForm) {
-  lampSubmitForm.addEventListener('submit', (e) => {
-    e.preventDefault();
-    const name = document.getElementById('lampDevoteeName').value.trim();
-    const bday = document.getElementById('lampDevoteeBday').value;
-    const wish = document.getElementById('lampDevoteeWish').value.trim();
-
-    if (!name) return;
-
-    const typeNames = {
-      guangming: '光明燈 (元辰光彩)',
-      taisui: '太歲燈 (趨吉避凶)',
-      wenchang: '文昌燈 (金榜題名)',
-      caishen: '財神燈 (財源廣進)'
-    };
-    const lampTitle = typeNames[selectedLampType] || '光明燈';
-
-    // Add to My Lamp Records in Profile
-    const myLampsContainer = document.getElementById('myLampsContainer');
-    if (myLampsContainer) {
-      const item = document.createElement('div');
-      item.className = 'my-item-card';
-      item.innerHTML = `<span>🕯️ ${name} 的 ${lampTitle}</span><span class="badge-status-gold">點亮中 (至年底)</span>`;
-      myLampsContainer.prepend(item);
-    }
-
-    lampSubmitForm.reset();
-    if (lightLampModal) lightLampModal.classList.add('is-hidden');
-    fireConfetti();
-    playTempleChime(880, 0.6);
-    if (navigator.vibrate) navigator.vibrate([40, 80, 40]);
-  });
-}
-
-// 9. X-Model Post Composer & Photo Upload Handler
-const publishXPostBtn = document.getElementById('publishXPostBtn');
-const xPostInput = document.getElementById('xPostInput');
-const xPostFileInput = document.getElementById('xPostFileInput');
-const xPostCategorySelect = document.getElementById('xPostCategorySelect');
-const photoFileName = document.getElementById('photoFileName');
-const photoPreviewThumb = document.getElementById('photoPreviewThumb');
-let attachedPhotoData = null;
-
-if (xPostFileInput) {
-  xPostFileInput.addEventListener('change', (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      photoFileName.textContent = file.name.length > 8 ? file.name.substring(0, 8) + '...' : file.name;
-      const reader = new FileReader();
-      reader.onload = (evt) => {
-        attachedPhotoData = evt.target.result;
-        if (photoPreviewThumb) {
-          photoPreviewThumb.classList.remove('is-hidden');
-          photoPreviewThumb.innerHTML = `<span>📷 已附圖: ${file.name}</span>`;
-        }
-      };
-      reader.readAsDataURL(file);
-    }
-  });
-}
-
-if (publishXPostBtn) {
-  publishXPostBtn.addEventListener('click', () => {
-    const text = xPostInput.value.trim();
-    const category = xPostCategorySelect ? xPostCategorySelect.value : '隨手善行';
-
-    if (!text && !attachedPhotoData) return;
-
-    const feed = document.getElementById('activityFeedList');
-    if (feed) {
-      const card = document.createElement('article');
-      card.className = 'x-post-card';
-      card.dataset.category = category;
-
-      let photoHtml = '';
-      if (attachedPhotoData) {
-        photoHtml = `
-          <div class="x-post-photo-card">
-            <img src="${attachedPhotoData}" alt="隨手紀錄照片" style="width:100%;max-height:220px;object-fit:cover;display:block;" />
-          </div>
-        `;
-      }
-
-      card.innerHTML = `
-        <div class="x-post-header">
-          <div class="x-post-avatar">信</div>
-          <div class="x-post-user-info">
-            <div class="x-user-title-row">
-              <span class="x-user-name">善信大德 (您)</span>
-              <span class="x-post-handle">@my_account</span>
-            </div>
-            <span class="x-post-time">剛剛 · ${category}</span>
-          </div>
-        </div>
-
-        <div class="x-post-body">
-          <p class="x-post-text">${text.replace(/</g, "&lt;").replace(/>/g, "&gt;")}</p>
-          ${photoHtml}
-        </div>
-
-        <div class="x-social-bar">
-          <button class="x-social-btn x-btn-reply" title="回覆">
-            <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
-            <span class="x-count">0</span>
-          </button>
-          <button class="x-social-btn x-btn-repost" title="轉發">
-            <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 1l4 4-4 4"/><path d="M3 11V9a4 4 0 0 1 4-4h14"/><path d="M7 23l-4-4 4-4"/><path d="M21 13v2a4 4 0 0 1-4 4H3"/></svg>
-            <span class="x-count">0</span>
-          </button>
-          <button class="x-social-btn x-btn-like" title="讚賞">
-            <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
-            <span class="x-count">0</span>
-          </button>
-          <button class="x-social-btn x-btn-bookmark" title="收藏">
-            <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
-          </button>
-        </div>
-      `;
-
-      feed.prepend(card);
-    }
-
-    // Reset composer
-    xPostInput.value = '';
-    attachedPhotoData = null;
-    if (photoFileName) photoFileName.textContent = '附圖';
-    if (photoPreviewThumb) {
-      photoPreviewThumb.classList.add('is-hidden');
-      photoPreviewThumb.innerHTML = '';
-    }
-    const postComposerWrap = document.getElementById('postComposerWrap');
-    const toggleBtn = document.getElementById('togglePostComposerBtn');
-    if (postComposerWrap) {
-      postComposerWrap.classList.remove('is-expanded');
-      postComposerWrap.classList.add('is-collapsed');
-    }
-    if (toggleBtn) toggleBtn.classList.remove('is-active');
-
-    fireConfetti();
-    playTempleChime(750, 0.4);
-    if (navigator.vibrate) navigator.vibrate([30, 40, 30]);
-  });
-}
-
-// 10. X-Social Interaction Actions (Like, Repost, Bookmark)
-document.addEventListener('click', (e) => {
-  // Like Button Handler
-  const likeBtn = e.target.closest('.x-btn-like');
-  if (likeBtn) {
-    likeBtn.classList.toggle('is-liked');
-    const isLiked = likeBtn.classList.contains('is-liked');
-    const countSpan = likeBtn.querySelector('.x-count');
-    if (countSpan) {
-      let count = parseInt(countSpan.textContent) || 0;
-      countSpan.textContent = isLiked ? count + 1 : Math.max(0, count - 1);
-    }
-    playTempleChime(isLiked ? 660 : 440, 0.2);
-    if (navigator.vibrate) navigator.vibrate(25);
-  }
-
-  // Repost Button Handler
-  const repostBtn = e.target.closest('.x-btn-repost');
-  if (repostBtn) {
-    repostBtn.classList.toggle('is-reposted');
-    const isReposted = repostBtn.classList.contains('is-reposted');
-    const countSpan = repostBtn.querySelector('.x-count');
-    if (countSpan) {
-      let count = parseInt(countSpan.textContent) || 0;
-      countSpan.textContent = isReposted ? count + 1 : Math.max(0, count - 1);
-    }
-    playTempleChime(580, 0.2);
-    if (navigator.vibrate) navigator.vibrate(30);
-  }
-
-  // Bookmark Button Handler
-  const bookmarkBtn = e.target.closest('.x-btn-bookmark');
-  if (bookmarkBtn) {
-    bookmarkBtn.classList.toggle('is-bookmarked');
-    playTempleChime(500, 0.2);
-  }
-});
-
-// 11. Followed Temples Instagram-Style Story Modal Handlers
-const templeStoryModal = document.getElementById('templeStoryModal');
-const closeStoryModalBtn = document.getElementById('closeStoryModalBtn');
-const storyFollowBtn = document.getElementById('storyFollowBtn');
-
-if (closeStoryModalBtn && templeStoryModal) {
-  closeStoryModalBtn.addEventListener('click', () => {
-    templeStoryModal.classList.add('is-hidden');
-  });
-}
-
-document.querySelectorAll('#templeStoriesBar .story-item').forEach((item) => {
-  item.addEventListener('click', () => {
-    const templeName = item.dataset.temple || '宮廟';
-    const subtitle = item.dataset.subtitle || '最新宮廟動態實況';
-    const avatarTxt = item.dataset.img || '廟';
-
-    const titleEl = document.getElementById('storyModalTitle');
-    const avatarEl = document.getElementById('storyModalAvatar');
-    const heroTitleEl = document.getElementById('storyHeroTitle');
-    const heroDescEl = document.getElementById('storyHeroDesc');
-
-    if (titleEl) titleEl.textContent = `${templeName} ｜ 限時動態`;
-    if (avatarEl) avatarEl.textContent = avatarTxt;
-    if (heroTitleEl) heroTitleEl.textContent = `${templeName} ${subtitle}`;
-    if (heroDescEl) heroDescEl.textContent = `莊嚴祈福 · 線上觀禮祈祝平安 ｜ ${templeName} 官方頻道`;
-
-    if (templeStoryModal) {
-      templeStoryModal.classList.remove('is-hidden');
-      playTempleChime(640, 0.3);
-      if (navigator.vibrate) navigator.vibrate(30);
-    }
-  });
-});
-
-if (storyFollowBtn) {
-  storyFollowBtn.addEventListener('click', async () => {
-    storyFollowBtn.classList.toggle('is-following');
-    const isFollowing = storyFollowBtn.classList.contains('is-following');
-    storyFollowBtn.innerHTML = isFollowing
-      ? '<span>✓ 已成功追蹤此宮廟 (LINE 通知開啟)</span>'
-      : '<span>✓ 追蹤宮廟 (接收即時 LINE 動態通知)</span>';
-    fireConfetti();
-    playTempleChime(800, 0.5);
-    if (navigator.vibrate) navigator.vibrate([40, 60, 40]);
-
-    // Persist the follow so LINE can actually push activity/donation updates for this temple.
-    const templeName = document.getElementById('storyModalTitle')?.textContent?.replace('｜ 限時動態', '').trim();
-    const templeId = await resolveTempleIdByName(templeName);
-    if (!templeId) return;
-    try {
-      const userId = await getCurrentUserId();
-      await fetch(`${API_BASE}/subscriptions`, {
-        method: isFollowing ? 'POST' : 'DELETE',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ userId, templeId })
-      });
-    } catch (err) {
-      console.warn('subscription sync failed:', err.message);
-    }
-  });
-}
-
-// 13. Collapsible Post Composer Toggle Bar Handler
-const togglePostComposerBtn = document.getElementById('togglePostComposerBtn');
-const postComposerWrap = document.getElementById('postComposerWrap');
-
-if (togglePostComposerBtn && postComposerWrap) {
-  togglePostComposerBtn.addEventListener('click', () => {
-    const isCollapsed = postComposerWrap.classList.contains('is-collapsed');
-    if (isCollapsed) {
-      postComposerWrap.classList.remove('is-collapsed');
-      postComposerWrap.classList.add('is-expanded');
-      togglePostComposerBtn.classList.add('is-active');
-      const postInput = document.getElementById('xPostInput');
-      if (postInput) setTimeout(() => postInput.focus(), 250);
+  document.querySelectorAll('.role-switch-btn').forEach((btn) => {
+    if (btn.dataset.role === currentRole) {
+      btn.classList.add('is-active');
     } else {
-      postComposerWrap.classList.remove('is-expanded');
-      postComposerWrap.classList.add('is-collapsed');
-      togglePostComposerBtn.classList.remove('is-active');
+      btn.classList.remove('is-active');
     }
-    playTempleChime(600, 0.2);
-    if (navigator.vibrate) navigator.vibrate(25);
   });
+
+  loadMyPledges();
 }
 
-// 14. Floating Animated "+" Creation FAB Menu Handlers
-const fabCreateWrapper = document.getElementById('fabCreateWrapper');
-const fabCreateBtn = document.getElementById('fabCreateBtn');
-const fabOptionPost = document.getElementById('fabOptionPost');
-const fabOptionEvent = document.getElementById('fabOptionEvent');
-
-if (fabCreateBtn && fabCreateWrapper) {
-  fabCreateBtn.addEventListener('click', () => {
-    fabCreateWrapper.classList.toggle('is-expanded');
-    const isExpanded = fabCreateWrapper.classList.contains('is-expanded');
-    playTempleChime(isExpanded ? 720 : 480, 0.2);
-    if (navigator.vibrate) navigator.vibrate(30);
+document.querySelectorAll('.role-switch-btn').forEach((btn) => {
+  btn.addEventListener('click', () => {
+    currentRole = btn.dataset.role;
+    loadUserProfileUI();
+    playTempleChime(640, 0.4);
   });
+});
+
+async function loadMyPledges() {
+  const container = document.getElementById('myPledgeHistory');
+  if (!container) return;
+
+  try {
+    const res = await fetch(`${API_BASE}/donations?userId=${userProfile.userId}`);
+    const pledges = await res.json();
+
+    if (!pledges || pledges.length === 0) {
+      container.innerHTML = '<div class="my-item-card"><span>尚未參與樂捐專案</span></div>';
+      return;
+    }
+
+    container.innerHTML = pledges
+      .map(
+        (p) => `
+      <div class="my-item-card">
+        <span>樂捐金額: NT$ ${p.amount.toLocaleString()}</span>
+        <span class="badge-status-gold">${new Date(p.createdAt).toLocaleDateString()}</span>
+      </div>
+    `
+      )
+      .join('');
+  } catch (err) {
+    container.innerHTML = '<div class="my-item-card"><span>無法載入樂捐歷史</span></div>';
+  }
 }
 
-if (fabOptionPost) {
-  fabOptionPost.addEventListener('click', () => {
-    if (fabCreateWrapper) fabCreateWrapper.classList.remove('is-expanded');
-    if (postComposerWrap) {
-      postComposerWrap.classList.remove('is-collapsed');
-      postComposerWrap.classList.add('is-expanded');
+// ---------- LIFF Initialization & Login Integration ----------
+async function initLiff() {
+  if (window.liff) {
+    try {
+      const liffId = window.LIFF_ID || 'YOUR_LIFF_ID';
+      await liff.init({ liffId });
+      if (liff.isLoggedIn()) {
+        const profile = await liff.getProfile();
+        userProfile.userId = profile.userId;
+        userProfile.displayName = profile.displayName || '善信大德';
+        userProfile.pictureUrl = profile.pictureUrl || '';
+      }
+    } catch (err) {
+      console.warn('LIFF init SDK skipped (running in browser local mode)');
     }
-    if (togglePostComposerBtn) togglePostComposerBtn.classList.add('is-active');
-    const postInput = document.getElementById('xPostInput');
-    if (postInput) {
-      postInput.scrollIntoView({ behavior: 'smooth', block: 'center' });
-      setTimeout(() => postInput.focus(), 300);
-    }
-    playTempleChime(660, 0.2);
-  });
+  }
+  loadUserProfileUI();
 }
 
-if (fabOptionEvent) {
-  fabOptionEvent.addEventListener('click', () => {
-    if (fabCreateWrapper) fabCreateWrapper.classList.remove('is-expanded');
-    const createModal = document.getElementById('createActivityModal');
-    if (createModal) {
-      createModal.classList.remove('is-hidden');
-    }
-    playTempleChime(660, 0.2);
-  });
-}
+initLiff();
