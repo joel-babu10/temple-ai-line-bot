@@ -2015,3 +2015,568 @@ if (fabOptionEvent) {
     playTempleChime(660, 0.2);
   });
 }
+
+// 15. Complete Multi-Language (i18n) Engine (zh-TW & en)
+const I18N_DICT = {
+  'zh-TW': {
+    loginBtnText: 'LINE 登入',
+    chimeOn: '磬音: 開',
+    chimeOff: '磬音: 關',
+    subTitleText: 'Smart Worship · Sacred Steps · Warm Community',
+    tabDivination: '參拜主頁',
+    tabNearby: '宮廟地圖',
+    tabCommunity: '社群與廟宇',
+    tabProfile: '個人與 AI',
+    
+    // Altar Deity Selector
+    mazuBadge: '主神 · 媽祖娘娘',
+    mazuPower: '神威：航海護國 · 災厄消除',
+    mazuLabel: '媽祖',
+    guanyinBadge: '主神 · 觀音佛祖',
+    guanyinPower: '神威：慈悲救苦 · 隨感隨應',
+    guanyinLabel: '觀音',
+    guangongBadge: '主神 · 關聖帝君',
+    guangongPower: '神威：忠義鎮宅 · 招財伏魔',
+    guangongLabel: '關帝',
+    tudigongBadge: '主神 · 福德正神',
+    tudigongPower: '神威：保佑地脈 · 賜福聚財',
+    tudigongLabel: '土地公',
+    yuelaoBadge: '主神 · 月老星君',
+    yuelaoPower: '神威：紅線牽緣 · 婚姻圓滿',
+    yuelaoLabel: '月老',
+
+    altarGuide: '虔心許願 · 焰寶神尊為您指點迷津',
+    burnerPot: '鼎',
+    incenseBtn: '點香敬拜',
+    jiaoBtn: '聖筊請示',
+    drawBtn: '誠心抽籤',
+    cinnabarStamp: '聖母靈印',
+    cardTag: '天上聖母靈籤',
+    
+    // AI Interpretation Box
+    interpretBoxTitle: '焰智 AI 解籤大師',
+    interpretBoxSub: '神明籤詩深度白話解析與指引',
+    interpretChip1: '💼 工作事業',
+    interpretChip2: '❤️ 感情感情',
+    interpretChip3: '🌿 健康平安',
+    interpretChip4: '✨ 綜合運勢',
+    interpretInputLabel: '請輸入您想請示的具體事項 (如事業/感情/健康)：',
+    questionPlaceholder: '例如：最近換工作好嗎？',
+
+    // Daily Quote & Talisman
+    dailyQuoteTitle: '每日平安箴言',
+    dailyQuoteVerse: '「諸惡莫作，眾善奉行；自淨其意，是諸佛教。」',
+    dailyQuoteSource: '— 萬春宮 天上聖母 賜福箴言',
+    blessingCardTitle: '每日靈驗平安符',
+    refreshBlessingBtn: '換平安符',
+    dailyBlessingText: '媽祖賜福：吉星高照 · 行路平安 · 萬事順心',
+    petAskText: '問我！🐾',
+
+    // Tab 2: Map
+    nearbyTitle: '周邊參拜宮廟導覽地圖',
+    nearbyDesc: '定位尋找周邊道場與最佳參拜路線 (步行/單車/公車/開車)',
+    locateBtnText: '定位找附近宮廟',
+    locatedBadge: '已定位附近宮廟',
+    filterAll: '全選',
+
+    // Tab 3: Community
+    toggleComposerText: '＋ 發布隨手紀錄 / 宮廟公告',
+    postPlaceholder: '分享您的善行、隨手紀錄或參拜心得...',
+    attachPhotoText: '附圖',
+    catSelectAnnounce: '宮廟公告',
+    catSelectHike: '健行活動',
+    catSelectGoodDeed: '隨手善行',
+    catSelectCulture: '民俗文化',
+    publishBtnText: '發布貼文',
+    filterAllPosts: '全部動態',
+    
+    // Official Post 1
+    post1Title: '萬春宮 ｜ 天上聖母中秋祈安 & 冬季偏鄉送暖計畫',
+    post1Text: '萬春宮誠邀廣大信眾共修福田！除了臨廟參拜外，線上同步開放安點光明燈與冬令平安米供養，隨喜護持偏鄉獨居長者與弱勢家庭。',
+    post1DonateBtn: '支持送暖捐款',
+    post1LampBtn: '為家人線上點燈',
+    post1RiceBtn: '供養平安米 ($100)',
+    
+    // Impact Dashboard
+    impactTitle: '本月共善影響力數據',
+    impactSub: '信仰結合真實生活',
+    impactStat1: '平安米捐贈',
+    impactStat2: '愛心平安餐',
+    impactStat3: '環境保護活動',
+    impactStat4: '共善參與者',
+
+    // Devotee Posts
+    post2Text: '今天與志工團一行人前往大肚溪步道隨手撿垃圾與淨川，沿途祈福平安。願山川無災，大眾福慧雙修！',
+    post3Title: '週末八卦山步道清晨祈福走山活動號召',
+    post3Text: '本週六早晨 08:00 AM 預計於八卦山大佛廣場集合走步道，歡迎喜愛健行運動的同修信眾一同參與！',
+    post3JoinBtn: '加入健行活動',
+
+    fabPostText: '發布隨手紀錄',
+    fabEventText: '發起共善活動',
+
+    // Tab 4: Profile
+    profileHeaderTitle: '善信大德',
+    profileSubText: '功德值：520 分 ｜ 榮譽修持信士',
+    askCardTitle: '問焰智 AI 廟公',
+    askCardSub: '線上請示宮廟歷史、參拜儀軌或人生智慧諮詢',
+    askChip1: '🙏 參拜禮儀',
+    askChip2: '💰 祈福求財',
+    askChip3: '☯️ 安太歲',
+    askChip4: '🏮 點燈祈福',
+    askInputPlaceholder: '請輸入您想向廟公請示的問題...',
+    secFollowedTemples: '我追蹤的宮廟',
+    secJoinedActivities: '我參與的共善活動',
+    secDonations: '我的點燈、供養與捐款紀錄',
+
+    // Modals
+    lampModalTitle: '線上點燈與供養祈福儀軌',
+    targetSelf: '自己',
+    targetFamily: '家人',
+    targetFriends: '親友',
+    lampNameLabel: '祈福者/信士姓名：',
+    lampNamePlaceholder: '例如：張大明',
+    lampTypeLabel: '選擇安燈/供養種類：',
+    lampOption1: '光明燈 (元辰光彩)',
+    lampOption2: '太歲燈 (化解太歲)',
+    lampOption3: '文昌燈 (金榜題名)',
+    lampOption4: '姻緣燈 (良緣圓滿)',
+    lampOption5: '平安米供養 ($100)',
+    lampOption6: '平安福食供齋 ($80)',
+    lampWishLabel: '祈願心願/祝禱文 (選填)：',
+    lampWishPlaceholder: '例如：祈求合家平安、事業順遂',
+    lampNoticeText: '點亮之燭光將於萬春宮神前同步安奉，發送 LINE 祈福開光通知。',
+    lampSubmitBtnText: '點亮燭光 (發送 LINE 祈福紀錄)',
+
+    donationModalTitle: '萬春宮 ｜ 冬季偏鄉送暖計畫',
+    donorNameLabel: '護持信士姓名：',
+    donorWishLabel: '祈福迴向祝禱文 (選填)：',
+    donorSubmitBtnText: '隨喜護持 (發送 LINE 祈福紀錄)',
+
+    fullLoginReturnBtn: '返回 Web 參拜',
+    fullLoginHeroSub: '開啟完整的智慧參拜、隨手善行發布與宮廟動態互動',
+    fullLoginNoticeText: '登入 LINE 帳號或廟方機構帳號即可發布社群動態與交流',
+    fullLoginBelieverTitle: 'LINE 信眾身分登入',
+    fullLoginBelieverSub: '使用 LINE 帳號直接登入，解鎖發布動態、留言互動與線上點燈祈福全功能。',
+    fullLoginTempleTitle: '廟方機構管理者登入',
+    fullLoginTempleSub: '台中萬春宮機構代表專用，可發布官方繞境公告、冬季偏鄉送暖與募資專案。'
+  },
+
+  'en': {
+    loginBtnText: 'LINE Login',
+    chimeOn: 'Chime: On',
+    chimeOff: 'Chime: Off',
+    subTitleText: 'Smart Worship · Sacred Steps · Warm Community',
+    tabDivination: 'Worship',
+    tabNearby: 'Map',
+    tabCommunity: 'Community',
+    tabProfile: 'Profile',
+    
+    // Altar Deity Selector
+    mazuBadge: 'Deity · Goddess Mazu',
+    mazuPower: 'Divine Power: Protection & Safe Journey',
+    mazuLabel: 'Mazu',
+    guanyinBadge: 'Deity · Guanyin Bodhisattva',
+    guanyinPower: 'Divine Power: Compassion & Mercy',
+    guanyinLabel: 'Guanyin',
+    guangongBadge: 'Deity · Lord Guan (Guan Yu)',
+    guangongPower: 'Divine Power: Justice, Loyalty & Wealth',
+    guangongLabel: 'Lord Guan',
+    tudigongBadge: 'Deity · Earth God (Tudigong)',
+    tudigongPower: 'Divine Power: Land Peace & Prosperity',
+    tudigongLabel: 'Earth God',
+    yuelaoBadge: 'Deity · Matchmaker (Yuelao)',
+    yuelaoPower: 'Divine Power: Red Thread & True Love',
+    yuelaoLabel: 'Yuelao',
+
+    altarGuide: 'Sincere Prayers · Flame AI Guides Your Path',
+    burnerPot: 'Censer',
+    incenseBtn: 'Offer Incense',
+    jiaoBtn: 'Toss Blocks',
+    drawBtn: 'Draw Stick',
+    cinnabarStamp: 'Sacred Seal',
+    cardTag: 'Goddess Mazu Divine Poem',
+    
+    // AI Interpretation Box
+    interpretBoxTitle: 'Flame AI Fortune Master',
+    interpretBoxSub: 'In-depth divine poem analysis & life guidance',
+    interpretChip1: '💼 Career & Business',
+    interpretChip2: '❤️ Romance & Love',
+    interpretChip3: '🌿 Health & Peace',
+    interpretChip4: '✨ Overall Fortune',
+    interpretInputLabel: 'Enter your specific question (e.g. Career, Romance, Health):',
+    questionPlaceholder: 'e.g., Is it a good time to change jobs?',
+
+    // Daily Quote & Talisman
+    dailyQuoteTitle: 'Daily Wisdom Verse',
+    dailyQuoteVerse: '“Refrain from all evil, practice all good; purify your own mind, this is the divine teaching.”',
+    dailyQuoteSource: '— Wanchun Temple Goddess Mazu Oracle',
+    blessingCardTitle: 'Daily Shrine Peace Amulet',
+    refreshBlessingBtn: 'New Amulet',
+    dailyBlessingText: 'Mazu\'s Blessing: Bright stars shine high · Safe travels · All wishes fulfilled',
+    petAskText: 'Ask Me! 🐾',
+
+    // Tab 2: Map
+    nearbyTitle: 'Nearby Temples Navigation & Discovery',
+    nearbyDesc: 'Locate nearby shrines & optimal routes (Walk / Bike / Bus / Drive)',
+    locateBtnText: 'Locate Nearby Temples',
+    locatedBadge: 'Located Nearby Temples',
+    filterAll: 'All',
+
+    // Tab 3: Community
+    toggleComposerText: '＋ Share Prayer / Post Announcement',
+    postPlaceholder: 'Share your temple visits, good deeds, or prayers...',
+    attachPhotoText: 'Photo',
+    catSelectAnnounce: 'Announcement',
+    catSelectHike: 'Hiking Event',
+    catSelectGoodDeed: 'Good Deed',
+    catSelectCulture: 'Culture',
+    publishBtnText: 'Post Update',
+    filterAllPosts: 'All Updates',
+    
+    // Official Post 1
+    post1Title: 'Wanchun Temple | Goddess Mazu Blessing & Winter Relief Plan',
+    post1Text: 'Wanchun Temple cordially invites all devotees! Join online lamp lighting & winter peace rice offerings to support solitary elders and families in need.',
+    post1DonateBtn: 'Support Relief Donation',
+    post1LampBtn: 'Light Family Blessing Lamp',
+    post1RiceBtn: 'Donate Peace Rice ($100)',
+    
+    // Impact Dashboard
+    impactTitle: 'This Month\'s Community Impact',
+    impactSub: 'Faith in Action & Living Kindness',
+    impactStat1: 'Peace Rice Bags',
+    impactStat2: 'Blessing Meals',
+    impactStat3: 'Eco Cleanup Events',
+    impactStat4: 'Devotees Joined',
+
+    // Devotee Posts
+    post2Text: 'Joined the volunteer team today to clean up trash along Dadu River trail while praying for peace. May all beings be blessed!',
+    post3Title: 'Weekend Bagua Mountain Trail Morning Blessing Hike',
+    post3Text: 'Meeting at Bagua Mountain Buddha Plaza this Saturday 8:00 AM! Everyone is welcome to join our trail hike.',
+    post3JoinBtn: 'Join Hike Event',
+
+    fabPostText: 'Post Experience',
+    fabEventText: 'Create Community Event',
+
+    // Tab 4: Profile
+    profileHeaderTitle: 'Devotee',
+    profileSubText: 'Merit Points: 520 pts | Honored Cultivator',
+    askCardTitle: 'Ask Flame AI Shrine Master',
+    askCardSub: 'Ask about temple history, worship etiquette, or life guidance',
+    askChip1: '🙏 Temple Etiquette',
+    askChip2: '💰 Prosperity Prayer',
+    askChip3: '☯️ Taisui Remedy',
+    askChip4: '🏮 Light Blessing Lamp',
+    askInputPlaceholder: 'Ask Flame AI any question...',
+    secFollowedTemples: 'My Followed Temples',
+    secJoinedActivities: 'My Joined Community Events',
+    secDonations: 'My Lit Lamps & Donation Records',
+
+    // Modals
+    lampModalTitle: 'Online Lamp & Blessing Ritual',
+    targetSelf: 'Self',
+    targetFamily: 'Family',
+    targetFriends: 'Friends',
+    lampNameLabel: 'Devotee Name:',
+    lampNamePlaceholder: 'e.g. John Doe',
+    lampTypeLabel: 'Select Blessing Lamp Type:',
+    lampOption1: 'Light Lamp (Peace & Fortune)',
+    lampOption2: 'Taisui Lamp (Dispel Misfortune)',
+    lampOption3: 'Wenchang Lamp (Academic Success)',
+    lampOption4: 'Yuelao Lamp (Romance & Love)',
+    lampOption5: 'Peace Rice Offering ($100)',
+    lampOption6: 'Blessing Meal Offering ($80)',
+    lampWishLabel: 'Prayer Wish (Optional):',
+    lampWishPlaceholder: 'e.g., Wishing peace, health & business success for my family',
+    lampNoticeText: 'The candle light will be synchronously lit at Wanchun Temple altar with a LINE blessing notification sent to you.',
+    lampSubmitBtnText: 'Light Candle (Send LINE Record)',
+
+    donationModalTitle: 'Wanchun Temple | Winter Relief Plan',
+    donorNameLabel: 'Devotee Name:',
+    donorWishLabel: 'Prayer Wish (Optional):',
+    donorSubmitBtnText: 'Donate (Send LINE Record)',
+
+    fullLoginReturnBtn: 'Return to Web App',
+    fullLoginHeroSub: 'Unlock complete smart worship, social updates & community interaction',
+    fullLoginNoticeText: 'Log in with LINE or Temple Admin account to post community updates',
+    fullLoginBelieverTitle: 'LINE Devotee Login',
+    fullLoginBelieverSub: 'Log in directly with LINE account to unlock dynamic posts, comments, and online lamp lighting.',
+    fullLoginTempleTitle: 'Temple Admin Login',
+    fullLoginTempleSub: 'Exclusive for Wanchun Temple administrators to publish official announcements and charity campaigns.'
+  }
+};
+
+let currentLang = localStorage.getItem('yanbao_web_lang') || 'zh-TW';
+
+function setLanguage(lang) {
+  currentLang = lang === 'en' ? 'en' : 'zh-TW';
+  localStorage.setItem('yanbao_web_lang', currentLang);
+
+  const t = I18N_DICT[currentLang] || I18N_DICT['zh-TW'];
+
+  // Toggle pills
+  document.querySelectorAll('.lang-pill').forEach((pill) => {
+    pill.classList.toggle('is-active', pill.dataset.lang === currentLang);
+  });
+
+  // Header controls
+  const loginBtnText = document.getElementById('loginBtnText');
+  if (loginBtnText && (!loggedInUser || loggedInUser.nameShort === '信徒' || loggedInUser.nameShort === 'Devotee')) {
+    loginBtnText.textContent = t.loginBtnText;
+  }
+  const chimeBtnSpan = document.querySelector('#chimeToggleBtn span');
+  if (chimeBtnSpan) {
+    chimeBtnSpan.textContent = chimeEnabled ? t.chimeOn : t.chimeOff;
+  }
+
+  // Tabs
+  const tabDivSpan = document.querySelector('.tab-btn[data-tab="divination"] span');
+  if (tabDivSpan) tabDivSpan.textContent = t.tabDivination;
+
+  const tabNearbySpan = document.querySelector('.tab-btn[data-tab="nearby"] span');
+  if (tabNearbySpan) tabNearbySpan.textContent = t.tabNearby;
+
+  const tabCommunitySpan = document.querySelector('.tab-btn[data-tab="community"] span');
+  if (tabCommunitySpan) tabCommunitySpan.textContent = t.tabCommunity;
+
+  const tabProfileSpan = document.querySelector('.tab-btn[data-tab="profile"] span');
+  if (tabProfileSpan) tabProfileSpan.textContent = t.tabProfile;
+
+  // Altar Deity Selector Pills
+  document.querySelectorAll('.deity-pill').forEach((pill) => {
+    const id = pill.dataset.deityId;
+    const span = pill.querySelector('span');
+    if (id === 'mazu') {
+      pill.dataset.deityBadge = t.mazuBadge;
+      pill.dataset.deityPower = t.mazuPower;
+      if (span) span.textContent = t.mazuLabel;
+    } else if (id === 'guanyin') {
+      pill.dataset.deityBadge = t.guanyinBadge;
+      pill.dataset.deityPower = t.guanyinPower;
+      if (span) span.textContent = t.guanyinLabel;
+    } else if (id === 'guangong') {
+      pill.dataset.deityBadge = t.guangongBadge;
+      pill.dataset.deityPower = t.guangongPower;
+      if (span) span.textContent = t.guangongLabel;
+    } else if (id === 'tudigong') {
+      pill.dataset.deityBadge = t.tudigongBadge;
+      pill.dataset.deityPower = t.tudigongPower;
+      if (span) span.textContent = t.tudigongLabel;
+    } else if (id === 'yuelao') {
+      pill.dataset.deityBadge = t.yuelaoBadge;
+      pill.dataset.deityPower = t.yuelaoPower;
+      if (span) span.textContent = t.yuelaoLabel;
+    }
+  });
+
+  // Update active deity badge & power tag text
+  const activePill = document.querySelector('.deity-pill.is-active');
+  if (activePill) {
+    const badgeTextEl = document.getElementById('deityBadgeText');
+    const powerTagEl = document.getElementById('deityPowerTag');
+    if (badgeTextEl) badgeTextEl.textContent = activePill.dataset.deityBadge;
+    if (powerTagEl) powerTagEl.textContent = activePill.dataset.deityPower;
+  }
+
+  // Altar text
+  const altarGuide = document.querySelector('.altar-guide');
+  if (altarGuide) altarGuide.textContent = t.altarGuide;
+
+  const burnerPot = document.querySelector('.burner-pot');
+  if (burnerPot) burnerPot.textContent = t.burnerPot;
+
+  const incenseBtnSpan = document.querySelector('#incenseBtn span');
+  if (incenseBtnSpan) incenseBtnSpan.textContent = t.incenseBtn;
+
+  const jiaoBtnSpan = document.querySelector('#jiaoBtn span');
+  if (jiaoBtnSpan) jiaoBtnSpan.textContent = t.jiaoBtn;
+
+  const drawBtnSpan = document.querySelector('#drawBtn span');
+  if (drawBtnSpan) drawBtnSpan.textContent = t.drawBtn;
+
+  const cinnabarStamp = document.querySelector('.cinnabar-stamp');
+  if (cinnabarStamp) cinnabarStamp.textContent = t.cinnabarStamp;
+
+  const cardTag = document.querySelector('.card-tag');
+  if (cardTag) cardTag.textContent = t.cardTag;
+
+  // AI Interpretation Box
+  const interpretBoxTitle = document.getElementById('interpretBoxTitle');
+  if (interpretBoxTitle) interpretBoxTitle.textContent = t.interpretBoxTitle;
+
+  const interpretBoxSub = document.getElementById('interpretBoxSub');
+  if (interpretBoxSub) interpretBoxSub.textContent = t.interpretBoxSub;
+
+  const interpretInputLabel = document.getElementById('interpretInputLabel');
+  if (interpretInputLabel) interpretInputLabel.textContent = t.interpretInputLabel;
+
+  const questionInput = document.getElementById('questionInput');
+  if (questionInput) questionInput.placeholder = t.questionPlaceholder;
+
+  // Suggestion Chips
+  const chips = document.querySelectorAll('#interpretChips .chip-suggestion-btn');
+  if (chips.length >= 4) {
+    chips[0].textContent = t.interpretChip1;
+    chips[1].textContent = t.interpretChip2;
+    chips[2].textContent = t.interpretChip3;
+    chips[3].textContent = t.interpretChip4;
+  }
+
+  // Daily Quote & Talisman
+  const quoteHeaderSpan = document.querySelector('#dailyQuoteSection .quote-header span');
+  if (quoteHeaderSpan) quoteHeaderSpan.textContent = t.dailyQuoteTitle;
+
+  const quoteVerse = document.querySelector('.quote-verse');
+  if (quoteVerse) quoteVerse.textContent = t.dailyQuoteVerse;
+
+  const quoteSource = document.querySelector('.quote-source');
+  if (quoteSource) quoteSource.textContent = t.dailyQuoteSource;
+
+  const blessingCardTitle = document.querySelector('.blessing-card-title');
+  if (blessingCardTitle) blessingCardTitle.textContent = t.blessingCardTitle;
+
+  const refreshBlessingBtnSpan = document.querySelector('#refreshBlessingBtn span');
+  if (refreshBlessingBtnSpan) refreshBlessingBtnSpan.textContent = t.refreshBlessingBtn;
+
+  const dailyBlessingText = document.getElementById('dailyBlessingText');
+  if (dailyBlessingText) dailyBlessingText.textContent = t.dailyBlessingText;
+
+  const petBubbleSpan = document.querySelector('#petSpeechBubble span');
+  if (petBubbleSpan) petBubbleSpan.textContent = t.petAskText;
+
+  // Tab 2: Map
+  const nearbyH2 = document.querySelector('#tab-nearby h2');
+  if (nearbyH2) nearbyH2.textContent = t.nearbyTitle;
+
+  const nearbyDesc = document.querySelector('#tab-nearby .section-desc');
+  if (nearbyDesc) nearbyDesc.textContent = t.nearbyDesc;
+
+  const locateBtnSpan = document.querySelector('#locateBtn span');
+  if (locateBtnSpan) locateBtnSpan.textContent = t.locateBtnText;
+
+  const locationBadgeText = document.getElementById('locationBadgeText');
+  if (locationBadgeText) locationBadgeText.textContent = t.locatedBadge;
+
+  const filterAllBtn = document.querySelector('#deityFilters .chip-btn[data-filter="all"]');
+  if (filterAllBtn) filterAllBtn.textContent = t.filterAll;
+
+  // Tab 3: Community
+  const composerToggleSpan = document.querySelector('#togglePostComposerBtn span');
+  if (composerToggleSpan) composerToggleSpan.textContent = t.toggleComposerText;
+
+  const xPostInput = document.getElementById('xPostInput');
+  if (xPostInput) xPostInput.placeholder = t.postPlaceholder;
+
+  const photoFileName = document.getElementById('photoFileName');
+  if (photoFileName) photoFileName.textContent = t.attachPhotoText;
+
+  const publishBtn = document.getElementById('publishXPostBtn');
+  if (publishBtn) publishBtn.textContent = t.publishBtnText;
+
+  const catAllBtn = document.querySelector('#activityCategoryFilters .chip-btn[data-cat="all"]');
+  if (catAllBtn) catAllBtn.textContent = t.filterAllPosts;
+
+  // Impact Dashboard
+  const impactH3 = document.querySelector('.impact-dashboard-card h3');
+  if (impactH3) impactH3.textContent = t.impactTitle;
+
+  const impactTag = document.querySelector('.impact-dashboard-card .impact-tag');
+  if (impactTag) impactTag.textContent = t.impactSub;
+
+  const impactLabels = document.querySelectorAll('.impact-item label');
+  if (impactLabels.length >= 4) {
+    impactLabels[0].textContent = t.impactStat1;
+    impactLabels[1].textContent = t.impactStat2;
+    impactLabels[2].textContent = t.impactStat3;
+    impactLabels[3].textContent = t.impactStat4;
+  }
+
+  const fabPostSpan = document.querySelector('#fabOptionPost span');
+  if (fabPostSpan) fabPostSpan.textContent = t.fabPostText;
+
+  const fabEventSpan = document.querySelector('#fabOptionEvent span');
+  if (fabEventSpan) fabEventSpan.textContent = t.fabEventText;
+
+  // Tab 4: Profile
+  const profileH3 = document.querySelector('.user-profile-header h3');
+  if (profileH3) profileH3.textContent = t.profileHeaderTitle;
+
+  const userSub = document.querySelector('.user-sub');
+  if (userSub) userSub.textContent = t.profileSubText;
+
+  const askCardTitle = document.getElementById('askCardTitle');
+  if (askCardTitle) askCardTitle.textContent = t.askCardTitle;
+
+  const askCardSub = document.getElementById('askCardSub');
+  if (askCardSub) askCardSub.textContent = t.askCardSub;
+
+  const askInput = document.getElementById('askInput');
+  if (askInput) askInput.placeholder = t.askInputPlaceholder;
+
+  const askChips = document.querySelectorAll('#askChips .chip-suggestion-btn');
+  if (askChips.length >= 4) {
+    askChips[0].textContent = t.askChip1;
+    askChips[1].textContent = t.askChip2;
+    askChips[2].textContent = t.askChip3;
+    askChips[3].textContent = t.askChip4;
+  }
+
+  const profileSecBlocks = document.querySelectorAll('.profile-section-block h3');
+  if (profileSecBlocks.length >= 3) {
+    profileSecBlocks[0].textContent = t.secFollowedTemples;
+    profileSecBlocks[1].textContent = t.secJoinedActivities;
+    profileSecBlocks[2].textContent = t.secDonations;
+  }
+
+  // Modals
+  const lampModalH3 = document.querySelector('#lightLampModal .modal-header h3');
+  if (lampModalH3) lampModalH3.textContent = t.lampModalTitle;
+
+  const modalTargets = document.querySelectorAll('#modalTargetPills .target-pill');
+  if (modalTargets.length >= 3) {
+    modalTargets[0].textContent = t.targetSelf;
+    modalTargets[1].textContent = t.targetFamily;
+    modalTargets[2].textContent = t.targetFriends;
+  }
+
+  const modalLampNameInput = document.getElementById('modalLampNameInput');
+  if (modalLampNameInput) modalLampNameInput.placeholder = t.lampNamePlaceholder;
+
+  const modalLampWishInput = document.getElementById('modalLampWishInput');
+  if (modalLampWishInput) modalLampWishInput.placeholder = t.lampWishPlaceholder;
+
+  const lampNoticeP = document.querySelector('#lightLampModal .impact-preview-box p');
+  if (lampNoticeP) lampNoticeP.textContent = t.lampNoticeText;
+
+  const lampSubmitBtnSpan = document.querySelector('#lampSubmitForm button[type="submit"] span');
+  if (lampSubmitBtnSpan) lampSubmitBtnSpan.textContent = t.lampSubmitBtnText;
+
+  const donorNameInput = document.getElementById('donorNameInput');
+  if (donorNameInput) donorNameInput.placeholder = t.lampNamePlaceholder;
+
+  const donorWishInput = document.getElementById('donorDedicationInput');
+  if (donorWishInput) donorWishInput.placeholder = t.lampWishPlaceholder;
+
+  const donorSubmitBtnSpan = document.querySelector('#donationForm button[type="submit"] span');
+  if (donorSubmitBtnSpan) donorSubmitBtnSpan.textContent = t.donorSubmitBtnText;
+
+  const fullLoginReturnSpan = document.querySelector('#closeFullLoginPageBtn span');
+  if (fullLoginReturnSpan) fullLoginReturnSpan.textContent = t.fullLoginReturnBtn;
+
+  const fullLoginHeroSub = document.querySelector('.login-hero-sub');
+  if (fullLoginHeroSub) fullLoginHeroSub.textContent = t.fullLoginHeroSub;
+
+  const fullLoginNoticeText = document.getElementById('fullLoginNoticeText');
+  if (fullLoginNoticeText) fullLoginNoticeText.textContent = t.fullLoginNoticeText;
+}
+
+// Wire up language selector pills
+document.querySelectorAll('.lang-pill').forEach((pill) => {
+  pill.addEventListener('click', () => {
+    const lang = pill.dataset.lang;
+    setLanguage(lang);
+    playTempleChime(480, 0.15);
+  });
+});
+
+// Initialize active language on DOM ready
+setLanguage(currentLang);
