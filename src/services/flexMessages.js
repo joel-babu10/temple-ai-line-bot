@@ -13,7 +13,7 @@ function getStandardQuickReplies(lang = 'zh', liffUrl = '') {
       { type: 'action', action: { type: 'message', label: isEn ? '2. Nearby' : '2. ⛩️ 附近', text: '2' } },
       { type: 'action', action: { type: 'message', label: isEn ? '3. Zodiac' : '3. 🎐 太歲', text: '3' } },
       { type: 'action', action: { type: 'message', label: isEn ? '4. Festivals' : '4. 🏮 節慶', text: '4' } },
-      { type: 'action', action: { type: 'message', label: isEn ? '7. Oracle' : '7. 📜 神諭', text: '7' } },
+      { type: 'action', action: { type: 'message', label: isEn ? '7. Amulet' : '7. 📜 平安符', text: '7' } },
       { type: 'action', action: { type: 'message', label: isEn ? '8. Welfare' : '8. 💖 公益', text: '8' } },
       ...(liffUrl
         ? [{ type: 'action', action: { type: 'uri', label: isEn ? '5. Web App' : '5. 📱 Web參拜', uri: liffUrl } }]
@@ -55,7 +55,7 @@ function buildCleanMenuFlex(lang = 'zh', liffUrl = '') {
           { type: 'text', text: isEn ? '3. 🎐 Zodiac & Taisui Clash Check' : '3. 🎐 生肖太歲與沖煞查詢', color: PAPER, size: 'sm', weight: 'bold' },
           { type: 'text', text: isEn ? '4. 🏮 Upcoming Temple Festivals' : '4. 🏮 近期宮廟節慶與祭典提醒', color: PAPER, size: 'sm', weight: 'bold' },
           { type: 'text', text: isEn ? '5. 📱 Open Full Web App Experience' : '5. 📱 開啟線上參拜與社群 Web App', color: PAPER, size: 'sm', weight: 'bold' },
-          { type: 'text', text: isEn ? '7. 📜 Daily Shrine Oracle Blessing' : '7. 📜 每日隨機神諭賜福吉語', color: PAPER, size: 'sm', weight: 'bold' },
+          { type: 'text', text: isEn ? '7. 📜 Daily Shrine Amulet & Blessing' : '7. 📜 每日靈驗平安符與神諭賜福', color: PAPER, size: 'sm', weight: 'bold' },
           { type: 'text', text: isEn ? '8. 💖 Temple Welfare & Donations' : '8. 💖 宮廟公益樂捐與善行專案', color: PAPER, size: 'sm', weight: 'bold' },
           { type: 'separator', color: LACQUER, margin: 'md' },
           { type: 'text', text: isEn ? '💡 Or ask any question directly in natural chat!' : '💡 您也可以直接輸入任何問題，焰寶會親切為您解答！', color: GOLD_SOFT, size: 'xs', wrap: true, margin: 'sm' }
