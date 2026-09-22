@@ -1040,16 +1040,98 @@ function setLanguage(lang) {
   updateChips(isEn);
 }
 
+// State Management: Persistent User Login Profile (LINE Believer / Temple Org)
+let loggedInUser = null;
+
+try {
+  const saved = localStorage.getItem('flame_logged_user');
+  if (saved) loggedInUser = JSON.parse(saved);
+} catch (e) {
+  console.warn('[app] Failed to load saved user profile:', e);
+}
+
+function showToast(msg) {
+  let container = document.getElementById('flameToastNotice');
+  if (!container) {
+    container = document.createElement('div');
+    container.id = 'flameToastNotice';
+    container.style.cssText = 'position:fixed;bottom:80px;left:50%;transform:translateX(-50%);background:rgba(28,22,19,0.92);border:1px solid #c79a45;color:#efe6d8;padding:10px 18px;border-radius:999px;font-size:0.85rem;font-weight:600;z-index:9999;box-shadow:0 8px 24px rgba(0,0,0,0.6);backdrop-filter:blur(8px);transition:all 0.3s ease;opacity:0;pointer-events:none;text-align:center;';
+    document.body.appendChild(container);
+  }
+  container.textContent = msg;
+  container.style.opacity = '1';
+  container.style.transform = 'translateX(-50%) translateY(-6px)';
+  clearTimeout(container._timer);
+  container._timer = setTimeout(() => {
+    container.style.opacity = '0';
+    container.style.transform = 'translateX(-50%) translateY(0px)';
+  }, 3000);
+}
+
+function updateHeaderLoginState() {
+  const openLoginModalBtn = document.getElementById('openLoginModalBtn');
+  const loginBtnText = document.getElementById('loginBtnText');
+  if (!openLoginModalBtn || !loginBtnText) return;
+
+  if (loggedInUser) {
+    loginBtnText.textContent = currentLang === 'en'
+      ? `✓ ${loggedInUser.nameShort || loggedInUser.name}`
+      : `✓ ${loggedInUser.nameShort || loggedInUser.name} (已登入)`;
+    openLoginModalBtn.classList.add('is-logged-in');
+    openLoginModalBtn.title = currentLang === 'en' ? 'Logged In (Click to switch / logout)' : '已登入 (點擊可切換帳號或登出)';
+  } else {
+    loginBtnText.textContent = currentLang === 'en' ? 'LINE Login' : 'LINE 登入';
+    openLoginModalBtn.classList.remove('is-logged-in');
+    openLoginModalBtn.title = currentLang === 'en' ? 'LINE Login / Select Role' : 'LINE 登入 / 選擇身分';
+  }
+}
+
+function requireLogin(callbackAction) {
+  if (loggedInUser) {
+    if (typeof callbackAction === 'function') callbackAction();
+    return true;
+  }
+  const demoLoginModal = document.getElementById('demoLoginModal');
+  if (demoLoginModal) {
+    demoLoginModal.classList.remove('is-hidden');
+    playTempleChime(600, 0.3);
+    const sub = document.getElementById('loginModalSub');
+    if (sub) {
+      sub.textContent = currentLang === 'en'
+        ? '⚠️ Please log in with LINE or Temple Account to post or participate!'
+        : '⚠️ 請先選擇登入身分（LINE 信眾或廟方機構），即可發布貼文與參與互動！';
+    }
+    window._pendingLoginCallback = callbackAction;
+  }
+  return false;
+}
+
+// Initialize Header Login Button State
+updateHeaderLoginState();
+
 // Demo LINE Login Modal Handlers
 const openLoginModalBtn = document.getElementById('openLoginModalBtn');
 const demoLoginModal = document.getElementById('demoLoginModal');
 const closeLoginModalBtn = document.getElementById('closeLoginModalBtn');
 const loginAsBelieverBtn = document.getElementById('loginAsBelieverBtn');
 const loginAsTempleBtn = document.getElementById('loginAsTempleBtn');
-const loginBtnText = document.getElementById('loginBtnText');
 
 if (openLoginModalBtn && demoLoginModal) {
   openLoginModalBtn.addEventListener('click', () => {
+    if (loggedInUser) {
+      const confirmLogout = confirm(
+        currentLang === 'en'
+          ? `Currently logged in as "${loggedInUser.name}". Would you like to log out?`
+          : `目前已登入身分：「${loggedInUser.name}」。是否要切換或登出帳號？`
+      );
+      if (confirmLogout) {
+        loggedInUser = null;
+        localStorage.removeItem('flame_logged_user');
+        updateHeaderLoginState();
+        showToast(currentLang === 'en' ? 'Logged out successfully.' : '已成功登出身分。');
+      }
+      return;
+    }
     demoLoginModal.classList.remove('is-hidden');
     playTempleChime(600, 0.3);
   });
@@ -1063,17 +1145,45 @@ if (closeLoginModalBtn && demoLoginModal) {
 
 if (loginAsBelieverBtn && demoLoginModal) {
   loginAsBelieverBtn.addEventListener('click', () => {
+    loggedInUser = {
+      name: 'LINE 善信大德',
+      nameShort: '善信大德',
+      handle: '@line_believer',
+      avatar: '信',
+      role: 'user',
+      isOfficial: false
+    };
+    localStorage.setItem('flame_logged_user', JSON.stringify(loggedInUser));
     demoLoginModal.classList.add('is-hidden');
-    if (loginBtnText) loginBtnText.textContent = currentLang === 'en' ? '✓ Believer' : '✓ 信眾 (已登入)';
+    updateHeaderLoginState();
     playTempleChime(680, 0.4);
+    showToast(currentLang === 'en' ? '✅ Logged in as LINE Believer!' : '✅ 已成功以「LINE 信眾身分」登入！');
+    if (typeof window._pendingLoginCallback === 'function') {
+      window._pendingLoginCallback();
+      window._pendingLoginCallback = null;
+    }
   });
 }
 
 if (loginAsTempleBtn && demoLoginModal) {
   loginAsTempleBtn.addEventListener('click', () => {
+    loggedInUser = {
+      name: '萬春宮 (台中媽祖)',
+      nameShort: '萬春宮',
+      handle: '@wanchun_official',
+      avatar: '廟',
+      role: 'temple',
+      isOfficial: true
+    };
+    localStorage.setItem('flame_logged_user', JSON.stringify(loggedInUser));
     demoLoginModal.classList.add('is-hidden');
-    if (loginBtnText) loginBtnText.textContent = currentLang === 'en' ? '✓ Temple Org' : '✓ 廟方 (已登入)';
+    updateHeaderLoginState();
     playTempleChime(720, 0.5);
+    showToast(currentLang === 'en' ? '✅ Logged in as Temple Org Manager!' : '✅ 已成功以「廟方機構管理者」登入！');
+    if (typeof window._pendingLoginCallback === 'function') {
+      window._pendingLoginCallback();
+      window._pendingLoginCallback = null;
+    }
   });
 }
 
@@ -1552,6 +1662,8 @@ if (xPostFileInput) {
 
 if (publishXPostBtn) {
   publishXPostBtn.addEventListener('click', () => {
+    if (!requireLogin(() => publishXPostBtn.click())) return;
+
     const text = xPostInput.value.trim();
     const category = xPostCategorySelect ? xPostCategorySelect.value : '隨手善行';
 
@@ -1560,7 +1672,7 @@ if (publishXPostBtn) {
     const feed = document.getElementById('activityFeedList');
     if (feed) {
       const card = document.createElement('article');
-      card.className = 'x-post-card';
+      card.className = 'x-post-card' + (loggedInUser.isOfficial ? ' temple-official-card' : '');
       card.dataset.category = category;
 
       let photoHtml = '';
@@ -1572,15 +1684,18 @@ if (publishXPostBtn) {
         `;
       }
 
+      const verifiedBadge = loggedInUser.isOfficial ? '<span class="x-verified-badge" title="官方驗證">✓ 官方</span>' : '';
+
       card.innerHTML = `
         <div class="x-post-header">
-          <div class="x-post-avatar">信</div>
+          <div class="x-post-avatar ${loggedInUser.isOfficial ? 'temple-avatar' : ''}">${loggedInUser.avatar}</div>
           <div class="x-post-user-info">
             <div class="x-user-title-row">
-              <span class="x-user-name">善信大德 (您)</span>
-              <span class="x-post-handle">@my_account</span>
+              <span class="x-user-name">${loggedInUser.name} (${currentLang === 'en' ? 'You' : '您'})</span>
+              ${verifiedBadge}
+              <span class="x-post-handle">${loggedInUser.handle}</span>
             </div>
-            <span class="x-post-time">剛剛 · ${category}</span>
+            <span class="x-post-time">${currentLang === 'en' ? 'Just now' : '剛剛'} · ${category}</span>
           </div>
         </div>
 
@@ -1742,6 +1857,14 @@ if (togglePostComposerBtn && postComposerWrap) {
   togglePostComposerBtn.addEventListener('click', () => {
     const isCollapsed = postComposerWrap.classList.contains('is-collapsed');
     if (isCollapsed) {
+      if (!requireLogin(() => {
+        postComposerWrap.classList.remove('is-collapsed');
+        postComposerWrap.classList.add('is-expanded');
+        togglePostComposerBtn.classList.add('is-active');
+        const postInput = document.getElementById('xPostInput');
+        if (postInput) setTimeout(() => postInput.focus(), 250);
+      })) return;
+
       postComposerWrap.classList.remove('is-collapsed');
       postComposerWrap.classList.add('is-expanded');
       togglePostComposerBtn.classList.add('is-active');

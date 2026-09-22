@@ -317,6 +317,39 @@
         <p class="blessing-text" id="dailyBlessingText">媽祖賜福：吉星高照 · 行路平安 · 萬事順心</p>
       </div>
 
+      <!-- Quick Services Menu Grid Card (Rich Menu Style in Web LIFF) -->
+      <div class="web-quick-menu-card">
+        <div class="quick-menu-header">
+          <h3>⛩️ 廟宇快捷服務選單</h3>
+          <span class="quick-menu-sub">點擊即可快速使用線上宮廟服務</span>
+        </div>
+        <div class="quick-menu-grid">
+          <button class="quick-menu-item" onclick="document.getElementById('divinationBtn')?.click()">
+            <div class="menu-item-icon">🔮</div>
+            <span class="menu-item-label">求籤解籤</span>
+          </button>
+          <button class="quick-menu-item" onclick="document.querySelector('[data-tab=nearby]')?.click()">
+            <div class="menu-item-icon">⛩️</div>
+            <span class="menu-item-label">附近宮廟</span>
+          </button>
+          <button class="quick-menu-item" onclick="document.querySelector('[data-tab=profile]')?.click()">
+            <div class="menu-item-icon">🎐</div>
+            <span class="menu-item-label">太歲查詢</span>
+          </button>
+          <button class="quick-menu-item" onclick="document.querySelector('[data-tab=profile]')?.click()">
+            <div class="menu-item-icon">🏮</div>
+            <span class="menu-item-label">節慶提醒</span>
+          </button>
+          <button class="quick-menu-item" onclick="document.getElementById('btnOpenLightLampModal')?.click()">
+            <div class="menu-item-icon">🕯️</div>
+            <span class="menu-item-label">線上點燈</span>
+          </button>
+          <button class="quick-menu-item" onclick="document.querySelector('[data-tab=profile]')?.click()">
+            <div class="menu-item-icon">🐾</div>
+            <span class="menu-item-label">問焰寶 AI</span>
+          </button>
+        </div>
+      </div>
     </section>
 
     <!-- Tab 2: 宮廟地圖 (FULL MAP & NEARBY DISCOVERY) -->

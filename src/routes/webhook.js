@@ -208,9 +208,24 @@ async function handleEvent(event) {
     return reply(event.replyToken, [{ type: 'text', text: t('en', 'langSwitched') }], userId, 'en');
   }
 
+  // Sticky language resolution:
+  // If user is stored as 'en', maintain 'en' unless they explicitly type '中文'/'zh' or send long CJK sentences (> 6 CJK chars).
+  // If user is stored as 'zh', switch to 'en' if detectLang finds pure English.
+  const currentLang = getLang(userId);
+  let lang = currentLang;
+
   const detected = detectLang(text);
-  const lang = detected || getLang(userId);
-  if (detected && detected !== getLang(userId)) setLang(userId, detected);
+  if (detected === 'en' && currentLang !== 'en') {
+    setLang(userId, 'en');
+    lang = 'en';
+  } else if (detected === 'zh' && currentLang === 'en') {
+    // Only switch EN users to ZH if the message has 6+ CJK characters (not just a short button label)
+    const cjkCount = (text.match(/[\u4e00-\u9fff]/g) || []).length;
+    if (cjkCount >= 6) {
+      setLang(userId, 'zh');
+      lang = 'zh';
+    }
+  }
 
   // Check active Divination Session
   const db = getDb();
@@ -224,8 +239,8 @@ async function handleEvent(event) {
 
   // Banking-Bot Style Numeric & Keyword Command Shortcuts
   // 1 or 求籤 -> Divination
-  if (text === '1' || /^(求籤|抽籤|解籤|fortune)\b/i.test(text)) {
-    const queryPart = text.replace(/^(求籤|抽籤|解籤|fortune)\b/i, '').trim();
+  if (text === '1' || /^(求籤|抽籤|解籤|fortune)\b/i.test(text) || /^(career|romance|health|exam) fortune/i.test(text)) {
+    const queryPart = text.replace(/^(求籤|抽籤|解籤|fortune)\b/i, '').replace(/ fortune$/i, '').trim();
     if (queryPart.length > 0 && text !== '1') {
       return performInLineDivination(userId, queryPart, lang, event);
     }
@@ -247,10 +262,10 @@ async function handleEvent(event) {
           text: promptMsg,
           quickReply: {
             items: [
-              { type: 'action', action: { type: 'message', label: isEn ? '💼 Career' : '💼 求事業運勢', text: '求事業運勢' } },
-              { type: 'action', action: { type: 'message', label: isEn ? '💕 Romance' : '💕 求感情發展', text: '求感情發展' } },
-              { type: 'action', action: { type: 'message', label: isEn ? '🌿 Health' : '🌿 求身體健康', text: '求身體健康' } },
-              { type: 'action', action: { type: 'message', label: isEn ? '📖 Exam' : '📖 求考試學業', text: '求考試學業' } }
+              { type: 'action', action: { type: 'message', label: isEn ? '💼 Career' : '💼 求事業運勢', text: isEn ? 'Career fortune' : '求事業運勢' } },
+              { type: 'action', action: { type: 'message', label: isEn ? '💕 Romance' : '💕 求感情發展', text: isEn ? 'Romance fortune' : '求感情發展' } },
+              { type: 'action', action: { type: 'message', label: isEn ? '🌿 Health' : '🌿 求身體健康', text: isEn ? 'Health fortune' : '求身體健康' } },
+              { type: 'action', action: { type: 'message', label: isEn ? '📖 Exam' : '📖 求考試學業', text: isEn ? 'Exam fortune' : '求考試學業' } }
             ]
           }
         }
