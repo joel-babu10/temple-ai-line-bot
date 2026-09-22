@@ -5,64 +5,27 @@ const GOLD_SOFT = '#E4C77A';
 const INK = '#1C1613';
 const PAPER = '#EFE6D8';
 
-const COPY = {
-  zh: {
-    title: '焰寶',
-    subtitle: '萬春宮 · 智慧宮廟小幫手',
-    intro: '哈囉，我是焰寶🙏 想從哪裡開始呢？',
-    buttons: [
-      { label: '🔮  求籤解籤', text: '求籤' },
-      { label: '⛩️  附近宮廟', text: '附近宮廟' },
-      { label: '🎐  太歲查詢', text: '太歲' },
-      { label: '🏮  節慶提醒', text: '節慶' },
-      { label: '🪔  線上點燈', uri: true },
-      { label: '💬  問焰寶任何事', text: '你好' }
-    ]
-  },
-  en: {
-    title: 'Yanbao',
-    subtitle: 'Wanchun Temple · Smart Temple Companion',
-    intro: "Hi, I'm Yanbao 🙏 Where should we start?",
-    buttons: [
-      { label: '🔮  Draw a Fortune', text: 'fortune' },
-      { label: '⛩️  Nearby Temples', text: 'nearby' },
-      { label: '🎐  Zodiac Check', text: 'zodiac' },
-      { label: '🏮  Festival Reminders', text: 'festivals' },
-      { label: '🪔  Light a Blessing Lamp', uri: true },
-      { label: '💬  Ask Me Anything', text: 'hello' }
-    ]
-  }
-};
-
 function getStandardQuickReplies(lang = 'zh', liffUrl = '') {
   const isEn = lang === 'en';
   return {
     items: [
-      { type: 'action', action: { type: 'message', label: isEn ? '🔮 Fortune' : '🔮 線上求籤', text: isEn ? 'fortune' : '求籤' } },
-      { type: 'action', action: { type: 'message', label: isEn ? '⛩️ Nearby' : '⛩️ 附近宮廟', text: isEn ? 'nearby' : '附近宮廟' } },
-      { type: 'action', action: { type: 'message', label: isEn ? '🎐 Zodiac' : '🎐 生肖太歲', text: isEn ? 'zodiac' : '太歲' } },
-      { type: 'action', action: { type: 'message', label: isEn ? '🏮 Festivals' : '🏮 近期節慶', text: isEn ? 'festivals' : '節慶' } },
-      { type: 'action', action: { type: 'message', label: isEn ? '中文' : 'English', text: isEn ? '中文' : 'English' } }
+      { type: 'action', action: { type: 'message', label: isEn ? '1. Fortune' : '1. 🔮 求籤', text: '1' } },
+      { type: 'action', action: { type: 'message', label: isEn ? '2. Nearby' : '2. ⛩️ 附近', text: '2' } },
+      { type: 'action', action: { type: 'message', label: isEn ? '3. Zodiac' : '3. 🎐 太歲', text: '3' } },
+      { type: 'action', action: { type: 'message', label: isEn ? '4. Festivals' : '4. 🏮 節慶', text: '4' } },
+      ...(liffUrl
+        ? [{ type: 'action', action: { type: 'uri', label: isEn ? '5. Web App' : '5. 📱 Web參拜', uri: liffUrl } }]
+        : []),
+      { type: 'action', action: { type: 'message', label: isEn ? '6. Menu' : '6. ☰ 選單', text: '6' } }
     ]
   };
 }
 
-function buildWelcomeFlex(lang, liffUrl) {
-  const copy = COPY[lang] || COPY.zh;
-
-  const buttons = copy.buttons.map((b) => ({
-    type: 'button',
-    style: 'primary',
-    color: LACQUER,
-    height: 'sm',
-    action: b.uri
-      ? { type: 'uri', label: b.label, uri: liffUrl }
-      : { type: 'message', label: b.label, text: b.text }
-  }));
-
+function buildCleanMenuFlex(lang = 'zh', liffUrl = '') {
+  const isEn = lang === 'en';
   return {
     type: 'flex',
-    altText: lang === 'en' ? "Welcome — I'm Yanbao" : '歡迎光臨，我是焰寶',
+    altText: isEn ? 'Service Menu — Flame AI' : '智慧宮廟功能選單 · 焰寶',
     contents: {
       type: 'bubble',
       styles: {
@@ -73,27 +36,64 @@ function buildWelcomeFlex(lang, liffUrl) {
       header: {
         type: 'box',
         layout: 'vertical',
-        paddingAll: '20px',
+        paddingAll: '16px',
         contents: [
-          { type: 'text', text: copy.title, weight: 'bold', size: 'xl', color: GOLD_SOFT },
-          { type: 'text', text: copy.subtitle, size: 'xs', color: PAPER, margin: 'sm' }
+          { type: 'text', text: isEn ? 'Flame AI Shrine Master' : '🐾 焰寶 智慧宮廟服務選單', weight: 'bold', color: GOLD_SOFT, size: 'md' },
+          { type: 'text', text: isEn ? 'Tap or type numbers 1-6 for quick access:' : '請直接回覆數字或點選按鈕以使用服務：', color: PAPER, size: 'xs', margin: 'xs' }
         ]
       },
       body: {
         type: 'box',
         layout: 'vertical',
+        spacing: 'sm',
         paddingAll: '16px',
-        contents: [{ type: 'text', text: copy.intro, color: PAPER, wrap: true, size: 'sm' }]
+        contents: [
+          { type: 'text', text: isEn ? '1. 🔮 Draw & Interpret Fortune Stick' : '1. 🔮 線上求籤 (擲筊·籤詩·AI解籤)', color: PAPER, size: 'sm', weight: 'bold' },
+          { type: 'text', text: isEn ? '2. ⛩️ Search Nearby Temples & Transit' : '2. ⛩️ 搜尋附近宮廟與交通建議', color: PAPER, size: 'sm', weight: 'bold' },
+          { type: 'text', text: isEn ? '3. 🎐 Zodiac & Taisui Clash Check' : '3. 🎐 生肖太歲與沖煞查詢', color: PAPER, size: 'sm', weight: 'bold' },
+          { type: 'text', text: isEn ? '4. 🏮 Upcoming Temple Festivals' : '4. 🏮 近期宮廟節慶與祭典提醒', color: PAPER, size: 'sm', weight: 'bold' },
+          { type: 'text', text: isEn ? '5. 📱 Open Full Web App Experience' : '5. 📱 開啟線上參拜與社群 Web App', color: PAPER, size: 'sm', weight: 'bold' },
+          { type: 'separator', color: LACQUER, margin: 'md' },
+          { type: 'text', text: isEn ? '💡 Or ask any question directly in natural chat!' : '💡 您也可以直接輸入任何問題，焰寶會親切為您解答！', color: GOLD_SOFT, size: 'xs', wrap: true, margin: 'sm' }
+        ]
       },
       footer: {
         type: 'box',
         layout: 'vertical',
-        spacing: 'sm',
-        paddingAll: '16px',
-        contents: buttons
+        spacing: 'xs',
+        paddingAll: '12px',
+        contents: [
+          {
+            type: 'button',
+            style: 'primary',
+            color: LACQUER,
+            height: 'sm',
+            action: { type: 'message', label: isEn ? '1. Draw Fortune' : '1. 線上求籤', text: '1' }
+          },
+          {
+            type: 'button',
+            style: 'secondary',
+            height: 'sm',
+            action: { type: 'message', label: isEn ? '2. Nearby Temples' : '2. 附近宮廟', text: '2' }
+          },
+          ...(liffUrl
+            ? [
+                {
+                  type: 'button',
+                  style: 'link',
+                  height: 'sm',
+                  action: { type: 'uri', label: isEn ? '5. Open Web App' : '5. 開啟 Web App', uri: liffUrl }
+                }
+              ]
+            : [])
+        ]
       }
     }
   };
+}
+
+function buildWelcomeFlex(lang, liffUrl) {
+  return buildCleanMenuFlex(lang, liffUrl);
 }
 
 function buildFestivalFlex(lang, upcomingFestivals) {
@@ -233,7 +233,7 @@ function buildFortuneFlex(lang, fortune, interpretation, liffUrl = '') {
             type: 'button',
             style: 'secondary',
             height: 'sm',
-            action: { type: 'message', label: isEn ? 'Draw Again' : '再次求籤', text: isEn ? 'fortune' : '求籤' }
+            action: { type: 'message', label: isEn ? 'Draw Again' : '再次求籤', text: '1' }
           },
           ...(liffUrl
             ? [
@@ -242,7 +242,7 @@ function buildFortuneFlex(lang, fortune, interpretation, liffUrl = '') {
                   style: 'primary',
                   color: LACQUER,
                   height: 'sm',
-                  action: { type: 'uri', label: isEn ? 'Open LIFF' : '線上參拜', uri: liffUrl }
+                  action: { type: 'uri', label: isEn ? 'Open LIFF' : 'Web 參拜', uri: liffUrl }
                 }
               ]
             : [])
@@ -350,6 +350,7 @@ function buildZodiacFlex(lang, result, aiExplanation) {
 }
 
 module.exports = {
+  buildCleanMenuFlex,
   buildWelcomeFlex,
   buildFestivalFlex,
   buildActivitiesFlex,

@@ -11,19 +11,18 @@ const { checkZodiacClash } = require('../services/zodiac');
 const { buildAppContext } = require('../services/knowledge');
 const { subscribeToTemple, unsubscribeFromTemple, getUserTempleSubs } = require('../services/templeSubscriptions');
 const { recordPledge, listPledges, totalForCampaign } = require('../services/donations');
-const { updateDb, getDb } = require('../services/db');
 const templePosts = require('../data/temple-posts.json');
 
-// Draw a random fortune stick (求籤)
+// Draw a random fortune stick (求籤) — call this after the incense + coin-toss animation finishes.
 router.get('/fortune/draw', (req, res) => {
   const fortune = fortunes[Math.floor(Math.random() * fortunes.length)];
   res.json(fortune);
 });
 
-// AI interpretation of a drawn fortune
+// AI interpretation of a drawn fortune, grounded in the actual poem text so the model can't invent it.
 router.post('/fortune/interpret', async (req, res) => {
   try {
-    const { fortuneId, question, language, userId } = req.body;
+    const { fortuneId, question, language } = req.body;
     const fortune = fortunes.find((f) => f.id === Number(fortuneId));
     if (!fortune) return res.status(404).json({ error: 'unknown fortuneId' });
 
@@ -35,19 +34,6 @@ router.post('/fortune/interpret', async (req, res) => {
       language: language || 'zh-TW'
     });
 
-    if (userId) {
-      updateDb((db) => {
-        if (!db.drawHistory) db.drawHistory = [];
-        db.drawHistory.push({
-          userId,
-          fortuneId: fortune.id,
-          question: question || defaultUserMsg,
-          reply,
-          createdAt: new Date().toISOString()
-        });
-      });
-    }
-
     res.json({ fortune, reply });
   } catch (err) {
     console.error(err);
@@ -55,7 +41,7 @@ router.post('/fortune/interpret', async (req, res) => {
   }
 });
 
-// Nearby temples
+// Nearby temples from the user's LIFF-reported location.
 router.get('/temples/nearby', async (req, res) => {
   try {
     const { lat, lng } = req.query;
@@ -68,7 +54,7 @@ router.get('/temples/nearby', async (req, res) => {
   }
 });
 
-// Bus/train directions
+// Bus/train directions from the user's location to a known temple.
 router.get('/temples/:id/transit', async (req, res) => {
   try {
     const { lat, lng } = req.query;
@@ -81,10 +67,10 @@ router.get('/temples/:id/transit', async (req, res) => {
   }
 });
 
-// Curated temple info
+// Curated temple info (deity, history, highlights) for the knowledge panel.
 router.get('/temples', (req, res) => res.json(temples));
 
-// Upcoming festivals
+// Upcoming festivals/rituals for the reminders tab.
 router.get('/festivals', (req, res) => {
   const withDelta = festivals
     .map((f) => ({
@@ -96,7 +82,7 @@ router.get('/festivals', (req, res) => {
   res.json(withDelta);
 });
 
-// Zodiac clash check
+// 生肖沖太歲 check — pass a birth year, get back whether it clashes with the current (or given) year.
 router.get('/zodiac/check', async (req, res) => {
   try {
     const { birthYear, year, explain } = req.query;
@@ -122,7 +108,7 @@ router.get('/zodiac/check', async (req, res) => {
   }
 });
 
-// General AI Q&A
+// General "ask the temple guide anything" chat used by the knowledge tab.
 router.post('/ask', async (req, res) => {
   try {
     const { question, language } = req.body;
@@ -141,160 +127,24 @@ router.post('/ask', async (req, res) => {
   }
 });
 
-// --- Community Posts & Comments API ---
-
-// GET /api/posts - Get community feed posts
-router.get('/posts', (req, res) => {
-  const { category, templeId } = req.query;
-  const db = getDb();
-  let posts = db.posts || [];
-
-  if (category && category !== 'all') {
-    posts = posts.filter((p) => p.category === category || p.type === category);
-  }
-  if (templeId) {
-    posts = posts.filter((p) => p.templeId === templeId);
-  }
-
-  // Calculate raised amount for donation posts and comment counts
-  const enriched = posts.map((p) => {
-    const commentCount = (db.comments || []).filter((c) => c.postId === p.id).length;
-    const raised = p.category === 'donation' || p.type === 'donation' ? totalForCampaign(p.id) : 0;
-    return {
-      ...p,
-      commentCount,
-      raisedAmount: (p.raisedAmount || 0) + raised
-    };
-  });
-
-  res.json(enriched);
-});
-
-// POST /api/posts - Create a new community post or official announcement
-router.post('/posts', (req, res) => {
-  try {
-    const { templeId, authorType, authorName, authorAvatar, title, description, category, targetAmount } = req.body;
-    if (!title || !description) {
-      return res.status(400).json({ error: 'title and description required' });
-    }
-
-    let newPost = null;
-    updateDb((db) => {
-      if (!db.posts) db.posts = [];
-      newPost = {
-        id: `post-${Date.now()}`,
-        templeId: templeId || 'wanchun-gong',
-        authorType: authorType || 'user', // 'temple' | 'user'
-        authorName: authorName || (authorType === 'temple' ? '萬春宮 廟方委員會' : '虔誠信士'),
-        authorAvatar: authorAvatar || (authorType === 'temple' ? '廟' : '信'),
-        title,
-        description,
-        category: category || 'discussion', // 'activity' | 'donation' | 'discussion'
-        targetAmount: targetAmount ? Number(targetAmount) : undefined,
-        raisedAmount: category === 'donation' ? 0 : undefined,
-        createdAt: new Date().toISOString()
-      };
-      db.posts.unshift(newPost);
-    });
-
-    res.json({ post: newPost, message: '發布成功！' });
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ error: 'create_post_failed' });
-  }
-});
-
-// GET /api/posts/:id/comments - Get comments for a post
-router.get('/posts/:id/comments', (req, res) => {
-  const db = getDb();
-  const comments = (db.comments || []).filter((c) => c.postId === req.params.id);
-  res.json(comments);
-});
-
-// POST /api/posts/:id/comments - Post a new comment
-router.post('/posts/:id/comments', (req, res) => {
-  try {
-    const postId = req.params.id;
-    const { userId, userName, userRole, userAvatar, content } = req.body;
-    if (!content || !content.trim()) {
-      return res.status(400).json({ error: 'content required' });
-    }
-
-    let newComment = null;
-    updateDb((db) => {
-      if (!db.comments) db.comments = [];
-      newComment = {
-        id: `cmt-${Date.now()}`,
-        postId,
-        userId: userId || 'anonymous',
-        userName: userName || (userRole === 'temple_admin' ? '廟方執事' : '善信大德'),
-        userRole: userRole || 'believer', // 'temple_admin' | 'believer'
-        userAvatar: userAvatar || (userRole === 'temple_admin' ? '廟' : '信'),
-        content: content.trim(),
-        createdAt: new Date().toISOString()
-      };
-      db.comments.push(newComment);
-    });
-
-    res.json({ comment: newComment });
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ error: 'add_comment_failed' });
-  }
-});
-
-// GET /api/user/profile & POST /api/user/profile - Account role & profile settings
-router.get('/user/profile', (req, res) => {
-  const { userId } = req.query;
-  const db = getDb();
-  const profile = db.users?.[userId || 'default'] || {
-    role: 'believer',
-    templeId: 'wanchun-gong',
-    displayName: '善信大德',
-    pictureUrl: ''
-  };
-  res.json(profile);
-});
-
-router.post('/user/profile', (req, res) => {
-  const { userId, role, templeId, displayName, pictureUrl } = req.body;
-  let updated = null;
-  updateDb((db) => {
-    if (!db.users) db.users = {};
-    const key = userId || 'default';
-    db.users[key] = {
-      ...db.users[key],
-      role: role || db.users[key]?.role || 'believer',
-      templeId: templeId || db.users[key]?.templeId || 'wanchun-gong',
-      displayName: displayName || db.users[key]?.displayName || '善信大德',
-      pictureUrl: pictureUrl !== undefined ? pictureUrl : db.users[key]?.pictureUrl || '',
-      updatedAt: Date.now()
-    };
-    updated = db.users[key];
-  });
-  res.json(updated);
-});
-
-// Legacy activities route compatibility
+// Activities + donation campaigns (hardcoded sample data for the demo — see src/data/temple-posts.json).
 router.get('/activities', (req, res) => {
-  const db = getDb();
-  const posts = db.posts || [];
+  const { templeId } = req.query;
+  const posts = templeId ? templePosts.filter((p) => p.templeId === templeId) : templePosts;
   const withTotals = posts.map((p) =>
-    p.category === 'donation' || p.type === 'donation'
-      ? { ...p, raisedAmount: (p.raisedAmount || 0) + totalForCampaign(p.id) }
-      : p
+    p.type === 'donation' ? { ...p, raisedAmount: totalForCampaign(p.id) } : p
   );
   res.json(withTotals);
 });
 
-// Donation Pledges
+// Record a mocked donation pledge — no real payment moves, just an acknowledged intent.
 router.post('/donations', (req, res) => {
   try {
     const { userId, templeId, campaignId, amount, name } = req.body;
-    if (!amount || Number(amount) <= 0) {
-      return res.status(400).json({ error: 'valid amount required' });
+    if (!templeId || !amount || Number(amount) <= 0) {
+      return res.status(400).json({ error: 'templeId and a positive amount are required' });
     }
-    const pledge = recordPledge({ userId, templeId: templeId || 'wanchun-gong', campaignId, amount: Number(amount), name });
+    const pledge = recordPledge({ userId, templeId, campaignId, amount: Number(amount), name });
     res.json({ pledge, message: '感謝您的樂捐，您的心意神明都知道 🙏' });
   } catch (err) {
     console.error(err);
@@ -307,7 +157,7 @@ router.get('/donations', (req, res) => {
   res.json(listPledges({ userId, templeId, campaignId }));
 });
 
-// Temple Subscriptions
+// Follow a specific temple to get its activity/donation notifications pushed via LINE.
 router.post('/subscriptions', (req, res) => {
   const { userId, templeId } = req.body;
   if (!userId || !templeId) return res.status(400).json({ error: 'userId and templeId required' });
