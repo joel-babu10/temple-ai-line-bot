@@ -1,3 +1,5 @@
+const fs = require('fs');
+const path = require('path');
 const { Client } = require('@line/bot-sdk');
 require('dotenv').config();
 
@@ -49,10 +51,20 @@ async function main() {
   try {
     const id = await client.createRichMenu(richMenu);
     console.log('[setup-rich-menu] Created Rich Menu with ID:', id);
+
+    const imagePath = path.join(__dirname, '..', 'assets', 'richmenu.png');
+    if (fs.existsSync(imagePath)) {
+      const imageBuffer = fs.readFileSync(imagePath);
+      await client.setRichMenuImage(id, imageBuffer, 'image/png');
+      console.log('[setup-rich-menu] Uploaded richmenu.png to LINE servers!');
+    } else {
+      console.warn('[setup-rich-menu] assets/richmenu.png not found, skipping image upload.');
+    }
+
     await client.setDefaultRichMenu(id);
-    console.log('[setup-rich-menu] Set default Rich Menu with selected: false (Keyboard-First)!');
+    console.log('[setup-rich-menu] ✅ SUCCESS! Set default Rich Menu with selected: false (Keyboard-First)!');
   } catch (err) {
-    console.error('[setup-rich-menu] Error creating rich menu:', err.message);
+    console.error('[setup-rich-menu] Error during setup:', err.response?.data || err.message);
   }
 }
 
