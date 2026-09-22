@@ -11,6 +11,7 @@ const { checkZodiacClash } = require('../services/zodiac');
 const { buildAppContext } = require('../services/knowledge');
 const { subscribeToTemple, unsubscribeFromTemple, getUserTempleSubs } = require('../services/templeSubscriptions');
 const { recordPledge, listPledges, totalForCampaign } = require('../services/donations');
+const { updateDb, getDb } = require('../services/db');
 const templePosts = require('../data/temple-posts.json');
 
 // Draw a random fortune stick (求籤) — call this after the incense + coin-toss animation finishes.
@@ -22,7 +23,7 @@ router.get('/fortune/draw', (req, res) => {
 // AI interpretation of a drawn fortune, grounded in the actual poem text so the model can't invent it.
 router.post('/fortune/interpret', async (req, res) => {
   try {
-    const { fortuneId, question, language } = req.body;
+    const { fortuneId, question, language, userId } = req.body;
     const fortune = fortunes.find((f) => f.id === Number(fortuneId));
     if (!fortune) return res.status(404).json({ error: 'unknown fortuneId' });
 
@@ -33,6 +34,19 @@ router.post('/fortune/interpret', async (req, res) => {
       context,
       language: language || 'zh-TW'
     });
+
+    if (userId) {
+      updateDb((db) => {
+        if (!db.drawHistory) db.drawHistory = [];
+        db.drawHistory.push({
+          userId,
+          fortuneId: fortune.id,
+          question: question || defaultUserMsg,
+          reply,
+          createdAt: new Date().toISOString()
+        });
+      });
+    }
 
     res.json({ fortune, reply });
   } catch (err) {
@@ -155,6 +169,33 @@ router.post('/donations', (req, res) => {
 router.get('/donations', (req, res) => {
   const { userId, templeId, campaignId } = req.query;
   res.json(listPledges({ userId, templeId, campaignId }));
+});
+
+// Light a Blessing Lamp (線上點燈)
+router.post('/lamp/bless', (req, res) => {
+  try {
+    const { userId, name, blessingType, templeId } = req.body;
+    if (!name || !blessingType) {
+      return res.status(400).json({ error: 'name and blessingType required' });
+    }
+    let entry = null;
+    updateDb((db) => {
+      if (!db.lampBlessings) db.lampBlessings = [];
+      entry = {
+        id: `lamp-${db.lampBlessings.length + 1}`,
+        userId: userId || 'anonymous',
+        name,
+        blessingType,
+        templeId: templeId || 'wanchun',
+        createdAt: new Date().toISOString()
+      };
+      db.lampBlessings.push(entry);
+    });
+    res.json({ entry, message: '祈福燈已順利點亮！願神明保佑您平安順遂 🙏' });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'lamp_bless_failed' });
+  }
 });
 
 // Follow a specific temple to get its activity/donation notifications pushed via LINE.

@@ -34,6 +34,19 @@ const COPY = {
   }
 };
 
+function getStandardQuickReplies(lang = 'zh', liffUrl = '') {
+  const isEn = lang === 'en';
+  return {
+    items: [
+      { type: 'action', action: { type: 'message', label: isEn ? '🔮 Fortune' : '🔮 線上求籤', text: isEn ? 'fortune' : '求籤' } },
+      { type: 'action', action: { type: 'message', label: isEn ? '⛩️ Nearby' : '⛩️ 附近宮廟', text: isEn ? 'nearby' : '附近宮廟' } },
+      { type: 'action', action: { type: 'message', label: isEn ? '🎐 Zodiac' : '🎐 生肖太歲', text: isEn ? 'zodiac' : '太歲' } },
+      { type: 'action', action: { type: 'message', label: isEn ? '🏮 Festivals' : '🏮 近期節慶', text: isEn ? 'festivals' : '節慶' } },
+      { type: 'action', action: { type: 'message', label: isEn ? '中文' : 'English', text: isEn ? '中文' : 'English' } }
+    ]
+  };
+}
+
 function buildWelcomeFlex(lang, liffUrl) {
   const copy = COPY[lang] || COPY.zh;
 
@@ -84,7 +97,6 @@ function buildWelcomeFlex(lang, liffUrl) {
 }
 
 function buildFestivalFlex(lang, upcomingFestivals) {
-  const copy = COPY[lang] || COPY.zh;
   const isEn = lang === 'en';
 
   const rows = upcomingFestivals.slice(0, 5).map((f) => ({
@@ -146,9 +158,9 @@ function buildActivitiesFlex(lang, posts, temples) {
       layout: 'vertical',
       margin: 'md',
       contents: [
-        { type: 'text', text: `[${kindLabel}] ${title}`, weight: 'bold', color: '#E4C77A', size: 'sm', wrap: true },
-        { type: 'text', text: templeName(p.templeId), color: '#EFE6D8', size: 'xxs' },
-        { type: 'text', text: desc + progress, color: '#EFE6D8', size: 'xxs', wrap: true, margin: 'xs' }
+        { type: 'text', text: `[${kindLabel}] ${title}`, weight: 'bold', color: GOLD_SOFT, size: 'sm', wrap: true },
+        { type: 'text', text: templeName(p.templeId), color: PAPER, size: 'xxs' },
+        { type: 'text', text: desc + progress, color: PAPER, size: 'xxs', wrap: true, margin: 'xs' }
       ]
     };
   });
@@ -158,13 +170,13 @@ function buildActivitiesFlex(lang, posts, temples) {
     altText: isEn ? 'Temple activities & donations' : '宮廟最新消息',
     contents: {
       type: 'bubble',
-      styles: { header: { backgroundColor: '#4E1414' }, body: { backgroundColor: '#1C1613' } },
+      styles: { header: { backgroundColor: LACQUER_DEEP }, body: { backgroundColor: INK } },
       header: {
         type: 'box',
         layout: 'vertical',
         paddingAll: '16px',
         contents: [
-          { type: 'text', text: isEn ? 'Latest Activities' : '宮廟最新消息', weight: 'bold', color: '#E4C77A', size: 'md' }
+          { type: 'text', text: isEn ? 'Latest Activities' : '宮廟最新消息', weight: 'bold', color: GOLD_SOFT, size: 'md' }
         ]
       },
       body: {
@@ -173,10 +185,176 @@ function buildActivitiesFlex(lang, posts, temples) {
         paddingAll: '16px',
         contents: rows.length
           ? rows
-          : [{ type: 'text', text: isEn ? 'Nothing posted right now.' : '目前沒有最新消息。', color: '#EFE6D8', size: 'sm' }]
+          : [{ type: 'text', text: isEn ? 'Nothing posted right now.' : '目前沒有最新消息。', color: PAPER, size: 'sm' }]
       }
     }
   };
 }
 
-module.exports = { buildWelcomeFlex, buildFestivalFlex, buildActivitiesFlex };
+function buildFortuneFlex(lang, fortune, interpretation, liffUrl = '') {
+  const isEn = lang === 'en';
+  return {
+    type: 'flex',
+    altText: isEn ? `Fortune Stick #${fortune.id} (${fortune.grade})` : `靈籤抽籤結果：第 ${fortune.id} 籤（${fortune.grade}）`,
+    contents: {
+      type: 'bubble',
+      styles: {
+        header: { backgroundColor: LACQUER_DEEP },
+        body: { backgroundColor: INK },
+        footer: { backgroundColor: INK }
+      },
+      header: {
+        type: 'box',
+        layout: 'vertical',
+        paddingAll: '16px',
+        contents: [
+          { type: 'text', text: isEn ? `Divine Poem #${fortune.id}` : `萬春宮靈籤 · 第 ${fortune.id} 籤`, weight: 'bold', color: GOLD_SOFT, size: 'md' },
+          { type: 'text', text: isEn ? `Grade: ${fortune.grade} · ${fortune.theme}` : `籤詩吉凶：${fortune.grade}  |  主題：${fortune.theme}`, color: PAPER, size: 'xs', margin: 'xs' }
+        ]
+      },
+      body: {
+        type: 'box',
+        layout: 'vertical',
+        paddingAll: '16px',
+        contents: [
+          { type: 'text', text: `「${fortune.poem}」`, weight: 'bold', color: GOLD, size: 'md', wrap: true, align: 'center' },
+          { type: 'separator', color: LACQUER, margin: 'md' },
+          { type: 'text', text: isEn ? 'Flame\'s AI Interpretation:' : '🐾 焰寶 AI 智慧解籤：', weight: 'bold', color: GOLD_SOFT, size: 'sm', margin: 'md' },
+          { type: 'text', text: interpretation, color: PAPER, size: 'sm', wrap: true, margin: 'xs' }
+        ]
+      },
+      footer: {
+        type: 'box',
+        layout: 'horizontal',
+        spacing: 'sm',
+        paddingAll: '12px',
+        contents: [
+          {
+            type: 'button',
+            style: 'secondary',
+            height: 'sm',
+            action: { type: 'message', label: isEn ? 'Draw Again' : '再次求籤', text: isEn ? 'fortune' : '求籤' }
+          },
+          ...(liffUrl
+            ? [
+                {
+                  type: 'button',
+                  style: 'primary',
+                  color: LACQUER,
+                  height: 'sm',
+                  action: { type: 'uri', label: isEn ? 'Open LIFF' : '線上參拜', uri: liffUrl }
+                }
+              ]
+            : [])
+        ]
+      }
+    }
+  };
+}
+
+function buildTempleCarouselFlex(lang, temples, liffUrl = '') {
+  const isEn = lang === 'en';
+  const bubbles = temples.map((t) => ({
+    type: 'bubble',
+    styles: {
+      header: { backgroundColor: LACQUER_DEEP },
+      body: { backgroundColor: INK },
+      footer: { backgroundColor: INK }
+    },
+    header: {
+      type: 'box',
+      layout: 'vertical',
+      paddingAll: '16px',
+      contents: [
+        { type: 'text', text: t.name, weight: 'bold', color: GOLD_SOFT, size: 'md', wrap: true },
+        { type: 'text', text: `📍 ~${t.distanceKm} km`, color: PAPER, size: 'xs', margin: 'xs' }
+      ]
+    },
+    body: {
+      type: 'box',
+      layout: 'vertical',
+      paddingAll: '16px',
+      contents: [
+        { type: 'text', text: `${isEn ? 'Deity' : '主祀神明'}: ${t.deity || (isEn ? 'Temple' : '傳統宮廟')}`, color: PAPER, size: 'xs', wrap: true },
+        { type: 'text', text: `${isEn ? 'Address' : '地址'}: ${t.address || (isEn ? 'Taichung' : '台中市')}`, color: PAPER, size: 'xs', wrap: true, margin: 'xs' },
+        ...(t.history ? [{ type: 'text', text: t.history, color: PAPER, size: 'xxs', wrap: true, margin: 'sm' }] : [])
+      ]
+    },
+    footer: {
+      type: 'box',
+      layout: 'vertical',
+      spacing: 'xs',
+      paddingAll: '12px',
+      contents: [
+        {
+          type: 'button',
+          style: 'primary',
+          color: LACQUER,
+          height: 'sm',
+          action: { type: 'message', label: isEn ? 'Subscribe' : '訂閱宮廟消息', text: `${isEn ? 'subscribe' : '訂閱'} ${t.name}` }
+        }
+      ]
+    }
+  }));
+
+  return {
+    type: 'flex',
+    altText: isEn ? 'Nearby Temples' : '附近宮廟列表',
+    contents: {
+      type: 'carousel',
+      contents: bubbles
+    }
+  };
+}
+
+function buildZodiacFlex(lang, result, aiExplanation) {
+  const isEn = lang === 'en';
+  return {
+    type: 'flex',
+    altText: isEn ? `Zodiac Check for ${result.birthYear}` : `生肖太歲查詢結果（${result.birthYear}年 / 生肖 ${result.userAnimal}）`,
+    contents: {
+      type: 'bubble',
+      styles: {
+        header: { backgroundColor: LACQUER_DEEP },
+        body: { backgroundColor: INK }
+      },
+      header: {
+        type: 'box',
+        layout: 'vertical',
+        paddingAll: '16px',
+        contents: [
+          { type: 'text', text: isEn ? 'Zodiac & Taisui Check' : '🎐 生肖太歲分析結果', weight: 'bold', color: GOLD_SOFT, size: 'md' },
+          { type: 'text', text: isEn ? `Birth Year: ${result.birthYear} (${result.userAnimal})` : `出生年：${result.birthYear}（生肖：${result.userAnimal}）`, color: PAPER, size: 'xs', margin: 'xs' }
+        ]
+      },
+      body: {
+        type: 'box',
+        layout: 'vertical',
+        paddingAll: '16px',
+        contents: [
+          {
+            type: 'text',
+            text: result.isClashing
+              ? (isEn ? `⚠️ Clashing with Taisui (${result.clashType})` : `⚠️ 今年犯太歲（類型：${result.clashType}）`)
+              : (isEn ? '✨ No Taisui clash this year!' : '✨ 今年平安，無犯太歲！'),
+            weight: 'bold',
+            color: result.isClashing ? '#FF7B7B' : '#6EE7B7',
+            size: 'sm'
+          },
+          { type: 'separator', color: LACQUER, margin: 'md' },
+          { type: 'text', text: aiExplanation, color: PAPER, size: 'sm', wrap: true, margin: 'md' }
+        ]
+      }
+    }
+  };
+}
+
+module.exports = {
+  buildWelcomeFlex,
+  buildFestivalFlex,
+  buildActivitiesFlex,
+  buildFortuneFlex,
+  buildTempleCarouselFlex,
+  buildZodiacFlex,
+  getStandardQuickReplies
+};

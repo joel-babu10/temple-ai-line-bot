@@ -990,17 +990,47 @@ function setLanguage(lang) {
 
   const isEn = lang === 'en';
 
-  // Ask AI Card
+  // User Profile Header
+  const userNameTitle = document.getElementById('userNameTitle');
+  if (userNameTitle) userNameTitle.textContent = isEn ? 'Devout Believer' : '善信大德';
+
+  const userSubText = document.getElementById('userSubText');
+  if (userSubText) {
+    userSubText.innerHTML = isEn
+      ? 'Merit Points: <strong id="userMeritPoints">520</strong> | Honorary Practitioner'
+      : '功德值：<strong id="userMeritPoints">520</strong> 分 ｜ 榮譽修持信士';
+  }
+
+  const userAvatarCircle = document.getElementById('userAvatarCircle');
+  if (userAvatarCircle) userAvatarCircle.textContent = isEn ? 'U' : '信';
+
+  // Mascot Speech Bubble & Badge
+  const petSpeechBubble = document.getElementById('petSpeechBubble');
+  if (petSpeechBubble) {
+    const span = petSpeechBubble.querySelector('span');
+    if (span) span.textContent = isEn ? 'Ask me! 🐾' : '問我！🐾';
+  }
+
+  const petBadge = document.querySelector('.pet-badge');
+  if (petBadge) petBadge.textContent = isEn ? 'Mascot' : '神獸';
+
+  // Ask AI Card Header & Badge
   const askCardTitle = document.getElementById('askCardTitle');
   if (askCardTitle) askCardTitle.textContent = isEn ? 'Ask Flame AI Shrine Master' : '問焰智 AI 廟公';
 
   const askCardSub = document.getElementById('askCardSub');
-  if (askCardSub) askCardSub.textContent = isEn ? 'Consult on temple history, rituals, and spiritual wisdom' : '線上請示宮廟歷史、參拜儀軌或人生智慧諮詢';
+  if (askCardSub) askCardSub.textContent = isEn ? 'Online consultations regarding temple history, worship rituals, or life wisdom.' : '線上請示宮廟歷史、參拜儀軌或人生智慧諮詢';
 
   const askInput = document.getElementById('askInput');
   if (askInput) askInput.placeholder = isEn ? 'Type your question for the Shrine Master...' : '請輸入您想向廟公請示的問題...';
 
-  // Interpret Box
+  const askBadge = document.querySelector('.ask-ai-card-header .ai-avatar-badge');
+  if (askBadge) askBadge.textContent = isEn ? 'AI' : '廟公';
+
+  const askTypingText = document.querySelector('#askTyping .typing-text');
+  if (askTypingText) askTypingText.textContent = isEn ? 'Shrine Master is thinking...' : '廟公思考中...';
+
+  // Interpret Box Header & Badge
   const interpretBoxTitle = document.getElementById('interpretBoxTitle');
   if (interpretBoxTitle) interpretBoxTitle.textContent = isEn ? 'Flame AI Fortune Master' : '焰智 AI 解籤大師';
 
@@ -1012,6 +1042,9 @@ function setLanguage(lang) {
 
   const questionInput = document.getElementById('questionInput');
   if (questionInput) questionInput.placeholder = isEn ? 'e.g., Is it a good time to change jobs?' : '例如：最近換工作好嗎？';
+
+  const interpretTypingText = document.querySelector('#interpretTyping .typing-text');
+  if (interpretTypingText) interpretTypingText.textContent = isEn ? 'Flame AI is interpreting...' : '焰寶解析籤詩中...';
 
   updateChips(isEn);
 }
@@ -1043,6 +1076,9 @@ function updateChips(isEn) {
          <button class="chip-suggestion-btn" data-query="請問整體運勢吉凶如何？">✨ 綜合運勢</button>`;
   }
 }
+
+// Set initial language state
+setLanguage('zh-TW');
 
 // Click listener for language pills
 document.addEventListener('click', (e) => {

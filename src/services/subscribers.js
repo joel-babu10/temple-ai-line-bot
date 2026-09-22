@@ -1,31 +1,45 @@
-// MVP-only in-memory store of userIds who've added the OA as a friend (for festival
-// broadcast pushes), plus each user's language preference. Swap for Firestore/SQLite/etc.
-// before this needs to survive a server restart or scale past a demo.
-
-const subscribers = new Map(); // userId -> { lang: 'zh' | 'en' }
+const { getDb, updateDb } = require('./db');
 
 function addSubscriber(userId) {
-  if (!subscribers.has(userId)) {
-    subscribers.set(userId, { lang: 'zh' });
-  }
+  if (!userId) return;
+  updateDb((db) => {
+    if (!db.users[userId]) {
+      db.users[userId] = { lang: 'zh', updatedAt: Date.now() };
+    }
+    if (!db.subscribers.includes(userId)) {
+      db.subscribers.push(userId);
+    }
+  });
 }
 
 function removeSubscriber(userId) {
-  subscribers.delete(userId);
+  if (!userId) return;
+  updateDb((db) => {
+    db.subscribers = db.subscribers.filter((id) => id !== userId);
+  });
 }
 
 function listSubscribers() {
-  return Array.from(subscribers.keys());
+  const db = getDb();
+  return db.subscribers || [];
 }
 
 function getLang(userId) {
-  return subscribers.get(userId)?.lang || 'zh';
+  if (!userId) return 'zh';
+  const db = getDb();
+  return db.users[userId]?.lang || 'zh';
 }
 
 function setLang(userId, lang) {
-  const entry = subscribers.get(userId) || { lang: 'zh' };
-  entry.lang = lang;
-  subscribers.set(userId, entry);
+  if (!userId) return;
+  updateDb((db) => {
+    if (!db.users[userId]) {
+      db.users[userId] = { lang, updatedAt: Date.now() };
+    } else {
+      db.users[userId].lang = lang;
+      db.users[userId].updatedAt = Date.now();
+    }
+  });
 }
 
 module.exports = { addSubscriber, removeSubscriber, listSubscribers, getLang, setLang };

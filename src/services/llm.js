@@ -10,7 +10,7 @@ const SYSTEM_PROMPT = `你是「焰寶」，一隻親切可愛的神獸 AI，是
 5. 不做醫療、法律、投資等專業建議的斷言，遇到嚴肅的人生決定，語氣上鼓勵使用者參考解籤只是心理上的參考，最終仍要自己判斷。
 6. 直接輸出最終回覆本身。絕對不要輸出你的草稿、規劃過程、內部思考、語氣分析、「Drafting the response」之類的後設說明——使用者只會看到你輸出的文字，不會看到任何思考過程。`;
 
-async function askLLM({ userMessage, context = '', language = 'zh-TW' }) {
+async function askLLM({ userMessage, context = '', language = 'zh-TW', history = [] }) {
   const apiKey = process.env.GEMINI_API_KEY;
   const model = process.env.GEMINI_MODEL || 'gemini-3.5-flash';
 
@@ -25,20 +25,32 @@ async function askLLM({ userMessage, context = '', language = 'zh-TW' }) {
     ? '\n\nIMPORTANT: The user has chosen English. Please reply entirely in friendly, clear, and polite English as the warm divine mascot Flame (焰寶).'
     : '\n\n請使用繁體中文回答。';
 
-  const fullSystemPrompt = SYSTEM_PROMPT + langInstruction;
+  const fullSystemPrompt = SYSTEM_PROMPT + (context ? `\n\n[系統背景知識庫與上下文]\n${context}` : '') + langInstruction;
 
-  const userContent = context
-    ? `[系統提供的背景資料，僅供你參考，不要照抄格式]\n${context}\n\n[使用者的話]\n${userMessage}`
-    : userMessage;
+  const contents = [];
+  if (Array.isArray(history) && history.length > 0) {
+    for (const h of history) {
+      contents.push({
+        role: h.role === 'model' ? 'model' : 'user',
+        parts: [{ text: h.text }]
+      });
+    }
+  }
+
+  // Append current user message
+  contents.push({
+    role: 'user',
+    parts: [{ text: userMessage }]
+  });
 
   try {
     const response = await axios.post(
       `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent`,
       {
         system_instruction: { parts: [{ text: fullSystemPrompt }] },
-        contents: [{ role: 'user', parts: [{ text: userContent }] }],
+        contents,
         generationConfig: {
-          maxOutputTokens: 500,
+          maxOutputTokens: 600,
           thinkingConfig: { thinkingBudget: 0 }
         }
       },

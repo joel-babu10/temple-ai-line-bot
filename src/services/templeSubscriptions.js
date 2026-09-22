@@ -1,26 +1,40 @@
-// MVP in-memory store: which temples each user has subscribed to, so activity/donation
-// notifications can be targeted instead of blasted to everyone. Swap for a real DB
-// before this needs to survive a restart.
-
-const subs = new Map(); // userId -> Set<templeId>
+const { getDb, updateDb } = require('./db');
 
 function subscribeToTemple(userId, templeId) {
-  if (!subs.has(userId)) subs.set(userId, new Set());
-  subs.get(userId).add(templeId);
+  if (!userId || !templeId) return;
+  updateDb((db) => {
+    if (!db.templeSubscriptions) db.templeSubscriptions = {};
+    if (!db.templeSubscriptions[userId]) db.templeSubscriptions[userId] = [];
+    if (!db.templeSubscriptions[userId].includes(templeId)) {
+      db.templeSubscriptions[userId].push(templeId);
+    }
+  });
 }
 
 function unsubscribeFromTemple(userId, templeId) {
-  subs.get(userId)?.delete(templeId);
+  if (!userId || !templeId) return;
+  updateDb((db) => {
+    if (db.templeSubscriptions?.[userId]) {
+      db.templeSubscriptions[userId] = db.templeSubscriptions[userId].filter((id) => id !== templeId);
+    }
+  });
 }
 
 function getUserTempleSubs(userId) {
-  return Array.from(subs.get(userId) || []);
+  if (!userId) return [];
+  const db = getDb();
+  return db.templeSubscriptions?.[userId] || [];
 }
 
 function getSubscribersForTemple(templeId) {
+  if (!templeId) return [];
+  const db = getDb();
   const result = [];
-  for (const [userId, temples] of subs.entries()) {
-    if (temples.has(templeId)) result.push(userId);
+  const all = db.templeSubscriptions || {};
+  for (const [userId, temples] of Object.entries(all)) {
+    if (Array.isArray(temples) && temples.includes(templeId)) {
+      result.push(userId);
+    }
   }
   return result;
 }

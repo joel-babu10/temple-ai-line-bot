@@ -1,23 +1,26 @@
-// MVP in-memory store of donation pledges. Nothing here processes real money — it's a
-// recorded intent + thank-you, matching the light-lamp booking's scope for the demo.
-
-const pledges = [];
+const { getDb, updateDb } = require('./db');
 
 function recordPledge({ userId, templeId, campaignId, amount, name }) {
-  const pledge = {
-    id: `pledge-${pledges.length + 1}`,
-    userId,
-    templeId,
-    campaignId: campaignId || null,
-    amount,
-    name: name || null,
-    createdAt: new Date().toISOString()
-  };
-  pledges.push(pledge);
+  let pledge = null;
+  updateDb((db) => {
+    if (!db.pledges) db.pledges = [];
+    pledge = {
+      id: `pledge-${db.pledges.length + 1}`,
+      userId: userId || 'anonymous',
+      templeId,
+      campaignId: campaignId || null,
+      amount: Number(amount) || 0,
+      name: name || null,
+      createdAt: new Date().toISOString()
+    };
+    db.pledges.push(pledge);
+  });
   return pledge;
 }
 
 function listPledges({ userId, templeId, campaignId } = {}) {
+  const db = getDb();
+  const pledges = db.pledges || [];
   return pledges.filter(
     (p) =>
       (!userId || p.userId === userId) &&
@@ -27,7 +30,9 @@ function listPledges({ userId, templeId, campaignId } = {}) {
 }
 
 function totalForCampaign(campaignId) {
-  return pledges.filter((p) => p.campaignId === campaignId).reduce((sum, p) => sum + p.amount, 0);
+  const db = getDb();
+  const pledges = db.pledges || [];
+  return pledges.filter((p) => p.campaignId === campaignId).reduce((sum, p) => sum + (p.amount || 0), 0);
 }
 
 module.exports = { recordPledge, listPledges, totalForCampaign };
