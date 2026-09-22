@@ -994,6 +994,19 @@ function setLanguage(lang) {
 
   const isEn = lang === 'en';
 
+  // Subtitle
+  const subTitleText = document.getElementById('subTitleText');
+  if (subTitleText) subTitleText.textContent = isEn ? 'Smart Worship · Sacred Steps · Warm Community' : '智慧參拜 · 聖道相伴 · 溫暖共善';
+
+  // Tabbar Buttons
+  const tabs = document.querySelectorAll('.tabbar .tab-btn');
+  if (tabs.length >= 4) {
+    tabs[0].querySelector('span').textContent = isEn ? 'Worship' : '參拜主頁';
+    tabs[1].querySelector('span').textContent = isEn ? 'Map' : '宮廟地圖';
+    tabs[2].querySelector('span').textContent = isEn ? 'Community' : '社群與廟宇';
+    tabs[3].querySelector('span').textContent = isEn ? 'Profile' : '個人與 AI';
+  }
+
   // Ask AI Card
   const askCardTitle = document.getElementById('askCardTitle');
   if (askCardTitle) askCardTitle.textContent = isEn ? 'Ask Flame AI Shrine Master' : '問焰智 AI 廟公';
@@ -1017,7 +1030,51 @@ function setLanguage(lang) {
   const questionInput = document.getElementById('questionInput');
   if (questionInput) questionInput.placeholder = isEn ? 'e.g., Is it a good time to change jobs?' : '例如：最近換工作好嗎？';
 
+  // Login Modal
+  const loginModalTitle = document.getElementById('loginModalTitle');
+  if (loginModalTitle) loginModalTitle.textContent = isEn ? 'LINE Account Login (Demo)' : 'LINE 帳號身分登入 (Demo)';
+
+  const loginModalSub = document.getElementById('loginModalSub');
+  if (loginModalSub) loginModalSub.textContent = isEn ? 'Select your account login role:' : '請選擇您要登入的帳號身份類別：';
+
   updateChips(isEn);
+}
+
+// Demo LINE Login Modal Handlers
+const openLoginModalBtn = document.getElementById('openLoginModalBtn');
+const demoLoginModal = document.getElementById('demoLoginModal');
+const closeLoginModalBtn = document.getElementById('closeLoginModalBtn');
+const loginAsBelieverBtn = document.getElementById('loginAsBelieverBtn');
+const loginAsTempleBtn = document.getElementById('loginAsTempleBtn');
+const loginBtnText = document.getElementById('loginBtnText');
+
+if (openLoginModalBtn && demoLoginModal) {
+  openLoginModalBtn.addEventListener('click', () => {
+    demoLoginModal.classList.remove('is-hidden');
+    playTempleChime(600, 0.3);
+  });
+}
+
+if (closeLoginModalBtn && demoLoginModal) {
+  closeLoginModalBtn.addEventListener('click', () => {
+    demoLoginModal.classList.add('is-hidden');
+  });
+}
+
+if (loginAsBelieverBtn && demoLoginModal) {
+  loginAsBelieverBtn.addEventListener('click', () => {
+    demoLoginModal.classList.add('is-hidden');
+    if (loginBtnText) loginBtnText.textContent = currentLang === 'en' ? '✓ Believer' : '✓ 信眾 (已登入)';
+    playTempleChime(680, 0.4);
+  });
+}
+
+if (loginAsTempleBtn && demoLoginModal) {
+  loginAsTempleBtn.addEventListener('click', () => {
+    demoLoginModal.classList.add('is-hidden');
+    if (loginBtnText) loginBtnText.textContent = currentLang === 'en' ? '✓ Temple Org' : '✓ 廟方 (已登入)';
+    playTempleChime(720, 0.5);
+  });
 }
 
 function updateChips(isEn) {

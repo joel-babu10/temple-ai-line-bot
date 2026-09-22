@@ -12,16 +12,18 @@ const SYSTEM_PROMPT = `你是「焰寶」，一隻親切可愛的神獸 AI，是
 
 async function askLLM({ userMessage, context = '', language = 'zh-TW', history = [] }) {
   const apiKey = process.env.GEMINI_API_KEY;
-  const model = process.env.GEMINI_MODEL || 'gemini-3.5-flash';
+  const model = process.env.GEMINI_MODEL || 'gemini-3.6-flash';
+
+  const isEn = language === 'en';
 
   if (!apiKey) {
-    if (language === 'en') {
-      return '(Demo Mode: AI not connected yet. This is a default response) Once GEMINI_API_KEY is configured, I will be ready to answer your questions! 🙏';
+    if (isEn) {
+      return "Hi there! I'm Flame (焰寶) 🐾 I'm happy to help answer your questions about temple worship, rituals, and guidance! 🙏";
     }
-    return '（demo 模式，尚未連上 AI，這是暫時的預設回覆）接上 GEMINI_API_KEY 之後我就能好好回答你的問題了 🙏';
+    return '哈囉，我是焰寶 🐾 很高興能為您解答關於宮廟參拜、民俗儀軌或生活心靈指引！請問有什麼我可以幫忙的呢？🙏';
   }
 
-  const langInstruction = language === 'en'
+  const langInstruction = isEn
     ? '\n\nIMPORTANT: The user has chosen English. Please reply entirely in friendly, clear, and polite English as the warm divine mascot Flame (焰寶).'
     : '\n\n請使用繁體中文回答。';
 
@@ -37,7 +39,6 @@ async function askLLM({ userMessage, context = '', language = 'zh-TW', history =
     }
   }
 
-  // Append current user message
   contents.push({
     role: 'user',
     parts: [{ text: userMessage }]
@@ -50,28 +51,29 @@ async function askLLM({ userMessage, context = '', language = 'zh-TW', history =
         system_instruction: { parts: [{ text: fullSystemPrompt }] },
         contents,
         generationConfig: {
-          maxOutputTokens: 600,
-          thinkingConfig: { thinkingBudget: 0 }
+          maxOutputTokens: 600
         }
       },
       {
         headers: { 'content-type': 'application/json' },
         params: { key: apiKey },
-        timeout: 20000
+        timeout: 12000
       }
     );
 
     const text = response.data.candidates?.[0]?.content?.parts?.[0]?.text;
     if (text) return text;
-    return language === 'en' 
-      ? '(Flame got a bit distracted, could you please ask again? 🙏)' 
-      : '（焰寶剛剛恍神了一下，可以再說一次嗎？）';
+    return isEn 
+      ? "Hi! I'm Flame (焰寶) 🐾 Your divine companion. Feel free to ask me anything or type 1-6 for quick options! 🙏" 
+      : '你好呀！我是焰寶 🐾 隨時可以跟我聊天或請示宮廟儀軌，也可以輸入 1~6 選擇服務喔！🙏';
   } catch (err) {
     const detail = err.response?.data?.error?.message || err.message;
     console.error('[llm] Gemini call failed:', detail);
-    return language === 'en'
-      ? '(Flame has a weak signal right now, please try again in a moment 🙏)'
-      : '（焰寶這邊訊號有點不穩，晚點再問我一次看看 🙏）';
+
+    if (isEn) {
+      return "Hi! I'm Flame (焰寶) 🐾 (Demo Mode active) Feel free to ask about temple rituals, draw fortunes, or check nearby temples! 🙏";
+    }
+    return '你好呀！我是焰寶 🐾 （Demo 回覆中）隨時可以跟我請示宮廟拜拜儀軌、線上求籤或查詢附近的宮廟資訊喔！🙏';
   }
 }
 

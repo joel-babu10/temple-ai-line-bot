@@ -96,8 +96,12 @@
     <div class="flame-bg-glow" aria-hidden="true"></div>
     <div class="incense-wisp" aria-hidden="true"></div>
     
-    <!-- Header Controls: Audio Chime Toggle & Language Selector -->
+    <!-- Header Controls: Audio Chime Toggle, Login & Language Selector -->
     <div class="header-controls">
+      <button id="openLoginModalBtn" class="login-modal-header-btn" title="LINE 登入 / Login">
+        <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/></svg>
+        <span id="loginBtnText">LINE 登入</span>
+      </button>
       <button id="chimeToggleBtn" class="chime-toggle-btn" title="聲音音效開關" aria-label="切換磬音">
         <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 5L6 9H2v6h4l5 4V5z"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/></svg>
         <span>磬音: 開</span>
@@ -814,6 +818,33 @@
         <div class="story-modal-footer">
           <button class="ritual-btn primary-step full-width" id="storyFollowBtn">
             <span>✓ 追蹤宮廟 (接收即時 LINE 動態通知)</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  <!-- Modal 4: Demo LINE Login Modal -->
+  <div class="modal-backdrop is-hidden" id="demoLoginModal">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3 id="loginModalTitle">LINE 帳號身分登入 (Demo)</h3>
+        <button class="modal-close-btn" id="closeLoginModalBtn">✕</button>
+      </div>
+      <div class="login-modal-body">
+        <p id="loginModalSub">請選擇您要登入的帳號身份類別：</p>
+        <div class="login-options-grid">
+          <button class="login-role-card-btn is-active" id="loginAsBelieverBtn">
+            <div class="role-avatar-circle">👤</div>
+            <div class="role-info-text">
+              <h4>🟢 LINE 信眾身分登入</h4>
+              <p>一般信眾參拜、線上求籤解籤、追蹤宮廟與參與公益樂捐</p>
+            </div>
+          </button>
+          <button class="login-role-card-btn" id="loginAsTempleBtn">
+            <div class="role-avatar-circle temple">⛩️</div>
+            <div class="role-info-text">
+              <h4>⛩️ 宮廟機構管理者登入</h4>
+              <p>台中萬春宮 執事委員會機構代表，可發布官方活動與樂捐專案</p>
+            </div>
           </button>
         </div>
       </div>
