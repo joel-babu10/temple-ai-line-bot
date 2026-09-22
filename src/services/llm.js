@@ -70,10 +70,26 @@ async function askLLM({ userMessage, context = '', language = 'zh-TW', history =
     const detail = err.response?.data?.error?.message || err.message;
     console.error('[llm] Gemini call failed:', detail);
 
-    if (isEn) {
-      return "Hi! I'm Flame (焰寶) 🐾 (Demo Mode active) Feel free to ask about temple rituals, draw fortunes, or check nearby temples! 🙏";
+    // If context contains fortune interpretation data, provide actual fortune guidance notes as fallback
+    if (context && context.includes('Guidance Notes:')) {
+      const match = context.match(/Guidance Notes:\s*(.*)/);
+      if (match && match[1]) {
+        return isEn
+          ? `✨ Divine Guidance: ${match[1].trim()}\n\nWalk forward with sincerity and trust in the divine timing 🙏`
+          : `✨ 籤詩白話指引：${match[1].trim()}\n\n凡事心誠則靈，按照步調穩健前行即可獲得神明保佑 🙏`;
+      }
     }
-    return '你好呀！我是焰寶 🐾 （Demo 回覆中）隨時可以跟我請示宮廟拜拜儀軌、線上求籤或查詢附近的宮廟資訊喔！🙏';
+    if (context && context.includes('一般解釋：')) {
+      const match = context.match(/一般解釋：\s*(.*)/);
+      if (match && match[1]) {
+        return `✨ 籤詩白話指引：${match[1].trim()}\n\n凡事心誠則靈，按照步調穩健前行即可獲得神明保佑 🙏`;
+      }
+    }
+
+    if (isEn) {
+      return "Hi there! I'm Flame (焰寶) 🐾 May peace and blessing be with you! Feel free to ask me anything about temple rituals, draw fortune sticks, or check nearby temples! 🙏";
+    }
+    return '你好呀！我是焰寶 🐾 隨時可以跟我請示宮廟拜拜儀軌、線上求籤或查詢附近的宮廟資訊喔！🙏';
   }
 }
 

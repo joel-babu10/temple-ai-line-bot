@@ -108,10 +108,18 @@ function findTempleByName(query) {
 // In-LINE Divination Exec
 async function performInLineDivination(userId, question, lang, event) {
   const fortune = fortunes[Math.floor(Math.random() * fortunes.length)];
-  const context = `籤詩編號 ${fortune.id}（${fortune.grade}）：「${fortune.poem}」\n主題：${fortune.theme}\n一般解釋：${fortune.notes}`;
+  const isEn = lang === 'en';
+  const fortuneGrade = isEn ? (fortune.gradeEn || fortune.grade) : fortune.grade;
+  const fortunePoem = isEn ? (fortune.poemEn || fortune.poem) : fortune.poem;
+  const fortuneTheme = isEn ? (fortune.themeEn || fortune.theme) : fortune.theme;
+  const fortuneNotes = isEn ? (fortune.notesEn || fortune.notes) : fortune.notes;
+
+  const context = isEn
+    ? `Fortune Stick #${fortune.id} (${fortuneGrade}): "${fortunePoem}"\nTheme: ${fortuneTheme}\nGuidance Notes: ${fortuneNotes}`
+    : `籤詩編號 ${fortune.id}（${fortune.grade}）：「${fortune.poem}」\n主題：${fortune.theme}\n一般解釋：${fortune.notes}`;
   
   const history = getHistory(userId);
-  const userMsg = question || (lang === 'en' ? 'What does this divine poem indicate for me?' : '請幫我解釋這支籤對於我問的事情有什麼指引？');
+  const userMsg = question || (isEn ? 'What does this divine poem indicate for my topic?' : '請幫我解釋這支籤對於我問的事情有什麼指引？');
   
   const interpretation = await askLLM({
     userMessage: userMsg,
@@ -132,7 +140,6 @@ async function performInLineDivination(userId, question, lang, event) {
   });
 
   const flex = buildFortuneFlex(lang, fortune, interpretation, LIFF_URL);
-  const isEn = lang === 'en';
   const headerText = isEn
     ? `🙏 Sacred Coin Toss: [Divine Approval]! Drawn Stick #${fortune.id}:`
     : `🙏 擲筊結果：【聖筊】！為您求得第 ${fortune.id} 籤：`;

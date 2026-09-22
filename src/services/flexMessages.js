@@ -250,7 +250,7 @@ function buildFortuneFlex(lang, fortune, interpretation, liffUrl = '') {
                   style: 'primary',
                   color: LACQUER,
                   height: 'sm',
-                  action: { type: 'uri', label: isEn ? 'Open LIFF' : 'Web 參拜', uri: liffUrl }
+                  action: { type: 'uri', label: isEn ? 'Open Web App' : '開啟 Web 參拜', uri: liffUrl }
                 }
               ]
             : [])
@@ -417,7 +417,7 @@ function buildDailyWisdomFlex(lang = 'zh', liffUrl = '') {
                   style: 'primary',
                   color: LACQUER,
                   height: 'sm',
-                  action: { type: 'uri', label: isEn ? '5. Web App' : '5. Web 參拜', uri: liffUrl }
+                  action: { type: 'uri', label: isEn ? '5. Open Web App' : '5. 開啟 Web 參拜', uri: liffUrl }
                 }
               ]
             : [])
@@ -480,7 +480,7 @@ function buildDonationsFlex(lang = 'zh', liffUrl = '') {
                   type: 'button',
                   style: 'link',
                   height: 'sm',
-                  action: { type: 'uri', label: isEn ? 'View All on Web' : '開啟 Web App 參與樂捐', uri: liffUrl }
+                  action: { type: 'uri', label: isEn ? 'Open Web App' : '開啟 Web 參拜', uri: liffUrl }
                 }
               ]
             : [])
