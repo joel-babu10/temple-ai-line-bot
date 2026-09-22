@@ -197,9 +197,13 @@ function buildActivitiesFlex(lang, posts, temples) {
 
 function buildFortuneFlex(lang, fortune, interpretation, liffUrl = '') {
   const isEn = lang === 'en';
+  const grade = isEn ? fortune.gradeEn || fortune.grade : fortune.grade;
+  const theme = isEn ? fortune.themeEn || fortune.theme : fortune.theme;
+  const poem = isEn ? fortune.poemEn || fortune.poem : fortune.poem;
+
   return {
     type: 'flex',
-    altText: isEn ? `Fortune Stick #${fortune.id} (${fortune.grade})` : `靈籤抽籤結果：第 ${fortune.id} 籤（${fortune.grade}）`,
+    altText: isEn ? `Fortune Stick #${fortune.id} (${grade})` : `靈籤抽籤結果：第 ${fortune.id} 籤（${grade}）`,
     contents: {
       type: 'bubble',
       styles: {
@@ -213,7 +217,7 @@ function buildFortuneFlex(lang, fortune, interpretation, liffUrl = '') {
         paddingAll: '16px',
         contents: [
           { type: 'text', text: isEn ? `Divine Poem #${fortune.id}` : `萬春宮靈籤 · 第 ${fortune.id} 籤`, weight: 'bold', color: GOLD_SOFT, size: 'md' },
-          { type: 'text', text: isEn ? `Grade: ${fortune.grade} · ${fortune.theme}` : `籤詩吉凶：${fortune.grade}  |  主題：${fortune.theme}`, color: PAPER, size: 'xs', margin: 'xs' }
+          { type: 'text', text: isEn ? `Grade: ${grade} · ${theme}` : `籤詩吉凶：${grade}  |  主題：${theme}`, color: PAPER, size: 'xs', margin: 'xs' }
         ]
       },
       body: {
@@ -221,7 +225,7 @@ function buildFortuneFlex(lang, fortune, interpretation, liffUrl = '') {
         layout: 'vertical',
         paddingAll: '16px',
         contents: [
-          { type: 'text', text: `「${fortune.poem}」`, weight: 'bold', color: GOLD, size: 'md', wrap: true, align: 'center' },
+          { type: 'text', text: `「${poem}」`, weight: 'bold', color: GOLD, size: 'md', wrap: true, align: 'center' },
           { type: 'separator', color: LACQUER, margin: 'md' },
           { type: 'text', text: isEn ? 'Flame\'s AI Interpretation:' : '🐾 焰寶 AI 智慧解籤：', weight: 'bold', color: GOLD_SOFT, size: 'sm', margin: 'md' },
           { type: 'text', text: interpretation, color: PAPER, size: 'sm', wrap: true, margin: 'xs' }

@@ -217,12 +217,44 @@ async function getCurrentUserId() {
 
 async function initLiff() {
   try {
-    await liff.init({ liffId: window.APP_CONFIG.LIFF_ID });
+    if (window.liff) {
+      await liff.init({ liffId: window.APP_CONFIG.LIFF_ID });
+      console.log('[LIFF] Initialized successfully. Logged in:', liff.isLoggedIn());
+      if (liff.isLoggedIn()) {
+        try {
+          const profile = await liff.getProfile();
+          console.log('[LIFF] Real LINE Profile Loaded:', profile.displayName);
+          loggedInUser = {
+            name: profile.displayName,
+            nameShort: profile.displayName.length > 8 ? profile.displayName.substring(0, 8) + '...' : profile.displayName,
+            handle: `@line_${profile.userId.substring(0, 6)}`,
+            avatar: profile.pictureUrl
+              ? `<img src="${profile.pictureUrl}" alt="LINE Avatar" style="width:100%;height:100%;border-radius:50%;object-fit:cover;" />`
+              : '信',
+            role: 'user',
+            isOfficial: false,
+            isLineVerified: true
+          };
+          localStorage.setItem('flame_logged_user', JSON.stringify(loggedInUser));
+          updateHeaderLoginState();
+          updateComposerUserAvatar();
+        } catch (profileErr) {
+          console.warn('[LIFF] getProfile failed:', profileErr.message);
+        }
+      }
+    }
   } catch (err) {
     console.warn('LIFF init skipped (running outside LINE):', err.message);
   }
 }
 initLiff();
+
+function updateComposerUserAvatar() {
+  const avatarEl = document.querySelector('#postComposerWrap .composer-avatar');
+  if (avatarEl && loggedInUser) {
+    avatarEl.innerHTML = loggedInUser.avatar;
+  }
+}
 
 // Maps the display names used in the UI (story bar, post cards) to backend temple ids,
 // so following/donating actually targets the right record. Cached after first fetch.
@@ -1037,6 +1069,53 @@ function setLanguage(lang) {
   const loginModalSub = document.getElementById('loginModalSub');
   if (loginModalSub) loginModalSub.textContent = isEn ? 'Select your account login role:' : '請選擇您要登入的帳號身份類別：';
 
+  // Quick Menu Card (Rich Menu Style in Web LIFF)
+  const quickMenuHeaderTitle = document.querySelector('.quick-menu-header h3');
+  if (quickMenuHeaderTitle) quickMenuHeaderTitle.textContent = isEn ? '⛩️ Temple Quick Services' : '⛩️ 廟宇快捷服務選單';
+
+  const quickMenuHeaderSub = document.querySelector('.quick-menu-sub');
+  if (quickMenuHeaderSub) quickMenuHeaderSub.textContent = isEn ? 'Tap any icon for quick online temple services' : '點擊即可快速使用線上宮廟服務';
+
+  const menuLabels = document.querySelectorAll('.quick-menu-item .menu-item-label');
+  if (menuLabels.length >= 6) {
+    menuLabels[0].textContent = isEn ? 'Fortune Stick' : '求籤解籤';
+    menuLabels[1].textContent = isEn ? 'Nearby Temples' : '附近宮廟';
+    menuLabels[2].textContent = isEn ? 'Zodiac Check' : '太歲查詢';
+    menuLabels[3].textContent = isEn ? 'Festivals' : '節慶提醒';
+    menuLabels[4].textContent = isEn ? 'Light Lamp' : '線上點燈';
+    menuLabels[5].textContent = isEn ? 'Ask Flame AI' : '問焰寶 AI';
+  }
+
+  // Post Composer Bar
+  const togglePostComposerBtnSpan = document.querySelector('#togglePostComposerBtn span');
+  if (togglePostComposerBtnSpan) togglePostComposerBtnSpan.textContent = isEn ? '＋ Publish Post / Announcement' : '＋ 發布隨手紀錄 / 宮廟公告';
+
+  const publishXPostBtn = document.getElementById('publishXPostBtn');
+  if (publishXPostBtn) publishXPostBtn.textContent = isEn ? 'Publish Post' : '發布貼文';
+
+  const photoFileName = document.getElementById('photoFileName');
+  if (photoFileName && photoFileName.textContent === '附圖') photoFileName.textContent = isEn ? 'Photo' : '附圖';
+
+  const xPostInput = document.getElementById('xPostInput');
+  if (xPostInput) xPostInput.placeholder = isEn ? 'Share your good deeds, temple visit notes, or blessings...' : '分享您的善行、隨手紀錄或參拜心得...';
+
+  // Category Filter Chips
+  const filterChips = document.querySelectorAll('#activityCategoryFilters .chip-btn');
+  if (filterChips.length >= 5) {
+    filterChips[0].textContent = isEn ? 'All Posts' : '全部動態';
+    filterChips[1].textContent = isEn ? 'Announcements' : '宮廟公告';
+    filterChips[2].textContent = isEn ? 'Hiking' : '健行踏青';
+    filterChips[3].textContent = isEn ? 'Good Deeds' : '隨手善行';
+    filterChips[4].textContent = isEn ? 'Culture' : '民俗文化';
+  }
+
+  // Dedicated Full Login Page
+  const fullLoginNoticeText = document.getElementById('fullLoginNoticeText');
+  if (fullLoginNoticeText) fullLoginNoticeText.textContent = isEn ? 'Log in with LINE or Temple Org Account to post and interact' : '登入 LINE 帳號或廟方機構帳號即可發布社群動態與交流';
+
+  const closeFullLoginPageBtnSpan = document.querySelector('#closeFullLoginPageBtn span');
+  if (closeFullLoginPageBtnSpan) closeFullLoginPageBtnSpan.textContent = isEn ? 'Back to App' : '返回 Web 參拜';
+
   updateChips(isEn);
 }
 
@@ -1090,6 +1169,11 @@ function requireLogin(callbackAction) {
   if (loggedInUser) {
     if (typeof callbackAction === 'function') callbackAction();
     return true;
+  }
+  if (window.liff && liff.isLoggedIn && !liff.isLoggedIn()) {
+    console.log('[LIFF] User not logged in inside LINE. Redirecting to liff.login()...');
+    liff.login();
+    return false;
   }
   const fullLoginPage = document.getElementById('fullLoginPage');
   const demoLoginModal = document.getElementById('demoLoginModal');

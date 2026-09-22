@@ -196,9 +196,33 @@ async function handleEvent(event) {
     }
   }
 
+  // Voice Note Audio Message Handler
+  if (event.message.type === 'audio') {
+    const lang = getLang(userId);
+    const voiceMsg = lang === 'en'
+      ? "🎙️ Received your voice prayer! Flame (焰寶) has conveyed your heartfelt wish to the deities. May peace and joy follow you always 🙏"
+      : "🎙️ 收到您的語音祈福囉！焰寶已幫您將心願轉達神明，願神明保佑您平安順遂、萬事如意 🙏";
+    return reply(event.replyToken, [{ type: 'text', text: voiceMsg }], userId, lang);
+  }
+
   if (event.message.type !== 'text') return;
 
   const text = event.message.text.trim();
+
+  // Greetings: "hai", "hi", "hello", "hey", "start" -> Auto-set English and show Rich Menu Flex Card!
+  if (/^(hai|hi|hello|hey|start)$/i.test(text)) {
+    setLang(userId, 'en');
+    const welcomeMsg = "Hi there! Welcome to Flame AI Shrine Master 🐾\n\nI am your smart temple companion. Feel free to chat naturally, or select a service option from the card below:";
+    return reply(
+      event.replyToken,
+      [
+        { type: 'text', text: welcomeMsg },
+        buildCleanMenuFlex('en', LIFF_URL)
+      ],
+      userId,
+      'en'
+    );
+  }
 
   // Language Switcher
   if (/^中文$/i.test(text) || /^(chinese|zh)$/i.test(text)) {

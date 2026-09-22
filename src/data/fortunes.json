@@ -2,141 +2,221 @@
   {
     "id": 1,
     "grade": "上上籤",
+    "gradeEn": "Supreme Fortune",
     "poem": "雲開見月正分明，枯木逢春再發榮。舊事消散新事順，貴人扶助自然成。",
+    "poemEn": "Clouds part to reveal a clear moon; dead trees bloom in spring again. Past troubles scatter, future endeavors flow smoothly with noble guidance.",
     "theme": "運勢回升，困境將解",
-    "notes": "近期壓抑許久的事會逐漸明朗，過去卡住的計畫適合重新啟動；貴人多在身邊熟識的人之中。"
+    "themeEn": "Fortune Rebounds & Troubles Clear",
+    "notes": "近期壓抑許久的事會逐漸明朗，過去卡住的計畫適合重新啟動；貴人多在身邊熟識的人之中。",
+    "notesEn": "Past obstacles will clarify; ideal time to restart paused projects with support from friends."
   },
   {
     "id": 2,
     "grade": "上籤",
+    "gradeEn": "Superior Blessing",
     "poem": "船到江心風浪靜，前途坦蕩少憂驚。凡事只要心誠正，自有神明暗中行。",
+    "poemEn": "When the boat reaches mid-river the waves calm; a smooth path lies ahead with few worries. Walk with an honest heart and divine help will follow silently.",
     "theme": "平順過關，宜守誠信",
-    "notes": "過程雖有波折，但只要按部就班、不投機取巧，結果會比預期平穩。"
+    "themeEn": "Smooth Sailing & Honesty",
+    "notes": "過程雖有波折，但只要按部就班、不投機取巧，結果會比預期平穩。",
+    "notesEn": "Though there may be ripples, staying grounded and honest brings better results than expected."
   },
   {
     "id": 3,
     "grade": "中籤",
+    "gradeEn": "Fair Fortune",
     "poem": "半山半水未為奇，且向前村問路歧。莫道此行無伴侶，同心自有好相知。",
+    "poemEn": "Halfway up the mountain between water and mist, ask for directions at the next village. Do not feel lonely on this journey; kindred spirits await.",
     "theme": "尚在摸索，需要請教他人",
-    "notes": "現在的方向還不算明確，適合多方打聽、找有經驗的人商量，不要獨自悶頭做決定。"
+    "themeEn": "Exploring Ahead & Seek Advice",
+    "notes": "現在的方向還不算明確，適合多方打聽、找有經驗的人商量，不要獨自悶頭做決定。",
+    "notesEn": "Your direction is still forming; consult experienced friends rather than deciding in isolation."
   },
   {
     "id": 4,
     "grade": "中籤",
+    "gradeEn": "Fair Fortune",
     "poem": "花開花謝有定時，人生際遇不強求。耐心等待春風至，自然結果滿枝頭。",
+    "poemEn": "Flowers bloom and wither in their own time; do not force life's opportunities. Wait patiently for the spring breeze and fruits will fill the branches.",
     "theme": "時機未到，宜耐心等待",
-    "notes": "不是不會成，是時候未到；急於求成反而容易亂了步調，先把手邊能做的做好。"
+    "themeEn": "Patience Required & Timing Not Yet",
+    "notes": "不是不會成，是時候未到；急於求成反而容易亂了步調，先把手邊能做的做好。",
+    "notesEn": "Success takes time; focus on doing current work well without rushing."
   },
   {
     "id": 5,
     "grade": "中平籤",
+    "gradeEn": "Moderate Luck",
     "poem": "路遠馬疲人未歇，前村燈火尚微茫。莫嫌此去多辛苦，行到山窮水又長。",
+    "poemEn": "The road is long, the horse weary, yet the traveler presses on toward faint lights in the distance. Do not complain of hard effort; perseverance leads through deep waters.",
     "theme": "過程辛苦，仍在半路",
-    "notes": "目前處於付出多、回報還不明顯的階段；提醒自己這是過程，不是結果。"
+    "themeEn": "Perseverance Mid-Journey",
+    "notes": "目前處於付出多、回報還不明顯的階段；提醒自己這是過程，不是結果。",
+    "notesEn": "Current effort yields delayed results; remember this is a journey toward growth."
   },
   {
     "id": 6,
     "grade": "下籤",
+    "gradeEn": "Caution Needed",
     "poem": "風急雨驟莫遠行，且待雲收月自明。此時強求多阻滯，退一步時海闊天。",
+    "poemEn": "Do not travel far during sudden rainstorms; wait until clouds part for the moon to shine. Forcing progress now brings obstacles; taking a step back opens broad skies.",
     "theme": "時機不利，宜守不宜進",
-    "notes": "不建議在這個時間點做重大決定或遠行、投入大筆資源；先觀望、把風險降低。"
+    "themeEn": "Unfavorable Timing & Stand Ground",
+    "notes": "不建議在這個時間點做重大決定或遠行、投入大筆資源；先觀望、把風險降低。",
+    "notesEn": "Avoid major financial decisions or long trips for now; reduce risks and observe."
   },
   {
     "id": 7,
     "grade": "上籤",
+    "gradeEn": "Superior Blessing",
     "poem": "枯樹逢春花又開，故人相見笑顏來。多年心事今朝了，喜氣重重報吉祥。",
+    "poemEn": "Withered trees bloom again as spring returns; old friends meet with joyful smiles. Longstanding worries resolve today, bringing abundance of good tidings.",
     "theme": "舊緣重聚，喜事將近",
-    "notes": "適合修復關係、重新聯繫許久未見的人；懸而未決的舊事會有一個了結。"
+    "themeEn": "Reconnection & Good Tidings",
+    "notes": "適合修復關係、重新聯繫許久未見的人；懸而未決的舊事會有一個了結。",
+    "notesEn": "Great time to mend relationships and reconnect with old acquaintances; pending matters resolve."
   },
   {
     "id": 8,
     "grade": "中籤",
+    "gradeEn": "Fair Fortune",
     "poem": "鏡中花影未為真，虛實之間費思尋。莫將傳言當定論，親自查看更分明。",
+    "poemEn": "Flowers reflected in a mirror are not real; distinguishing truth from shadow takes contemplation. Do not take rumors as fact; verify with your own eyes.",
     "theme": "訊息混雜，宜查證",
-    "notes": "現在聽到的消息或別人的評價未必準確，重要的事情自己確認過比較放心。"
+    "themeEn": "Verify Info & Avoid Rumors",
+    "notes": "現在聽到的消息或別人的評價未必準確，重要的事情自己確認過比較放心。",
+    "notesEn": "Current news may be unverified; inspect details personally before committing."
   },
   {
     "id": 9,
     "grade": "下籤",
+    "gradeEn": "Caution Needed",
     "poem": "舟行江上遇逆風，暫且收帆莫強攻。守成待變非退卻，蓄力方能濟長江。",
+    "poemEn": "Sailing against strong head-winds, temporarily lower the sail rather than forcing forward. Holding ground is not retreat; conserving strength prepares for crossing the river.",
     "theme": "逆境當前，宜守不宜攻",
-    "notes": "現階段不是擴張、冒進的好時機；把力氣留著，等狀況緩和再出手。"
+    "themeEn": "Adversity Ahead & Conserve Energy",
+    "notes": "現階段不是擴張、冒進的好時機；把力氣留著，等狀況緩和再出手。",
+    "notesEn": "Hold steady instead of aggressive expansion; save energy for the right moment."
   },
   {
     "id": 10,
     "grade": "上上籤",
+    "gradeEn": "Supreme Fortune",
     "poem": "一輪明月照江心，萬里無雲天地清。此去前程多順遂，功名自有水到成。",
+    "poemEn": "A bright moon illuminates the river; skies are clear for ten thousand miles. Your path ahead is peaceful and prosperous; achievement comes naturally.",
     "theme": "諸事順遂，宜把握時機",
-    "notes": "整體運勢在上升期，適合主動出擊、提出計畫或表達心意；拖延反而可惜。"
+    "themeEn": "Flourishing Luck & Seize Opportunity",
+    "notes": "整體運勢在上升期，適合主動出擊、提出計畫或表達心意；拖延反而可惜。",
+    "notesEn": "Your momentum is rising; take proactive initiative and express your goals."
   },
   {
     "id": 11,
     "grade": "中平籤",
+    "gradeEn": "Moderate Luck",
     "poem": "十字路口費躊躇，東西南北路皆殊。靜心細想根本事，自有一路是歸途。",
+    "poemEn": "Hesitating at a crossroads where four paths diverge; quiet your heart and recall your original goal, for one path will lead you home.",
     "theme": "選擇困難，宜回歸初衷",
-    "notes": "面臨多個選項難以取捨時，建議先問自己最初的目的是什麼，答案往往就在裡面。"
+    "themeEn": "Crossroads & Return to Basics",
+    "notes": "面臨多個選項難以取捨時，建議先問自己最初的目的是什麼，答案往往就在裡面。",
+    "notesEn": "When facing tough choices, ask yourself your original intention for clear direction."
   },
   {
     "id": 12,
     "grade": "上籤",
+    "gradeEn": "Superior Blessing",
     "poem": "春雨如膏潤物新，田園漸綠見精神。辛勤耕耘終有獲，莫嫌此刻未成林。",
+    "poemEn": "Spring rain moistens the earth anew; fields turn green with fresh vitality. Diligent cultivation will yield harvest; do not mind that the forest is not yet tall.",
     "theme": "努力累積，成果漸顯",
-    "notes": "目前的努力並沒有白費，只是成果還在累積階段，繼續照原本的節奏走。"
+    "themeEn": "Gradual Growth & Earnest Effort",
+    "notes": "目前的努力並沒有白費，只是成果還在累積階段，繼續照原本的節奏走。",
+    "notesEn": "Your persistent hard work is building momentum; keep moving steadily."
   },
   {
     "id": 13,
     "grade": "上吉籤",
+    "gradeEn": "Great Blessing",
     "poem": "金榜題名光耀門，平生志向今日申。喜逢盛世人才聚，富貴雙全享太平。",
+    "poemEn": "Golden names listed high bring honor; lifelong aspirations bloom today. Gathering talent in prosperous times brings joy and lasting peace.",
     "theme": "考試事業，大展鴻圖",
-    "notes": "此籤代表學業、考試、轉職或升遷有極大助益，只要平時有所準備，定能脫穎而出。"
+    "themeEn": "Academic & Career Triumph",
+    "notes": "此籤代表學業、考試、轉職或升遷有極大助益，只要平時有所準備，定能脫穎而出。",
+    "notesEn": "Highly favorable for exams, career moves, or promotions; preparation leads to standout success."
   },
   {
     "id": 14,
     "grade": "中吉籤",
+    "gradeEn": "Fair Blessing",
     "poem": "良緣天定結同心，月下老人暗相引。兩情相悅無猜疑，百年好合共長春。",
+    "poemEn": "Destined affinity joined under the moon; guided secretly by the Old Man of the Moon. Shared affection without doubt brings a century of harmonious love.",
     "theme": "姻緣感情，美滿和睦",
-    "notes": "問感情者此籤大吉，單身者有機會結識良緣，有對象者感情加溫，適合論及婚嫁。"
+    "themeEn": "Romance & Harmony",
+    "notes": "問感情者此籤大吉，單身者有機會結識良緣，有對象者感情加溫，適合論及婚嫁。",
+    "notesEn": "A joyful fortune for romance; singles find good connections, couples deepen harmony."
   },
   {
     "id": 15,
     "grade": "上籤",
+    "gradeEn": "Superior Blessing",
     "poem": "財如源泉滾滾來，商業興隆大發財。積善之家必有慶，正財偏財兩相宜。",
+    "poemEn": "Wealth flows like a rolling spring; business flourishes with prosperity. A righteous household earns blessings; both steady and windfall income prosper.",
     "theme": "財運亨通，善作善成",
-    "notes": "求財大吉，適合穩健投資或開啟新業務，同時提醒多做善事、保持誠信經營。"
+    "themeEn": "Abundant Wealth & Righteous Gains",
+    "notes": "求財大吉，適合穩健投資或開啟新業務，同時提醒多做善事、保持誠信經營。",
+    "notesEn": "Favorable for wealth and business expansion; maintain integrity and share goodwill."
   },
   {
     "id": 16,
     "grade": "中平籤",
+    "gradeEn": "Moderate Luck",
     "poem": "疾病纏身莫憂心，調理身心養精神。遵醫處方安心服，自然安康體回春。",
+    "poemEn": "Do not worry over temporary illness; nurture your mind and spirit with rest. Follow medical wisdom with peace of mind and full health will return.",
     "theme": "健康安康，注意作息",
-    "notes": "問健康者提醒多注意生活作息與飲食，若有不適應及早檢查，遵從醫囑即能康復。"
+    "themeEn": "Health Nurturing & Rest",
+    "notes": "問健康者提醒多注意生活作息與飲食，若有不適應及早檢查，遵從醫囑即能康復。",
+    "notesEn": "Focus on rest, balanced diet, and timely medical advice for swift recovery."
   },
   {
     "id": 17,
     "grade": "中籤",
+    "gradeEn": "Fair Fortune",
     "poem": "訟事紛爭宜解和，各退一步自然妥。得理饒人邊界寬，莫隨口舌引風波。",
+    "poemEn": "Disputes are best resolved through harmony; taking a step back settles matters. Generosity creates wider boundaries; avoid sharp words that cause storms.",
     "theme": "官司口舌，化解爭端",
-    "notes": "遇到紛爭爭執時，以和為貴是上策。退一步海闊天空，切忌口舌逞快而擴大矛盾。"
+    "themeEn": "Harmonize Disputes & Broad Heart",
+    "notes": "遇到紛爭爭執時，以和為貴是上策。退一步海闊天空，切忌口舌逞快而擴大矛盾。",
+    "notesEn": "Seek peace over conflict; stepping back avoids unnecessary arguments."
   },
   {
     "id": 18,
     "grade": "上籤",
+    "gradeEn": "Superior Blessing",
     "poem": "出門遠行見祥雲，吉星高照保安寧。東西南北皆順遂，滿載而歸喜氣盈。",
+    "poemEn": "Auspicious clouds guide your travel; lucky stars shine to preserve peace. All directions bring smooth paths; return home fulfilled with joy.",
     "theme": "出行遠行，一路平安",
-    "notes": "問旅遊、出差、留學或移居者大吉，出途平安且能獲取預期的收穫。"
+    "themeEn": "Safe Journey & Auspicious Travel",
+    "notes": "問旅遊、出差、留學或移居者大吉，出途平安且能獲取預期的收穫。",
+    "notesEn": "Excellent for travel, business trips, or study abroad; safe and rewarding."
   },
   {
     "id": 19,
     "grade": "下籤",
+    "gradeEn": "Caution Needed",
     "poem": "防人防己防小人，虛情假意陷迷津。切莫輕信甜言語，慎選朋友保清真。",
+    "poemEn": "Beware of insincerity and petty traps; do not easily trust sweet words. Choose companions wisely to keep your path clear and true.",
     "theme": "慎防小人，小心詐騙",
-    "notes": "近期需提防小人讒言或金錢陷阱，未經核實的投資或合作切勿冒然投入。"
+    "themeEn": "Beware Misleading Words",
+    "notes": "近期需提防小人讒言或金錢陷阱，未經核實的投資或合作切勿冒然投入。",
+    "notesEn": "Guard against financial traps or unverified claims; double-check all agreements."
   },
   {
     "id": 20,
     "grade": "上上籤",
+    "gradeEn": "Supreme Fortune",
     "poem": "神仙保佑萬事通，福祿壽喜齊降臨。家庭和睦人人樂，事業長青歲歲隆。",
+    "poemEn": "Deities protect and grant smooth fortune; health, longevity, and joy descend together. Family harmony brings happiness to all, and career thrives year after year.",
     "theme": "百事大吉，全家平安",
-    "notes": "極佳之吉籤！代表天時地利人和兼備，全家平安、事業順利、身心皆得康泰。"
+    "themeEn": "Ultimate Peace & All-Around Success",
+    "notes": "極佳之吉籤！代表天時地利人和兼備，全家平安、事業順利、身心皆得康泰。",
+    "notesEn": "A top-grade blessing; family harmony, health, and career are fully protected."
   }
 ]
