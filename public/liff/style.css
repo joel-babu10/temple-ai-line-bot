@@ -4193,3 +4193,45 @@ body {
   font-size: 1.2rem;
 }
 
+/* ---------- Respectful Cultural & Mindful Disclaimer Footer ---------- */
+.cultural-disclaimer-footer {
+  margin: 28px 12px 20px;
+  padding: 16px 18px;
+  background: rgba(28, 22, 19, 0.75);
+  border: 1px solid rgba(199, 154, 69, 0.3);
+  border-radius: var(--radius-md, 12px);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.35);
+  text-align: center;
+  backdrop-filter: blur(8px);
+}
+
+.disclaimer-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 8px;
+  color: var(--gold-bright, #e4c77a);
+  font-size: 0.85rem;
+  font-weight: 700;
+}
+
+.disclaimer-icon {
+  font-size: 1rem;
+}
+
+.disclaimer-text {
+  margin: 0;
+  font-size: 0.76rem;
+  line-height: 1.55;
+  color: rgba(239, 230, 216, 0.82);
+}
+
+.disclaimer-en {
+  display: block;
+  margin-top: 6px;
+  font-size: 0.7rem;
+  opacity: 0.75;
+  line-height: 1.45;
+}
+
+

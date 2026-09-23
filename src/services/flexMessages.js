@@ -58,7 +58,8 @@ function buildCleanMenuFlex(lang = 'zh', liffUrl = '') {
           { type: 'text', text: isEn ? '7. 📜 Daily Shrine Amulet & Blessing' : '7. 📜 每日靈驗平安符與神諭賜福', color: PAPER, size: 'sm', weight: 'bold' },
           { type: 'text', text: isEn ? '8. 💖 Temple Welfare & Donations' : '8. 💖 宮廟公益樂捐與善行專案', color: PAPER, size: 'sm', weight: 'bold' },
           { type: 'separator', color: LACQUER, margin: 'md' },
-          { type: 'text', text: isEn ? '💡 Or ask any question directly in natural chat!' : '💡 您也可以直接輸入任何問題，焰寶會親切為您解答！', color: GOLD_SOFT, size: 'xs', wrap: true, margin: 'sm' }
+          { type: 'text', text: isEn ? '💡 Or ask any question directly in natural chat!' : '💡 您也可以直接輸入任何問題，焰寶會親切為您解答！', color: GOLD_SOFT, size: 'xs', wrap: true, margin: 'sm' },
+          { type: 'text', text: isEn ? '🌸 Note: Divination & blessings are for cultural appreciation & peace of mind.' : '🌸 提醒：本系統籤詩與民俗內容僅供文化體驗與心靈寄託，請保持積極獨立判斷 🙏', color: PAPER, size: 'xxs', wrap: true, margin: 'md', align: 'center' }
         ]
       },
       footer: {
