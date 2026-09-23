@@ -2311,7 +2311,7 @@ const I18N_DICT = {
   }
 };
 
-let currentLang = localStorage.getItem('yanbao_web_lang') || 'zh-TW';
+currentLang = localStorage.getItem('yanbao_web_lang') || currentLang;
 
 function setLanguage(lang) {
   currentLang = lang === 'en' ? 'en' : 'zh-TW';
