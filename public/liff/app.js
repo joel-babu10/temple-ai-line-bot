@@ -540,16 +540,22 @@ jiaoBtn.addEventListener('click', () => {
 
 drawBtn.addEventListener('click', async () => {
   drawBtn.disabled = true;
-  const res = await fetch(`${API_BASE}/fortune/draw`);
-  currentFortune = await res.json();
+  try {
+    const res = await fetch(`${API_BASE}/fortune/draw`);
+    currentFortune = await res.json();
 
-  document.getElementById('fortuneGrade').textContent = currentFortune.grade;
-  document.getElementById('fortunePoem').textContent = currentFortune.poem;
-  document.getElementById('fortuneTheme').textContent = `主題：${currentFortune.theme}`;
-  fortuneCard.classList.remove('is-hidden');
-  interpretBox.classList.remove('is-hidden');
-  fireConfetti();
-  playTempleChime(660, 1.0);
+    document.getElementById('fortuneGrade').textContent = currentFortune.grade;
+    document.getElementById('fortunePoem').textContent = currentFortune.poem;
+    document.getElementById('fortuneTheme').textContent = `主題：${currentFortune.theme}`;
+    fortuneCard.classList.remove('is-hidden');
+    interpretBox.classList.remove('is-hidden');
+    fireConfetti();
+    playTempleChime(660, 1.0);
+  } catch (err) {
+    console.error('[LIFF] Failed to draw fortune stick:', err);
+    drawBtn.disabled = false;
+    alert('抽籤時發生連線問題，請再試一次 🙏');
+  }
 });
 
 function fireConfetti() {
