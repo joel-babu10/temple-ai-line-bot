@@ -52,17 +52,24 @@ async function askLLM({ userMessage, context = '', language = 'zh-TW', history =
         system_instruction: { parts: [{ text: fullSystemPrompt }] },
         contents,
         generationConfig: {
-          maxOutputTokens: 600
+          maxOutputTokens: 2048
         }
       },
       {
         headers: { 'content-type': 'application/json' },
         params: { key: apiKey },
-        timeout: 12000
+        timeout: 15000
       }
     );
 
-    const text = response.data.candidates?.[0]?.content?.parts?.[0]?.text;
+    const candidate = response.data.candidates?.[0];
+    const candidateParts = candidate?.content?.parts || [];
+    const text = candidateParts
+      .filter((part) => !part.thought)
+      .map((part) => part.text || '')
+      .join('')
+      .trim();
+
     if (text) return text;
     return isEn 
       ? "Hi! I'm Flame (焰寶) 🐾 Your divine companion. Feel free to ask me anything or type 1-6 for quick options! 🙏" 

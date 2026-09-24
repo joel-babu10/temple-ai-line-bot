@@ -109,14 +109,14 @@ function buildFestivalFlex(lang, upcomingFestivals) {
     layout: 'vertical',
     margin: 'md',
     contents: [
-      { type: 'text', text: f.name, weight: 'bold', color: GOLD_SOFT, size: 'sm' },
+      { type: 'text', text: isEn ? f.nameEn || f.name : f.name, weight: 'bold', color: GOLD_SOFT, size: 'sm' },
       {
         type: 'text',
-        text: isEn ? `${f.lunarDate} · ~${f.date2026}` : `${f.lunarDate}（國曆約 ${f.date2026}）`,
+        text: isEn ? `${f.lunarDateEn || f.lunarDate} · ~${f.date2026}` : `${f.lunarDate}（國曆約 ${f.date2026}）`,
         color: PAPER,
         size: 'xxs'
       },
-      { type: 'text', text: f.message, color: PAPER, size: 'xxs', wrap: true, margin: 'xs' }
+      { type: 'text', text: isEn ? f.messageEn || f.message : f.message, color: PAPER, size: 'xxs', wrap: true, margin: 'xs' }
     ]
   }));
 
@@ -148,7 +148,11 @@ function buildFestivalFlex(lang, upcomingFestivals) {
 
 function buildActivitiesFlex(lang, posts, temples) {
   const isEn = lang === 'en';
-  const templeName = (id) => temples.find((t) => t.id === id)?.name || id;
+  const templeName = (id) => {
+    const t = temples.find((item) => item.id === id);
+    if (!t) return id;
+    return isEn ? t.nameEn || t.name : t.name;
+  };
 
   const rows = posts.slice(0, 6).map((p) => {
     const title = isEn ? p.titleEn || p.title : p.title;
@@ -228,7 +232,7 @@ function buildFortuneFlex(lang, fortune, interpretation, liffUrl = '') {
         contents: [
           { type: 'text', text: `「${poem}」`, weight: 'bold', color: GOLD, size: 'md', wrap: true, align: 'center' },
           { type: 'separator', color: LACQUER, margin: 'md' },
-          { type: 'text', text: isEn ? 'Flame\'s AI Interpretation:' : '🐾 焰寶 AI 智慧解籤：', weight: 'bold', color: GOLD_SOFT, size: 'sm', margin: 'md' },
+          { type: 'text', text: isEn ? "Flame's AI Interpretation:" : '🐾 焰寶 AI 智慧解籤：', weight: 'bold', color: GOLD_SOFT, size: 'sm', margin: 'md' },
           { type: 'text', text: interpretation, color: PAPER, size: 'sm', wrap: true, margin: 'xs' }
         ]
       },
@@ -263,48 +267,55 @@ function buildFortuneFlex(lang, fortune, interpretation, liffUrl = '') {
 
 function buildTempleCarouselFlex(lang, temples, liffUrl = '') {
   const isEn = lang === 'en';
-  const bubbles = temples.map((t) => ({
-    type: 'bubble',
-    styles: {
-      header: { backgroundColor: LACQUER_DEEP },
-      body: { backgroundColor: INK },
-      footer: { backgroundColor: INK }
-    },
-    header: {
-      type: 'box',
-      layout: 'vertical',
-      paddingAll: '16px',
-      contents: [
-        { type: 'text', text: t.name, weight: 'bold', color: GOLD_SOFT, size: 'md', wrap: true },
-        { type: 'text', text: `📍 ~${t.distanceKm} km`, color: PAPER, size: 'xs', margin: 'xs' }
-      ]
-    },
-    body: {
-      type: 'box',
-      layout: 'vertical',
-      paddingAll: '16px',
-      contents: [
-        { type: 'text', text: `${isEn ? 'Deity' : '主祀神明'}: ${t.deity || (isEn ? 'Temple' : '傳統宮廟')}`, color: PAPER, size: 'xs', wrap: true },
-        { type: 'text', text: `${isEn ? 'Address' : '地址'}: ${t.address || (isEn ? 'Taichung' : '台中市')}`, color: PAPER, size: 'xs', wrap: true, margin: 'xs' },
-        ...(t.history ? [{ type: 'text', text: t.history, color: PAPER, size: 'xxs', wrap: true, margin: 'sm' }] : [])
-      ]
-    },
-    footer: {
-      type: 'box',
-      layout: 'vertical',
-      spacing: 'xs',
-      paddingAll: '12px',
-      contents: [
-        {
-          type: 'button',
-          style: 'primary',
-          color: LACQUER,
-          height: 'sm',
-          action: { type: 'message', label: isEn ? 'Subscribe' : '訂閱宮廟消息', text: `${isEn ? 'subscribe' : '訂閱'} ${t.name}` }
-        }
-      ]
-    }
-  }));
+  const bubbles = temples.map((t) => {
+    const templeName = isEn ? t.nameEn || t.name : t.name;
+    const deityName = isEn ? t.deityEn || t.deity : t.deity;
+    const addressStr = isEn ? t.addressEn || t.address : t.address;
+    const historyStr = isEn ? t.highlightsEn || t.highlights || t.history : t.history || t.highlights;
+
+    return {
+      type: 'bubble',
+      styles: {
+        header: { backgroundColor: LACQUER_DEEP },
+        body: { backgroundColor: INK },
+        footer: { backgroundColor: INK }
+      },
+      header: {
+        type: 'box',
+        layout: 'vertical',
+        paddingAll: '16px',
+        contents: [
+          { type: 'text', text: templeName, weight: 'bold', color: GOLD_SOFT, size: 'md', wrap: true },
+          { type: 'text', text: `📍 ~${t.distanceKm} km`, color: PAPER, size: 'xs', margin: 'xs' }
+        ]
+      },
+      body: {
+        type: 'box',
+        layout: 'vertical',
+        paddingAll: '16px',
+        contents: [
+          { type: 'text', text: `${isEn ? 'Deity' : '主祀神明'}: ${deityName || (isEn ? 'Temple' : '傳統宮廟')}`, color: PAPER, size: 'xs', wrap: true },
+          { type: 'text', text: `${isEn ? 'Address' : '地址'}: ${addressStr || (isEn ? 'Taichung' : '台中市')}`, color: PAPER, size: 'xs', wrap: true, margin: 'xs' },
+          ...(historyStr ? [{ type: 'text', text: historyStr, color: PAPER, size: 'xxs', wrap: true, margin: 'sm' }] : [])
+        ]
+      },
+      footer: {
+        type: 'box',
+        layout: 'vertical',
+        spacing: 'xs',
+        paddingAll: '12px',
+        contents: [
+          {
+            type: 'button',
+            style: 'primary',
+            color: LACQUER,
+            height: 'sm',
+            action: { type: 'message', label: isEn ? 'Subscribe' : '訂閱宮廟消息', text: `${isEn ? 'subscribe' : '訂閱'} ${templeName}` }
+          }
+        ]
+      }
+    };
+  });
 
   return {
     type: 'flex',
@@ -361,11 +372,11 @@ function buildZodiacFlex(lang, result, aiExplanation) {
 function buildDailyWisdomFlex(lang = 'zh', liffUrl = '') {
   const isEn = lang === 'en';
   const wisdoms = [
-    { text: '行善積德，福應自然；心存慈悲，處處皆安。', deity: '天上聖母 (媽祖)', topic: '福慧兼修' },
-    { text: '心若正大，光明自現；吉星常照，患難不侵。', deity: '關聖帝君', topic: '正道光明' },
-    { text: '千處祈求千處應，苦海常作渡人舟。', deity: '觀音大士', topic: '慈悲安心' },
-    { text: '土地常懷保佑心，善人處處得金玉。', deity: '福德正神', topic: '平安聚財' },
-    { text: '千里姻緣一線牽，真情所至金石開。', deity: '月老星君', topic: '良緣圓滿' }
+    { text: '行善積德，福應自然；心存慈悲，處處皆安。', textEn: 'Do good and accumulate virtue, blessings will follow naturally; keep compassion in your heart and peace will reside everywhere.', deity: '天上聖母 (媽祖)', deityEn: 'Mazu (Goddess of Sea)', topic: '福慧兼修', topicEn: 'Virtue & Wisdom' },
+    { text: '心若正大，光明自現；吉星常照，患難不侵。', textEn: 'If your heart is upright, light will shine forth; lucky stars will guide you, protected from adversity.', deity: '關聖帝君', deityEn: 'Guan Sheng Di Jun', topic: '正道光明', topicEn: 'Righteous Light' },
+    { text: '千處祈求千處應，苦海常作渡人舟。', textEn: 'Answering prayers across a thousand realms, a compassionate vessel guiding souls through life.', deity: '觀音大士', deityEn: 'Guanyin (Goddess of Mercy)', topic: '慈悲安心', topicEn: 'Compassion & Peace' },
+    { text: '土地常懷保佑心，善人處處得金玉。', textEn: 'The Earth Deity watches over with blessings; kind souls find prosperity wherever they tread.', deity: '福德正神', deityEn: 'Tudigong (Earth God)', topic: '平安聚財', topicEn: 'Peace & Wealth' },
+    { text: '千里姻緣一線牽，真情所至金石開。', textEn: 'A thousand miles tied by a red string of destiny; true devotion unlocks every heart.', deity: '月老星君', deityEn: 'Yuelao (Matchmaker God)', topic: '良緣圓滿', topicEn: 'Love & Union' }
   ];
   const item = wisdoms[Math.floor(Math.random() * wisdoms.length)];
 
@@ -385,7 +396,7 @@ function buildDailyWisdomFlex(lang = 'zh', liffUrl = '') {
         paddingAll: '16px',
         contents: [
           { type: 'text', text: isEn ? '📜 Daily Shrine Oracle' : '📜 每日隨機神諭賜福', weight: 'bold', color: GOLD_SOFT, size: 'md' },
-          { type: 'text', text: isEn ? `Deity: ${item.deity} · ${item.topic}` : `賜福仙尊：${item.deity}  |  ${item.topic}`, color: PAPER, size: 'xs', margin: 'xs' }
+          { type: 'text', text: isEn ? `Deity: ${item.deityEn} · ${item.topicEn}` : `賜福仙尊：${item.deity}  |  ${item.topic}`, color: PAPER, size: 'xs', margin: 'xs' }
         ]
       },
       body: {
@@ -393,9 +404,9 @@ function buildDailyWisdomFlex(lang = 'zh', liffUrl = '') {
         layout: 'vertical',
         paddingAll: '16px',
         contents: [
-          { type: 'text', text: `「${item.text}」`, weight: 'bold', color: GOLD, size: 'sm', wrap: true, align: 'center' },
+          { type: 'text', text: `「${isEn ? item.textEn : item.text}」`, weight: 'bold', color: GOLD, size: 'sm', wrap: true, align: 'center' },
           { type: 'separator', color: LACQUER, margin: 'md' },
-          { type: 'text', text: isEn ? '🐾 Flame\'s Daily Warm Thought:' : '🐾 焰寶每日溫馨提點：', weight: 'bold', color: GOLD_SOFT, size: 'xs', margin: 'md' },
+          { type: 'text', text: isEn ? "Flame's Daily Warm Thought:" : '🐾 焰寶每日溫馨提點：', weight: 'bold', color: GOLD_SOFT, size: 'xs', margin: 'md' },
           { type: 'text', text: isEn ? 'Keep a gentle heart today, speak kind words, and blessing will follow you step by step!' : '保持善念，多說好話，神明定會在暗中保佑您平安順遂！', color: PAPER, size: 'xs', wrap: true, margin: 'xs' }
         ]
       },
@@ -446,7 +457,7 @@ function buildDonationsFlex(lang = 'zh', liffUrl = '') {
         paddingAll: '16px',
         contents: [
           { type: 'text', text: isEn ? '💖 Temple Welfare & Donations' : '💖 宮廟公益樂捐與善行專案', weight: 'bold', color: GOLD_SOFT, size: 'md' },
-          { type: 'text', text: isEn ? 'Participate in warmth & merit building' : '凝聚善念 · 隨喜護持偏鄉與宮廟建設', color: PAPER, size: 'xs', margin: 'xs' }
+          { type: 'text', text: isEn ? 'Support temple relief & rural charity' : '凝聚善念 · 隨喜護持偏鄉與宮廟建設', color: PAPER, size: 'xs', margin: 'xs' }
         ]
       },
       body: {
@@ -455,10 +466,10 @@ function buildDonationsFlex(lang = 'zh', liffUrl = '') {
         spacing: 'sm',
         paddingAll: '16px',
         contents: [
-          { type: 'text', text: isEn ? '1. 🌾 Wanchun Temple Winter Relief Rice' : '1. 🌾 萬春宮 偏鄉獨居長者送暖平安米', color: GOLD, size: 'xs', weight: 'bold' },
+          { type: 'text', text: isEn ? '1. 🌾 Wanchun Temple Relief Rice for Elderly' : '1. 🌾 萬春宮 偏鄉獨居長者送暖平安米', color: GOLD, size: 'xs', weight: 'bold' },
           { type: 'text', text: isEn ? 'Goal: NT$ 100,000 (Raised 84%)' : '目標：NT$ 100,000（已募集 84%）', color: PAPER, size: 'xxs' },
           { type: 'separator', color: LACQUER, margin: 'xs' },
-          { type: 'text', text: isEn ? '2. 🕯️ Lighting Blessing Lamps for Elders' : '2. 🕯️ 偏鄉學童智慧燈供養專案', color: GOLD, size: 'xs', weight: 'bold' },
+          { type: 'text', text: isEn ? '2. 🕯️ Blessing Lamp Fund for Rural Students' : '2. 🕯️ 偏鄉學童智慧燈供養專案', color: GOLD, size: 'xs', weight: 'bold' },
           { type: 'text', text: isEn ? 'Goal: NT$ 50,000 (Raised 62%)' : '目標：NT$ 50,000（已募集 62%）', color: PAPER, size: 'xxs' }
         ]
       },
@@ -473,7 +484,7 @@ function buildDonationsFlex(lang = 'zh', liffUrl = '') {
             style: 'primary',
             color: LACQUER,
             height: 'sm',
-            action: { type: 'message', label: isEn ? 'Donate 500 to Wanchun' : '捐款 萬春宮 500', text: '捐款 萬春宮 500' }
+            action: { type: 'message', label: isEn ? 'Donate 500 to Wanchun' : '捐款 萬春宮 500', text: isEn ? 'donate Wanchun 500' : '捐款 萬春宮 500' }
           },
           ...(liffUrl
             ? [

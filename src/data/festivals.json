@@ -2,49 +2,67 @@
   {
     "id": "mazu-birthday",
     "name": "媽祖聖誕",
+    "nameEn": "Mazu's Birthday",
     "lunarDate": "農曆3月23日",
+    "lunarDateEn": "Lunar Mar 23",
     "date2026": "2026-05-09",
     "temples": ["wanchun-gong", "lecheng-gong"],
-    "message": "今天是媽祖聖誕！萬春宮、樂成宮都會舉行祝壽祭典，歡迎前來參拜祈福 🙏"
+    "message": "今天是媽祖聖誕！萬春宮、樂成宮都會舉行祝壽祭典，歡迎前來參拜祈福 🙏",
+    "messageEn": "Today is Mazu's Birthday! Wanchun & Lecheng Temples are holding sacred celebrations — welcome to worship and receive blessings! 🙏"
   },
   {
     "id": "anzai",
     "name": "安太歲",
+    "nameEn": "Taisui Blessing Period",
     "lunarDate": "農曆正月期間",
+    "lunarDateEn": "Lunar 1st Month",
     "date2026": "2026-02-17",
     "temples": ["wanchun-gong", "chenghuang-miao", "yuanbao-gong"],
-    "message": "安太歲登記開始囉！沖犯太歲的生肖今年適合到廟裡安太歲，點我看各廟登記方式"
+    "message": "安太歲登記開始囉！沖犯太歲的生肖今年適合到廟裡安太歲，點我看各廟登記方式",
+    "messageEn": "Taisui registration is open! If your zodiac sign clashes with Taisui this year, visit the shrine to light a Taisui lamp 🙏"
   },
   {
     "id": "zhongyuan",
     "name": "中元普渡",
+    "nameEn": "Zhongyuan Ghost Festival",
     "lunarDate": "農曆7月15日",
+    "lunarDateEn": "Lunar Jul 15",
     "date2026": "2026-08-27",
     "temples": ["wanchun-gong", "chenghuang-miao"],
-    "message": "中元普渡將至，萬春宮、城隍廟均有普渡法會，需要供品或法會資訊都可以問我"
+    "message": "中元普渡將至，萬春宮、城隍廟均有普渡法會，需要供品或法會資訊都可以問我",
+    "messageEn": "Zhongyuan Ghost Festival is coming. Wanchun & City God Temples hold grand ceremonies for peace and ancestral blessings."
   },
   {
     "id": "guandi-birthday",
     "name": "關聖帝君聖誕",
+    "nameEn": "Guan Sheng Di Jun's Birthday",
     "lunarDate": "農曆6月24日",
+    "lunarDateEn": "Lunar Jun 24",
     "date2026": "2026-08-06",
     "temples": ["nantian-gong"],
-    "message": "關聖帝君聖誕快到了，南天宮會有祝壽及補財庫活動，想發財運的人別錯過"
+    "message": "關聖帝君聖誕快到了，南天宮會有祝壽及補財庫活動，想發財運的人別錯過",
+    "messageEn": "Lord Guan's Birthday is approaching! Nantian Temple will hold wealth blessing rituals — don't miss out!"
   },
   {
     "id": "xiayuan",
     "name": "下元節",
+    "nameEn": "Xiayuan Festival",
     "lunarDate": "農曆10月15日",
+    "lunarDateEn": "Lunar Oct 15",
     "date2026": "2026-11-24",
     "temples": ["wanchun-gong", "chenghuang-miao"],
-    "message": "下元節將至，水官大帝解厄消災，適合到廟裡祈求解厄平安"
+    "message": "下元節將至，水官大帝解厄消災，適合到廟裡祈求解厄平安",
+    "messageEn": "Xiayuan Festival is near. The Water Deity dispels misfortune and bestows peace and harmony."
   },
   {
     "id": "dongzhi",
     "name": "冬至謝平安",
+    "nameEn": "Winter Solstice Thanksgiving",
     "lunarDate": "農曆冬至",
+    "lunarDateEn": "Winter Solstice",
     "date2026": "2026-12-22",
     "temples": ["wanchun-gong", "lecheng-gong"],
-    "message": "冬至到了，記得吃湯圓、到廟裡謝平安，感謝神明這一年的照顧"
+    "message": "冬至到了，記得吃湯圓、到廟裡謝平安，感謝神明這一年的照顧",
+    "messageEn": "Winter Solstice is here! Enjoy sweet tangyuan and visit the shrine to thank the deities for a blessed year."
   }
 ]

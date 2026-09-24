@@ -87,8 +87,9 @@ function detectLang(text) {
   const stripped = text.replace(/[\s0-9\p{Emoji_Presentation}\p{P}]/gu, '');
   if (!stripped) return null;
   const cjkCount = (stripped.match(/[\u4e00-\u9fff]/g) || []).length;
+  const latinCount = (stripped.match(/[a-zA-Z]/g) || []).length;
   if (cjkCount / stripped.length > 0.3) return 'zh';
-  if (/^[a-zA-Z]+$/.test(stripped)) return 'en';
+  if (latinCount / stripped.length > 0.4) return 'en';
   return null;
 }
 
@@ -334,8 +335,12 @@ async function handleEvent(event) {
     const aiMessage = await askLLM({
       userMessage:
         (result.isClashing
-          ? '請用溫暖口氣跟我解釋今年犯太歲的意思，並給一些安太歲/點光明燈的建議，簡短一點。'
-          : '請用溫暖口氣告訴我今年沒有犯太歲，但仍可以說些新年祝福的話，簡短一點。') + langInstruction(lang),
+          ? (lang === 'en'
+              ? 'Please explain in a warm tone what clashing with Taisui means for this year and give brief advice on lighting blessing lamps.'
+              : '請用溫暖口氣跟我解釋今年犯太歲的意思，並給一些安太歲/點光明燈的建議，簡短一點。')
+          : (lang === 'en'
+              ? 'Please tell me in a warm tone that I have no Taisui clash this year, with brief New Year wishes.'
+              : '請用溫暖口氣告訴我今年沒有犯太歲，但仍可以說些新年祝福的話，簡短一點。')) + langInstruction(lang),
       context
     });
     return reply(event.replyToken, [buildZodiacFlex(lang, result, aiMessage)], userId, lang);
